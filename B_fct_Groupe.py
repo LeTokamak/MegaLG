@@ -347,7 +347,7 @@ async def redef_groupesExistants():
             
             nouvGroupe.salon      = fDis.bot.get_channel(ligneGrp[fGoo.clefGrp_idSalon])
             
-            nouvGroupe.MsgSortie  = await fDis.bot.fetch_message(ligneGrp[fGoo.clefGrp_MsgSortie])   
+            nouvGroupe.MsgSortie  = await fDis.userMdJ.fetch_message(ligneGrp[fGoo.clefGrp_MsgSortie])   
             nouvGroupe.MsgEntree  = await fDis.userMdJ.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
             
             nouvGroupe.Emo_Entree = ligneGrp[fGoo.clefGrp_EmoEntree]

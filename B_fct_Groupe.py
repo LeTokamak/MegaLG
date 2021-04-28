@@ -77,17 +77,20 @@ class Groupe :
             self.sur_Groupes.append( groupe )
             
             
+#### Définition du salon du groupe supérieur 
+    
+        if   self.rang == 1 :
+            self.salon_GroupeSup = fDis.channelFctmentGrp
+                
+        elif self.rang in [2,3,4]:
+            self.salon_GroupeSup = self.sur_Groupes[-1].salon        
+            
+            
             
     async def creation_salonEtMessages (self):
 
         
-#### Définition du salon du groupe supérieur 
-    
-        if   self.rang == 1 :
-            salon_GroupeSup = fDis.channelFctmentGrp
-                
-        elif self.rang in [2,3,4]:
-            salon_GroupeSup = self.sur_Groupes[-1].salon        
+
         
         
 # =============================================================================
@@ -133,7 +136,7 @@ class Groupe :
             
         contenu_MsgEntree = f"Pour rentrer dans le groupe {self} :\n> Réagissez à ce message avec {self.Emo_Entree} !"
         
-        self.MsgEntree  = await salon_GroupeSup.send(contenu_MsgEntree)
+        self.MsgEntree  = await self.salon_GroupeSup.send(contenu_MsgEntree)
         await self.MsgEntree.add_reaction(self.Emo_Entree)
         
         
@@ -348,7 +351,6 @@ async def redef_groupesExistants():
             nouvGroupe.salon      = fDis.bot.get_channel(ligneGrp[fGoo.clefGrp_idSalon])
             
             nouvGroupe.MsgSortie  = await nouvGroupe.salon.fetch_message(ligneGrp[fGoo.clefGrp_MsgSortie])   
-            nouvGroupe.MsgEntree  = await fDis.userCamp.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
             
             nouvGroupe.Emo_Entree = ligneGrp[fGoo.clefGrp_EmoEntree]
             
@@ -377,7 +379,10 @@ async def redef_groupesExistants():
     if v.phaseEnCours == v.phase1 :
         
         for grp in TousLesGroupes :
-            if grp.salon == None :
+            if grp.salon != None :
+                grp.MsgEntree = await grp.salon_GroupeSup.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
+                
+            else :
                 await grp.creation_salonEtMessages()
                 
 

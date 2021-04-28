@@ -28,7 +28,7 @@ from MegaLG_eventsCommandes import (
     Creation_SousGroupe, creation_sousgroupe, CreationSousGroupe, creationSGrp, creatSGrp, csg,
                                     
     ResetRolesDiscord  , ResetMatricules,
-    Meutre             , Sauvetage          , Rapport           , Amoureux    , #AmoureuxAlea,
+    Meutre             , Sauvetage          , Rapport_TousLesVillages, Amoureux    , #AmoureuxAlea,
                                     
 # Niveau E / C
     fTou, fIns )

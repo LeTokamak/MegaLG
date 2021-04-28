@@ -385,4 +385,4 @@ async def attente_lancementTour() :
 
 
 
-#fDis.bot.run(fDis.tokenMJ)
+fDis.bot.run(fDis.tokenMJ)

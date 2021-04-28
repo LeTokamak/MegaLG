@@ -363,7 +363,7 @@ async def redef_groupesExistants():
 #    (Création éventuelle de groupe n'étant pas inscrit dans le Google Sheet)        
 
     for grp in TousLesGroupes :
-        grp.init_surGroupes()
+        await grp.init_surGroupes()
 
 
 

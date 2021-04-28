@@ -1,0 +1,2087 @@
+# -*- coding: utf-8 -*-
+
+"""
+--------------------------------------------------------------------------------------
+---                                                                                ---
+---             Niveau D - Classe et Fonctions de Gestion des Villages             ---
+---                                                                                ---
+--------------------------------------------------------------------------------------
+                                          v1                                29/03/2021
+"""
+
+
+# Niveau C
+import C_fct_Habitant       as fHab
+
+# Niveau B
+fRol    = fHab.fRol
+
+# Niveau A
+fGoo    = fHab.fGoo
+fDis    = fHab.fDis
+fMeP    = fHab.fMeP
+v       = fHab.v
+
+
+rd      = fHab.rd
+asyncio = fHab.asyncio
+
+
+scrutin_ElectionMaire = "Election d'un nouveau maire"
+scrutin_En1Tour       = "Vote en 1 Tour"
+scrutin_En2Tour_1erT  = "Vote en 2 Tours - 1er Tour"
+scrutin_En2Tour_2emT  = "Vote en 2 Tours - 2ème Tour"
+
+
+
+# %% Création de la Classe Village
+
+class Village :
+    
+    def __init__ (self, numVillage, nom):
+
+        self.numero         = numVillage
+        self.nom            = nom
+        
+        
+        
+#### Constantes Discord
+        
+        self.roleDiscord    = None
+        
+        self.salonRapport   = None
+        self.salonBucher    = None
+        self.salonDebat     = None
+        self.vocalDebat     = None
+        
+        self.salonVoteLG    = None
+        self.salonConseilLG = None
+        self.vocalConseilLG = None
+        
+        self.salonFamilleNb = None
+        self.vocalFamilleNb = None
+        
+        self.habitants      = []
+        
+        
+        
+#### Variables Nocturnes
+        
+        self.matriculeHab_choixConseilLG   = 0
+        self.votesConseilLG                = []
+        self.LG_ayant_votes                = []
+        
+        self.matriculeLGN_quiOntInfecte    = []
+        self.matriculeHab_tuesLGBlanc      = []
+        
+        self.matriculeHab_protegeSalvat    = []
+        
+        self.matriculeSorciere_sauveuse    = []
+        self.matriculeSorciere_tueuses     = []
+        self.matriculeHab_tuesSorciere     = []
+        
+        self.matricule_choixCorbeaux       = []
+        self.matricule_choixHirondelles    = []
+        
+        self.matriculeHab_vraimentTues     = []
+        
+        
+        
+#### Variables Diurnes
+        
+        self.votesEnPlus  = []
+        self.typeScrutin  = None
+        
+        self.resultatVote = []
+        
+        
+
+        
+    async def creation_roleEtSalons (self):
+        
+# =============================================================================
+#### Création du Role du Village
+# =============================================================================
+
+        self.roleDiscord = await fDis.serveurMegaLG.create_role(name   = self.nom, 
+                                                                colour = fDis.discord.Color.random(),
+                                                                hoist  = True,
+                                                                reason = f"Role discord du Village {self.nom} - n°{self.numero}")
+        
+        for hab in fHab.TousLesHabitants :
+            if hab.numVlg == self.numero :
+                await hab.member.add_roles( self.roleDiscord )
+        
+        
+        
+# =============================================================================
+#### Création des Salons du Village
+# =============================================================================
+        
+        async def cloneSalon(debutTopic, salon_aCloner) :
+            salonRetourne = await salon_aCloner.clone( name = salon_aCloner.name )
+            await salonRetourne.edit(position = salon_aCloner.position + 1, topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}")
+            return salonRetourne
+        
+        
+### Clonage d'un des salons de référence, pour créer les salons du village
+        
+        self.salonRapport   = await cloneSalon("Rapport Municipal", fDis.channelRapport)
+        self.salonBucher    = await cloneSalon("Salon de Vote"    , fDis.channelBucher )
+        self.salonDebat     = await cloneSalon("Salon de Débat"   , fDis.channelDebat  )
+        self.vocalDebat     = await cloneSalon("Débats Vocaux"    , fDis.vocalDebat    )
+        
+        self.salonVoteLG    = await cloneSalon("Salon de Vote des Loups-Garous"   , fDis.channelVotesLG)
+        self.salonConseilLG = await cloneSalon("Débats entre les Loups-Garous"    , fDis.channelBucher )
+        self.vocalConseilLG = await cloneSalon("Discussion entre les Loups-Garous", fDis.vocalConseilLG)
+        
+        self.salonFamilleNb = await cloneSalon("Maison familiale" , fDis.channelFamilleNom)
+        self.vocalFamilleNb = await cloneSalon("Réunion familiale", fDis.vocalFamilleNom  )
+        
+        
+        
+# =============================================================================
+#### Enregistrement des modifications
+# =============================================================================
+        
+        self.ecriture_GoogleSheet()
+            
+    
+
+    
+    
+    def ecriture_GoogleSheet(self):
+        
+# =============================================================================
+#### Création du dictionnaire correspondant à la ligne du Village
+# =============================================================================
+        
+        ligneVillage = {fGoo.clefVlg_numVillage : self.numero,
+                        fGoo.clefVlg_Nom        : self.nom    }
+
+        if v.phaseEnCours in (v.phase2,v.phase3) :
+            ligneVillage[fGoo.clefVlg_idRoleDiscord         ] = self.roleDiscord   .id
+            
+            ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
+            ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonBucher   .id
+            ligneVillage[fGoo.clefVlg_idSalon_Debat         ] = self.salonDebat    .id
+            ligneVillage[fGoo.clefVlg_idSalon_vocDebat      ] = self.vocalDebat    .id
+            
+            ligneVillage[fGoo.clefVlg_idSalon_VoteLG        ] = self.salonVoteLG   .id
+            ligneVillage[fGoo.clefVlg_idSalon_DebatLG       ] = self.salonConseilLG.id
+            ligneVillage[fGoo.clefVlg_idSalon_vocDebatLG    ] = self.vocalConseilLG.id
+            
+            ligneVillage[fGoo.clefVlg_idSalon_FamilleNomb   ] = self.salonFamilleNb.id
+            ligneVillage[fGoo.clefVlg_idSalon_vocFamilleNomb] = self.vocalFamilleNb.id
+        
+        
+# =============================================================================
+#### Recherche du numéro de ligne et remplacement de celle-ci
+# =============================================================================
+
+        ligne, numeroLigne = fGoo.ligne_avec(self.numero,
+                                             fGoo.clefVlg_numVillage,
+                                             fGoo.donneeGoogleSheet(fGoo.page_Villages))
+        
+        fGoo.remplacerLigne(ligneVillage, numeroLigne, fGoo.page_Villages)
+    
+
+
+
+    
+    def redef_habitants(self) :
+        self.habitants = []
+        
+        for p in fHab.TousLesHabitants :
+            if p.numVlg == self.numero :
+                self.habitants.append(p)
+    
+    
+    
+    
+    
+    async def rapportMunicipal(self):
+        
+        m = v.maintenant()
+        
+        listeMsgJoueurs = [f"__**Rapport municipal**__\nRecencement de {fMeP.AjoutZerosAvant(m.hour,2)} : {fMeP.AjoutZerosAvant(m.minute,2)}\n"]
+        RolesRestants   = []
+        
+# =============================================================================
+#### --- Recencement ---
+# =============================================================================
+        
+        grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = (None, None, None, None)
+            
+        for hab in self.habitants :
+    
+#### Groupe de Rang 1
+    
+            if hab.groupe.rang >= 1   and   grpPrec_rang1 != hab.groupe.chemin[0] :
+                
+                listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n\n\n__**⬢⬢⬢⬢⬢   {hab.groupe.chemin[0]}   ⬢⬢⬢⬢⬢**__")
+                grpPrec_rang2, grpPrec_rang3, grpPrec_rang4        = (None, None, None)
+            
+            
+#### Groupe de Rang 2
+            
+            if hab.groupe.rang >= 2   and   grpPrec_rang2 != hab.groupe.chemin[1] :
+                
+                if grpPrec_rang2 == None : prefixe = ""
+                else                     : prefixe = "\n"
+                
+                listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, prefixe + f"\n> **⬢⬢⬢ -   {hab.groupe.chemin[1]}   - ⬢⬢⬢**")
+                grpPrec_rang3, grpPrec_rang4                       = (None, None)
+            
+            
+#### Groupe de Rang 3
+            
+            if hab.groupe.rang >= 3   and   grpPrec_rang3 != hab.groupe.chemin[2] :
+                
+                if grpPrec_rang3 == None : prefixe = ""
+                else                     : prefixe = "\n> "
+                
+                listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, prefixe + f"\n> --- {hab.groupe.chemin[2]} ---")
+                grpPrec_rang4                                      = None
+            
+            
+#### Groupe de Rang 4
+            
+            if hab.groupe.rang == 4   and   grpPrec_rang4 != hab.groupe.chemin[3] :
+                
+                if grpPrec_rang4 == None : prefixe = ""
+                else                     : prefixe = "\n> "
+                
+                listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, prefixe + f"\n> *{hab.groupe.chemin[3]}*")
+            
+            
+            
+            if   hab.groupe.rang == 0 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 =                     [None, None, None, None]
+            elif hab.groupe.rang == 1 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin + [None, None, None      ]
+            elif hab.groupe.rang == 2 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin + [None, None            ]
+            elif hab.groupe.rang == 3 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin + [None                  ]
+            elif hab.groupe.rang == 4 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin
+            
+            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢ {hab.user.mention} - {hab.prenom} {hab.nom}")
+            
+#### Role
+            
+            RolesRestants.append( fRol.emojiRole(hab.role, hab.estUnHomme) )
+            
+        listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs,f"\n\n\nIl reste encore **{len(RolesRestants)} joueurs** vivants.")
+        
+        await fDis.envoieListe(self.salonRapport, listeMsgJoueurs)
+        
+        
+        
+# =============================================================================
+#### --- Roles Restants ---
+# =============================================================================
+        
+        msgNbRole = "_ _\n_ _\nRôles restants :"
+        
+        Emo_Roles = [[fDis.Emo_Villageois, fDis.Emo_Cupidon   , fDis.Emo_Ancien  ],
+                     [fDis.Emo_Salvateur , fDis.Emo_Sorciere  , fDis.Emo_Voyante ],
+                     [fDis.Emo_Corbeau   , fDis.Emo_Hirondelle, fDis.Emo_Chasseur],
+                     [fDis.Emo_FNFrere   , fDis.Emo_FNSoeur                      ],
+                     [                                                           ],
+                     [fDis.Emo_LoupGarou , fDis.Emo_LGNoir    , fDis.Emo_LGBleu  ],
+                     [fDis.Emo_LGBlanc   , fDis.Emo_EnfSauv                      ] ]
+        
+        
+        for ligneRole in Emo_Roles :
+            msgNbRole += "\n> "
+            
+            for i in range(len(ligneRole)):
+                
+                if RolesRestants.count(ligneRole[i]) != 0 :
+                    msgNbRole += f"`{RolesRestants.count(ligneRole[i])}` {ligneRole[i]}"
+                    
+                    somme_RolesRestants_finLigne = 0
+                    
+                    for emo_role in ligneRole[ i+1 : ] :
+                        somme_RolesRestants_finLigne += RolesRestants.count(emo_role)
+                        
+                    if somme_RolesRestants_finLigne != 0 : 
+                        msgNbRole += 10 * " "
+                        
+        await self.salonRapport.send( msgNbRole )
+
+
+
+
+
+
+# %% Nuit
+
+    async def gestion_nuit(self) :
+    
+# =============================================================================
+#### --- Gestion des Permissions ---
+# =============================================================================
+
+        await self.salonRapport.set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonBucher .set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonDebat  .set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.vocalDebat  .set_permissions( self.roleDiscord , read_messages = False                         ) 
+        
+        
+        
+# =============================================================================
+#### --- Envoie des messages de début de nuit ---
+# =============================================================================
+        
+# Historique
+        
+        self.msgHistoNuit = await fDis.channelHistorique .send(f"```Début de la Nuit {v.nbTours} - **{self.numero} : {self.nom}** - {fMeP.strDate(v.ajd)}```")
+        
+        
+# Channel des Loups-Garous
+        
+        await self.salonVoteLG   .send(f"```Conseil des Loups-Garous n°{v.nbTours} - {fMeP.strDate(v.ajd)}```")
+        await self.salonConseilLG.send(f"```Conseil des Loups-Garous n°{v.nbTours} - {fMeP.strDate(v.ajd)}```")
+        
+        await self.salonVoteLG   .send("Personne n'a encore voté.")
+        
+        
+        
+# =============================================================================
+#### --- Lancement des Fonctions Nocturnes ---
+# =============================================================================
+        
+        for hab in self.habitants :
+            asyncio.Task( hab.role[fRol.clefFctsNoct](hab, self) )
+
+# Accès au Conseil des Loups-Garous
+
+            verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG
+            verifLG_Infe =  hab.estInf
+            verif_LGBlan =  hab.role == fRol.role_LGBlanc
+            verif_EnfSau =  hab.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(hab.pereProtecteur) == None
+            
+            if verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau :
+                asyncio.Task( Conseil_LG(hab, self) )
+                
+        
+        
+# =============================================================================
+#### --- Attente que la nuit se termine ---
+# =============================================================================
+    
+        while v.maintenant() < v.nuit_hFin :
+            await asyncio.sleep(1)
+
+
+
+
+
+    async def application_nuit(self) :
+        
+        donneeInfosJoueurs = fGoo.donneeGoogleSheet( fGoo.page1_InfoJoueurs )
+        msgResumNuit       = await fDis.channelHistorique.send(f"```Résumé de la Nuit {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}```")
+        
+# %%% Protection des Joueurs
+    
+# =============================================================================
+#### --- Habitants protégés par les Salvateurs ---
+# =============================================================================
+    
+        matriculeHab_proteges = list(self.matriculeHab_protegeSalva)
+        
+        msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Les {fDis.Emo_Salvateur} ont protégé : {matriculeHab_proteges}.")
+
+    
+    
+# =============================================================================
+#### --- Habitants protégés par les Sorcières ---
+# =============================================================================
+    
+### Si une sorcière a sauvé ET si aucun Loup Garou Noir n'a infecté
+    
+        if len(self.matriculeSorciere_sauveuse) != 0  and  len(self.matriculeLGN_quiOntInfecte) == 0 :
+            
+            matriculeHab_proteges.append(self.matriculeHab_choixConseilLG)
+            
+            
+##  Choix au Hasard de la Sorcière qui sauve 
+            
+            matricule_SorciereChoisie = rd.choice(self.matriculeSorciere_sauveuse)
+            
+            
+##  Modification de InfosJoueurs (moins une potion de Vie pour SorciereChoisie)
+            
+            ligne, num_ligne = fGoo.ligne_avec(matricule_SorciereChoisie, 
+                                               fGoo.clef_Matricule      , 
+                                               donneeInfosJoueurs        )
+            
+            nbPotionsVie, nbPotionsMort = ligne[fGoo.clef_caractRoles].split()       # 12 4 ==> 12 Potions de Vie et 4 Potions de Mort
+            nvlCaractRoles_Sorciere     = f"{int(nbPotionsVie) - 1} {nbPotionsMort}"
+            
+            fGoo.remplacerVal_ligne( nvlCaractRoles_Sorciere, fGoo.clef_caractRoles,
+                                     num_ligne                                     ,
+                                     fGoo.page1_InfoJoueurs                         )
+            
+            
+##  Message Historique de la Nuit
+            
+            msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> La {fDis.Emo_Sorciere} {matricule_SorciereChoisie} a sauvé : {self.matriculeHab_choixConseilLG} qui a été désigné par les LG.")
+    
+    
+    
+        msgResumNuit = await fDis.ajoutMsg(msgResumNuit,"\n> \n>  - ⬢⬢⬢ - ")
+    
+    
+    
+    
+    
+# %%% Conseil des Loups-Garous
+           
+# =============================================================================
+#### --- Cas où un des Loups-Garous Noirs a infecté ---
+# =============================================================================
+        
+        if   len(self.matriculeLGN_quiOntInfecte) != 0 :
+    
+#### Loup-Garou Noir        
+    
+##  Choix au Hasard du Loup-Garou Noir qui infecte
+            
+            matricule_LGNoir = rd.choice(self.matriculeLGN_quiOntInfecte)
+    
+    
+##  Modification de InfosJoueurs (moins une infection pour le LGNoir)
+    
+            fGoo.ajoutVal_cellule_avec( -1                  , fGoo.clef_caractRoles ,
+                                        matricule_LGNoir    , fGoo.clef_Matricule   ,
+                                        fGoo.page1_InfoJoueurs                      ,
+                                        typeObjetCellule = int                        )   
+            
+            
+            
+            
+            
+#### Personne Infecté
+            
+            habitantInfecte        = fHab.habitant_avec(self.matriculeHab_choixConseilLG)
+            habitantInfecte.estInf = True
+            
+            
+##  Messages d'infections
+            
+            await habitantInfecte.user.send("Vous avez été infecté par un Loup-Garou Noir, vous rencontrerez vos nouveaux camarades ce soir !")
+                
+            if habitantInfecte.estUnHomme : e = ""
+            else                          : e = "e"
+
+            await self.salonConseilLG.send(f"{habitantInfecte.user.mention} vient d'être infecté{e} !")
+                
+                
+##  Modification de InfosJoueurs
+            
+            fGoo.ajoutVal_cellule_avec( "Infecté "                      , fGoo.clef_caractJoueur,
+                                        self.matriculeHab_choixConseilLG, fGoo.clef_Matricule   ,
+                                        fGoo.page1_InfoJoueurs                                   )
+            
+            
+##  Gestion des Permissions
+            
+            await self.salonConseilLG.set_permissions ( habitantInfecte.member , read_messages = True , send_messages = False )
+                       
+       
+### Message Historique de la Nuit
+            
+            msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Le {fDis.Emo_LGNoir} {matricule_LGNoir} a infecté : {self.matriculeHab_choixConseilLG} qui a été désigné par les LG.")
+            
+            
+            
+            
+            
+# =============================================================================
+#### --- Cas où les LGN n'inf pas et où la victime du conseil n'est pas protégée ---
+# =============================================================================
+        
+        elif self.matriculeHab_choixConseilLG not in matriculeHab_proteges  and  self.matriculeHab_choixConseilLG != 0 :
+            
+            self.matriculeHab_vraimentTues.append(self.matriculeHab_choixConseilLG)
+            
+### Message Historique de la Nuit
+    
+            msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> {self.matriculeHab_choixConseilLG} a été dévoré par les {fDis.Emo_LoupGarou}.")
+        
+        
+        
+        
+        
+# =============================================================================
+#### --- Dernier Cas : Personne n'est tué ---
+# =============================================================================
+        
+        else :
+            
+### Message Historique de la Nuit
+            msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Les {fDis.Emo_LoupGarou} n'ont dévoré personne.")
+    
+    
+    
+        msgResumNuit = await fDis.ajoutMsg(msgResumNuit,"\n> \n>  - ⬢⬢⬢ - ")
+    
+    
+    
+    
+    
+# %%% Meurtre des habitants choisis par les Sorcières
+    
+        for i in range(len(self.matriculeSorciere_tueuses)):
+            
+            matHab_Empoisonne = self.matriculeHab_tuesSorciere[i]
+            
+            if matHab_Empoisonne not in self.matriculeHab_vraimentTues :
+            
+# =============================================================================
+#### --- Cas où une seule sorcière l'a choisi ---
+# =============================================================================
+            
+                if self.matriculeHab_tuesSorciere.count(matHab_Empoisonne) == 1 :
+                    
+                    mat_SorciereChoisie = self.matriculeSorciere_tueuses[i]
+                        
+### Message Historique de la Nuit
+                    msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> {fDis.Emo_Sorciere} {mat_SorciereChoisie} a empoisonné {matHab_Empoisonne} (une seule personne l'a choisie)")
+                    
+                    
+                    
+# =============================================================================
+#### --- Cas où plusieurs sorcières l'ont choisi ---
+# =============================================================================
+                
+                else :
+                    
+##  Choix au hasard de la sorcière tueuse parmis celle ayant choisie le même habitant
+                    matSorc_ayantTueMemeHab = []
+                    
+                    for hab in range(len(self.matriculeHab_tuesSorciere)):
+                        if self.matriculeHab_tuesSorciere[hab] == matHab_Empoisonne :
+                            matSorc_ayantTueMemeHab.append(self.matriculeSorciere_tueuses[hab])
+                    
+                    mat_SorciereChoisie = rd.choice(matSorc_ayantTueMemeHab)
+    
+    
+##  Message Historique de la Nuit
+                    msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> {fDis.Emo_Sorciere} {mat_SorciereChoisie} a empoisonné {matHab_Empoisonne} (choisie au hasard parmis {matSorc_ayantTueMemeHab})")
+        
+    
+    
+    
+    
+### Mise à jour de Infos Joueurs (moins une potion de Mort pour SorciereChoisie)
+                    
+                ligne, num_ligne = fGoo.ligne_avec( mat_SorciereChoisie, 
+                                                    fGoo.clef_Matricule, 
+                                                    donneeInfosJoueurs  )
+                
+                nbPotionsVie, nbPotionsMort = ligne[fGoo.clef_caractRoles].split()       # 12 4 ==> 12 Potions de Vie et 4 Potions de Mort
+                nvlCaractRoles_Sorciere     = f"{nbPotionsVie} {int(nbPotionsMort) - 1}"
+                
+                fGoo.remplacerVal_ligne( nvlCaractRoles_Sorciere, fGoo.clef_caractRoles, 
+                                         num_ligne                                     , 
+                                         fGoo.page1_InfoJoueurs                          )
+    
+            
+    
+### Ajout de matHab_Empoisonne à la liste des self.matriculeHab_vraimentTues
+         
+                if matHab_Empoisonne not in matriculeHab_proteges : 
+                    self.matriculeHab_vraimentTues.append(matHab_Empoisonne)
+                        
+                    msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> {matHab_Empoisonne} n'est pas protégé... Il va mourir !")
+                    
+                msgResumNuit = await fDis.ajoutMsg(msgResumNuit,"\n> \n>  - ⬢⬢⬢ - ")
+        
+        
+        
+        
+        
+# %%% Meurtre des habitants choisis par les Loups-Garous Blancs
+
+        for hab in self.matriculeHab_tuesLGBlanc :
+            
+            if hab not in self.matriculeHab_vraimentTues  and  hab not in matriculeHab_proteges :
+                self.matriculeHab_vraimentTues.append(hab)
+                
+### Message Historique de la Nuit
+                msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Un {fDis.Emo_LGBlanc} a dévoré {hab}.")
+                
+                
+                
+        if len(self.matriculeHab_tuesLGBlanc) != 0 :
+            msgResumNuit = await fDis.ajoutMsg(msgResumNuit,"\n> \n>  - ⬢⬢⬢ - ")
+    
+    
+    
+    
+    
+# %%% Protection des Anciens
+    
+        for matHab in self.matriculeHab_vraimentTues :
+            
+            habitant = fHab.habitant_avec(matHab)
+            
+            if habitant.role == "Ancien"  and  habitant.nbProtectRest != 0 :
+                
+                self.matriculeHab_vraimentTues.remove(matHab)
+    
+##  Modification de InfosJoueurs
+    
+                fGoo.ajoutVal_cellule_avec( -1     , fGoo.clef_caractRoles ,
+                                            matHab , fGoo.clef_Matricule   ,
+                                            fGoo.page1_InfoJoueurs         ,
+                                            typeObjetCellule = int           )
+        
+### Message envoyées à l'Ancien
+                if habitant.estUnHomme : e = ""
+                else                   : e = "e"
+                
+                if habitant.nbProtectRest != 1 :  await habitant.user.send(f"On a cherché à vous tuer cette nuit, mais vous vous êtes bien défendu !\nVous êtes encore en vie, mais vous n'êtes protégé{e} plus que {habitant.nbProtectRest - 1} fois.")
+                else                           :  await habitant.user.send( "On a cherché à vous tuer cette nuit, mais vous vous êtes bien défendu !\nVous avez survécu, mais hélas c'étais la dernière fois !")
+    
+                
+### Message Historique de la Nuit
+                msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> {habitant.user.mention} est un {fDis.Emo_Ancien}, il n'a donc pas été tué, il lui reste {habitant.nbProtectRest - 1} protections.\n> \n>  - ⬢⬢⬢ - ")
+
+
+
+        
+        
+
+    
+    
+    
+
+# %% Journée
+
+    async def debutJournee_Partie1(self):
+        
+
+#### Début de Journée
+
+        await self.salonRapport    .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.dem)}\n\n⬢⬢⬢\n```\n_ _")
+        await self.salonBucher     .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.dem)}\n\n⬢⬢⬢\n```\n_ _")
+        await self.salonDebat      .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.dem)}\n\n⬢⬢⬢\n```")
+        
+        
+        
+        
+        
+#### Annonce des morts de la nuit
+    
+        for matri in self.matriculeHab_vraimentTues :
+            await fHab.habitant_avec(matri).Tuer()
+        
+            
+        if len(self.matriculeHab_vraimentTues) == 0 :
+            await self.salonBucher.send("_Personne n'a été tué cette nuit_")
+        
+        
+        await self.salonBucher.send(v.separation)
+    
+
+
+
+
+
+    
+    async def debutJournee_Partie2(self):
+        
+#### Application Corbeaux / Hirondelles
+        
+        await fDis.channelHistorique.send(f"**{self.nom}**\n> Corbeaux : {self.matricule_choixCorbeaux}\n> Hirondelles : {self.matricule_choixHirondelles}")
+    
+        msgCorbHiron = ""
+    
+        
+        
+### Annonce des Corbeaux
+        
+        if len(self.matricule_choixCorbeaux) != 0 :
+            
+            msgCorbHiron += "Choix des **Corbeaux** :"
+            
+            for matriCorb in self.matricule_choixCorbeaux :
+                if matriCorb not in self.matriculeHab_vraimentTues :
+                    pers = fHab.habitant_avec(matriCorb)
+                    self.votesEnPlus.append(matriCorb)
+                    self.votesEnPlus.append(matriCorb)
+                    
+                    msgCorbHiron += f"\n> ⬢ {pers.user.mention}  |  {pers.prenom} {pers.nom}  ( {pers.groupe} )"
+                    
+##  Séparation
+            
+            if len(self.matricule_choixHirondelles) != 0 : 
+                msgCorbHiron += "\n_ _\n"  
+        
+    
+### Annonce des Hirondelles
+    
+        if len(self.matricule_choixHirondelles) != 0 :
+    
+            msgCorbHiron += "Choix des **Hirondelles** :"
+            
+            for matriHiron in self.matricule_choixHirondelles :
+                if matriHiron not in self.matriculeHab_vraimentTues :
+                    pers = fHab.habitant_avec(matriHiron)
+                    pers.nbVote  += 2
+                    
+                    msgCorbHiron += f"\n> ⬢ {pers.user.mention}  |  {pers.prenom} {pers.nom}  ( {pers.groupe} )"
+    
+### Envoie et Séparation
+    
+        if len(self.matricule_choixCorbeaux) + len(self.matricule_choixHirondelles) != 0 :
+            await self.salonBucher.send(msgCorbHiron)
+            await self.salonBucher.send(v.separation)
+    
+    
+    
+    
+    
+#### Rapports municipaux Matinaux
+    
+        await self.rapportMunicipal()
+    
+    
+    
+    
+    
+#### Ré-autorisation d'écriture
+        
+        await self.salonRapport.set_permissions ( self.roleDiscord, read_messages = True, send_messages = False )
+        await self.salonBucher .set_permissions ( self.roleDiscord, read_messages = True, send_messages = True  )
+        await self.salonDebat  .set_permissions ( self.roleDiscord, read_messages = True, send_messages = True  )
+        await self.vocalDebat  .set_permissions ( self.roleDiscord, read_messages = True                        )
+    
+    
+    
+    
+    
+    
+    
+# %%% Votes 
+    
+    async def recolteBulletins(self):
+        """
+        Recolte tous les votes des habitant du village
+        """
+        votes = list(self.votesEnPlus)
+        
+        for hab in self.habitants :
+            for i in range(hab.nbVote) :
+                votes.append(hab.choixVote)
+
+
+
+
+# %%%% Vote Eliminatoire 
+
+
+    async def gestion_voteEliminatoire(self):
+        
+#### Vote en 1 tour s'il y a moins de 10 habitants en vie
+        
+        if len(self.habitants) < 10 :
+            await self.vote_en_1tour()        
+        
+        
+#### Vote en 2 tours sinon
+        
+        else :
+            await self.vote_en_2tours()
+        
+        
+        
+        
+        
+#### === Application des votes ===
+        
+#### --- Cas 1 : Quelqu'un a été choisi par le village ---
+        
+        if   len(self.resultatVote) != 0 :
+            
+#### Selection du 1er et des habitants à égalité avec lui
+            persDesignes = [ fHab.habitant_avec(self.resultatVote[0][0]) ]
+            i = 1
+            
+            while i < len(self.resultatVote)  and  self.resultatVote[i-1][1] == self.resultatVote[i][1] :
+                
+                persDesignes.append( fHab.habitant_avec(self.resultatVote[i][0]) )
+                i += 1
+            
+            
+#### Choix la personne tué au hasard parmis les 1ers
+            persTue = rd.choice(persDesignes)
+            
+#### Annonce de la sentence
+            await self.salonBucher.send(f"Le village a choisi de tuer {persTue.prenom} {persTue.nom} ({persTue.groupe})")
+            
+            await persTue.Tuer(meurtreNocturne = False)
+        
+        
+        
+#### --- Cas 2 : Personne n'a été choisi par le village ---
+        
+        else :
+            
+#### ||| Variante 1 ||| Choix de l'habitant tué au hasard
+    
+            if v.vote_aucunHabChoisi_meutreHasard :
+                persTue        = rd.choice( self.habitants )
+                phraseSentence = f"Comme personne n'a voté, un habitant choisi au hasard partira sur le bûcher !\nLa personne choisie est {persTue.prenom} {persTue.nom} ({persTue.groupe})"
+                
+                await persTue.Tuer(meurtreNocturne = False)
+
+
+
+#### ||| Variante 2 ||| Personne n'est tué
+
+            else :
+                phraseSentence = "Comme personne n'a voté, personne ne sera tué."
+    
+        
+#### Annonce de la sentence
+    
+            await self.salonBucher.send( phraseSentence )
+
+
+
+
+
+    async def vote_en_1tour(self):
+        
+        await self.salonBucher.send("Début du vote du village ! (il reste moins de 10 Joueurs, il n'y aura donc qu'un seul tour)")
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du vote, composé d'un seul tour\n")
+        
+        
+#### Dépouillement initial
+        
+        self.typeScrutin = scrutin_En1Tour
+        
+        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        self.msgResultat = await self.salonBucher.send("Voici les résultats du vote :\n" + contenuMsg_resultat)
+        
+        
+#### Boucle de vote
+        
+        while v.dans_dernierTour() :
+            
+            await asyncio.sleep(1)
+            
+            
+        self.msgHistorique_votes = await fDis.ajoutMsg(self.msgHistorique_votes, f"\n{fDis.Emo_Cyan} - Fin du vote") 
+    
+    
+    
+    
+    
+    async def vote_en_2tours(self):
+    
+# =============================================================================
+#### --- 1er Tour ---
+# =============================================================================
+        
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du 1er Tour\n")
+        
+        
+#### Dépouillement initial
+        
+        self.typeScrutin = scrutin_En2Tour_1erT
+        
+        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        self.msgResultat = await self.salonBucher.send("Voici les résultats du 1er tour :\n" + contenuMsg_resultat)
+        
+        
+#### Boucle de vote
+        
+        while v.dans_premierTour() :
+            
+            await asyncio.sleep(1)
+
+    
+        self.msgHistorique_votes = await fDis.ajoutMsg(self.msgHistorique_votes, f"\n{fDis.Emo_Cyan} - Fin du 1er Tour") 
+        
+        
+        
+        
+        
+# =============================================================================
+#### --- Accusés ---
+# =============================================================================
+        
+        accuses = []
+        
+#### Cas 1 : Si personne n'a voté
+        
+        if   len(self.resultatVote) == 0 :
+            accuses = self.habitants
+    
+    
+    
+#### Cas 2 : Il y a 5 habitants ou moins désignés lors du 1er Tour
+    
+        elif len(self.resultatVote) <= 5 :
+            for p in self.resultatVote :
+                accuses.append( fHab.habitant_avec(p[0]) )
+        
+        
+        
+#### Cas 3 : Il y a plus de 5 habitants désignés lors du 1er Tour
+
+        else :
+            
+# Prends les 5 habitants qui ont reçu le plus de voix lors du vote du village
+            
+            accuses = [ fHab.habitant_avec(self.resultatVote[0][0]), 
+                        fHab.habitant_avec(self.resultatVote[1][0]), 
+                        fHab.habitant_avec(self.resultatVote[2][0]), 
+                        fHab.habitant_avec(self.resultatVote[3][0]), 
+                        fHab.habitant_avec(self.resultatVote[4][0]) ]
+            i = 5
+            
+#  Prend les habitants à égalité avec le 5eme
+            
+            while i <= len(self.resultatVote)-1  and  self.resultatVote[i][1] == self.resultatVote[i-1][1] :
+                
+                accuses.append( fHab.habitant_avec(self.resultatVote[i][0]) )
+                i += 1
+        
+        
+        
+        
+        
+#### Annonces des Accusés et attente de leur défense
+        
+        if  len(self.resultatVote) != 0 :
+    
+            await self.salonBucher.send("Les accusés désignés lors du 1er tour sont :\n")
+                
+            for a in accuses :
+                msgDefense = await self.salonBucher.send(f"      ⬢ {a.user.mention}  |  {a.prenom} {a.nom}  ( {a.groupe} )")
+                asyncio.Task(a.Defense_1erTour(v.envDefVote_hFin, msgDefense))
+                
+                
+        else :
+                
+            await self.salonBucher.send("Personne n'a voté lors du premier tour, il n'y a donc aucun accusés aujourd'hui !\n*Vous pouvez voter pour n'importe qui lors du 2nd Tour*")
+                
+        await self.salonBucher.send(v.separation)
+        
+        
+        
+        
+        
+# =============================================================================
+#### --- 2nd Tour ---
+# =============================================================================
+        
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du 2nd Tour\n")
+    
+#### Dépouillement initial
+        
+        self.typeScrutin = scrutin_En2Tour_2emT
+        
+        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        self.msgResultat = await self.salonBucher.send("Voici les résultats du 2ème tour :\n" + contenuMsg_resultat)
+    
+#### Boucle de vote
+    
+        while v.dans_dernierTour() :
+                
+            await asyncio.sleep(1)
+        
+        
+        self.msgHistorique_votes = await fDis.ajoutMsg(self.msgHistorique_votes, f"\n{fDis.Emo_Cyan} - Fin du vote") 
+
+
+
+
+
+
+
+# %% Fonctions liés aux Villages
+
+TousLesVillages = []
+
+async def creationVillage (nom = None, ajout_A_TousLesVillages = True):
+    """
+    Créée un nouveau village, ajoute ce village à TousLesVillages si ajout_A_TousLesVillages == True
+    """   
+    
+# =============================================================================
+#### Recherche d'un numéro disponible pour le nouveau groupe
+# =============================================================================
+    
+    numTrouve       = False
+    numNouvVillage  = 0
+    
+    numDejaUtilises = fGoo.colonne_avec(fGoo.page_Villages, fGoo.clefVlg_numVillage)
+
+    while not numTrouve :
+        numNouvVillage += 1
+        if numNouvVillage not in numDejaUtilises :
+            numTrouve = True
+    
+    
+
+# =============================================================================
+#### Nom par Défaut
+# =============================================================================
+    
+    if nom == None :
+        nom = f"Village {numNouvVillage}"
+    
+    
+    
+# =============================================================================
+#### Création du nouveau Village
+# =============================================================================
+    
+    nouvVillage = Village(numNouvVillage, nom)
+    
+    if v.phaseEnCours in (v.phase2,v.phase3) :
+        await nouvVillage.creation_salons()
+    
+    else :
+        nouvVillage.ecriture_GoogleSheet()
+    
+    
+    
+# =============================================================================
+#### Ajout à TousLesVillages
+# =============================================================================
+    
+    if ajout_A_TousLesVillages :
+        TousLesVillages.append(nouvVillage)
+    
+    return nouvVillage
+
+
+
+
+
+async def redef_villagesExistants():
+    """
+    Fonction re-définissant les villages créés précédemment
+    """
+    
+    print(f"Redef des Villages ({v.phaseEnCours})")
+    
+    global TousLesVillages
+    
+    donneeVillages  = fGoo.donneeGoogleSheet(fGoo.page_Villages)
+    TousLesVillages = []
+    
+    
+    
+#### Redefinition des Groupe déjà dans le fichier Google Drive
+    
+    for ligneVlg in donneeVillages :
+        
+        nouvVillage = Village(ligneVlg[fGoo.clefVlg_numVillage], ligneVlg[fGoo.clefVlg_Nom])
+        
+        if v.phaseEnCours in (v.phase2, v.phase3)  and  type(ligneVlg[fGoo.clefVlg_idRoleDiscord]) == int :
+            
+            nouvVillage.roleDiscord    = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord  ])
+            
+            nouvVillage.salonRapport   = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Rapport       ])
+            nouvVillage.salonBucher    = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Bucher        ])
+            nouvVillage.salonDebat     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Debat         ])
+            nouvVillage.vocalDebat     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebat      ])
+            
+            nouvVillage.salonVoteLG    = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_VoteLG        ])
+            nouvVillage.salonConseilLG = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_DebatLG       ])
+            nouvVillage.vocalConseilLG = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebatLG    ])
+            
+            nouvVillage.salonFamilleNb = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_FamilleNomb   ])
+            nouvVillage.vocalFamilleNb = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocFamilleNomb])
+            
+            nouvVillage.redef_habitants()
+        
+        TousLesVillages.append(nouvVillage)
+
+
+
+
+
+def village_avec (info, type_dinfo):
+    """
+    Cette Fonction renvoie le village correspondant à l'info donnée en argument.
+    Si aucun village ne correspond, elle renvoie None.
+    
+    Voici les types d'information pris en charge : 
+       'numero'
+       'idSalon_Rapport'  'idSalon_Bucher'  'idSalon_Debat'  'idSalon_VocDebat'
+       'idSalon_VoteLG'  'idSalon_ConseilLG'  'idSalon_VocConseilLG'
+       'idSalon_FamilleNb'  'idSalon_VocFamilleNb'
+    """
+    
+    if   type_dinfo == "numero" :
+        
+        for vlg in TousLesVillages :
+            if vlg.numero == info :
+                return vlg
+            
+    
+    
+    
+    
+    elif type_dinfo == "idSalon_Rapport" :
+        
+        for vlg in TousLesVillages :
+            if vlg.salonRapport.id == info :
+                return vlg
+    
+    
+    elif type_dinfo == "idSalon_Bucher" :
+        
+        for vlg in TousLesVillages :
+            if vlg.salonBucher.id == info :
+                return vlg
+    
+    
+    elif type_dinfo == "idSalon_Debat" :
+        
+        for vlg in TousLesVillages :
+            if vlg.salonDebat.id == info :
+                return vlg
+    
+    
+    elif type_dinfo == "idSalon_VocDebat" :
+        
+        for vlg in TousLesVillages :
+            if vlg.vocalDebat.id == info :
+                return vlg
+    
+    
+    
+    
+    
+    elif type_dinfo == "idSalon_VoteLG" :
+        
+        for vlg in TousLesVillages :
+            if vlg.salonVoteLG.id == info :
+                return vlg
+        
+        
+    elif type_dinfo == "idSalon_ConseilLG" :
+        
+        for vlg in TousLesVillages :
+            if vlg.salonConseilLG.id == info :
+                return vlg
+    
+    
+    elif type_dinfo == "idSalon_VocConseilLG" :
+        
+        for vlg in TousLesVillages :
+            if vlg.vocalConseilLG.id == info :
+                return vlg
+    
+    
+    
+    
+    
+    elif type_dinfo == "idSalon_FamilleNb" :
+        
+        for vlg in TousLesVillages :
+            if vlg.salonFamilleNb.id == info :
+                return vlg
+    
+    
+    elif type_dinfo == "idSalon_VocFamilleNb" :
+        
+        for vlg in TousLesVillages :
+            if vlg.vocalFamilleNb.id == info :
+                return vlg
+    
+    
+    
+    return None
+
+
+        
+
+
+# %% Autres Fonctions
+
+def depouillement (village, typeDeSuffrage = None):
+    """
+    La fonction depouillement va :
+          - Les trier, les compter et ranger par ordre croissant les résultats
+          - Construire un message pour envoyer les résultats
+          
+    Elle prend le paramettre typeDeSuffrage, qui peut valoir 
+        scrutin_ElectionMaire,
+        scrutin_En1Tour      ,
+        scrutin_En2Tour_1erT ,
+        scrutin_En2Tour_2emT ou
+        'LG'
+    """
+    
+    symbolesVote = "⬢"
+    
+#### Type de Suffrage
+
+    if typeDeSuffrage == None :
+        typeDeSuffrage = village.typeScrutin
+    
+    
+#### Rassemblement de tout les votes
+    
+    
+    if typeDeSuffrage == "LG" :
+        votes = list(village.votesConseilLG)
+    else : 
+        votes = village.recolteBulletins()
+    
+# --- votes = [1, 2, 2, 4, 5, 4, 4, 1, 2, 4, 2, 1, 1, 5, 4, 2, 4, 2, 4, 5, 4, 3, 1, 5, 2, 4, 4]
+    
+    votes.sort()
+    
+# --- votes = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
+    
+    
+#### Nettoyages des votes (exclusion des 0 et des personnes non accusées)
+    
+    while 0 in votes :
+        votes.remove(0)
+    
+    if typeDeSuffrage == scrutin_En2Tour_2emT :
+        for v in votes :
+            if fHab.habitant_avec(v) not in village.accuses :
+                votes.remove(v)
+    
+    
+    
+    
+    
+    nbSuffrages = len(votes)
+    
+# =============================================================================
+#### --- Cas 1 : Si personne n'a voté ---
+# =============================================================================
+
+    if nbSuffrages == 0 :
+        msgResultat    = "```Personne n'a voté```"
+        resultatsTries = []
+    
+    
+    
+# =============================================================================
+#### --- Cas 2 : S'il y a des voix à comptabiliser ---
+# =============================================================================
+    
+    else :
+        
+#### Comptage des votes, création de la variable resultats
+        
+        resultats = [ [votes[0], votes.count(votes[0])] ]
+        
+        for v in votes :
+    
+##  Si l'on n'a pas déjà compté le nombre de voix que cette personne a reçu, alors on le compte
+    
+            if resultats[-1][0] != v:
+                resultats.append( [v, votes.count(v)] )
+    
+# --- resultats = [ [1,5] , [2,7] , [3,1] , [4,10] , [5,4] ]
+        
+        
+        
+        
+        
+#### Rangement des resultats (1er, 2eme, 3eme...)
+        
+        resultatsTries = []
+        
+        while len(resultats) > 0 :
+            maxReslt = resultats[0]
+            
+            for i in resultats[1:] :
+                if i[1] > maxReslt[1] :
+                    maxReslt = i
+            
+            resultatsTries.append(maxReslt)
+            resultats.remove(maxReslt)
+            
+# --- resultatsTries = [  [4,10] , [2,7] , [1,5] , [5,4] , [3,1]  ]
+        
+        
+        
+        
+        
+#### Ecriture du message décrivant les résultats
+        
+### Gestion du vote des LG
+        
+        debutMsgResultat = ""
+        
+        if typeDeSuffrage == "LG":
+            
+##  Verif si Egalité entre 1er et 2eme, alors personne n'est désigné 
+            
+            if len(resultatsTries) > 1  and  resultatsTries[0][1] == resultatsTries[1][1] :
+                village.matriculeHab_choixConseilLG =  0
+                debutMsgResultat                    =  "Personne n'est designée par le conseil ! (égalité)\n" 
+            
+            else :
+                village.matriculeHab_choixConseilLG =  resultatsTries[0][0]
+                persChoisie                         =  fHab.habitant_avec(village.matriculeHab_choixConseilLG)
+                debutMsgResultat                    = f"**{persChoisie.prenom} {persChoisie.nom}** ({persChoisie.groupe}) est la victime designée par le conseil !\n" 
+            
+            
+### Message de présentation des résultats
+
+        msgResultat = debutMsgResultat + "```py\n"
+        
+        valHexag = resultatsTries[0][1] // 30 + 1
+        
+        for p in resultatsTries :
+            msgResultat += f"{fMeP.AjoutZerosAvant(p[0], 3)} {fMeP.AjoutZerosAvant(p[1], 3, espace = True)} / {nbSuffrages}   "
+            msgResultat +=  (round(p[1]/valHexag) // 10) * (10*symbolesVote + " ")
+            msgResultat +=  (round(p[1]/valHexag) %  10) *     symbolesVote
+            msgResultat +=  "\n"
+        
+        msgResultat += "```"
+        
+        
+        
+    return msgResultat, resultatsTries
+
+
+
+
+
+
+
+# %%% Fonctions Nocturnes des différents rôles
+
+async def fctNoct_Villageois (villageois, village):
+    pass
+
+
+
+
+
+async def fctNoct_Cupidon (cupidon, village):
+    
+    contenuMsgCupi_Question = "Bonsoir Cupidon, vous allez pouvoir choisir les deux personnes que vous souhaitez réunir !\nPour cela envoyez ici leurs matricules, un par un."
+    contenuMsgCupi_Detail   = "\n```\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, le couple sera créé au hasard.\n```"
+    
+    contenuMsgCupi_Attente  = f"{fDis.Emo_Cupidon} en tant que {fRol.emojiRole(cupidon.role, cupidon.estUnHomme)}   - {cupidon.user.mention}  |  {cupidon.prenom} {cupidon.nom}"
+    
+    contenuMsgCupi_HistoDeb = f"\n{fRol.emojiRole(cupidon.role, cupidon.estUnHomme)}   - {cupidon.user.mention}  |  {cupidon.prenom} {cupidon.nom}"
+
+
+    
+# =============================================================================
+#### --- Demande des amoureux ---
+# =============================================================================
+
+    if v.ajd.weekday() == 6 :
+
+### Message
+
+        await cupidon.user.send(contenuMsgCupi_Question + contenuMsgCupi_Detail)
+                
+#### Attente des Matricules des Amoureux
+    
+        msgAtt = await fDis.channelAttente.send(contenuMsgCupi_Attente)
+                
+        amour1 = amour2 = None
+        aRepondu        = True
+                
+        while amour1 == amour2  and  aRepondu :
+            await cupidon.user.send("Qui sera le premier amoureux ?")
+            amour1, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autoDesignation = True)
+                    
+            await cupidon.user.send("Et qui sera le second ?")
+            amour2, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autoDesignation = True)
+                    
+            if   amour1 == amour2  and  aRepondu :
+                await cupidon.user.send("Vous devez choisir deux amoureux différents.\nVous allez pouvoir en choisir de nouveaux !")
+                    
+#### Cupidon n'a pas répondu, choix du couple au harsard
+    
+        if not aRepondu :
+
+            amour1 = amour2 = rd.choice(fHab.TousLesHabitants)
+                        
+            while amour2 == amour1 :
+                amour2 = rd.choice(fHab.TousLesHabitants)
+                            
+                await cupidon.user.send(f"Vous n'avez pas répondu, votre couple vous a donc été attribué au hasard, c'est :\n       {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}  et  {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}.")
+  
+    
+#### Annonce du couple aux amoureux
+
+        if amour1.estUnHomme : e1 = "" 
+        else                 : e1 = "e"
+        if amour2.estUnHomme : e2 = ""
+        else                 : e2 = "e"
+                
+        await amour1.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e1} :heart: :heart: :heart:\n     Mais depuis, vous êtes attiré{e1} par {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}, quelle étrange coïncidence...")
+        await amour2.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e2} :heart: :heart: :heart:\n     Mais depuis, vous êtes attiré{e2} par {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}, quelle étrange coïncidence...")
+
+#### Modif de Infos Joueurs pour l'ajout des matricules du couple
+        
+        fGoo.remplacerVal_ligne_avec(f"{amour1.matri} {amour2.matri}", fGoo.clef_caractRoles , 
+                                     cupidon.matri                   , fGoo.clef_idDiscord   ,
+                                     fGoo.page1_InfoJoueurs                                   )
+
+        fGoo.ajoutVal_cellule_avec( f"A{amour2.matri} ", fGoo.clef_caractJoueur ,
+                                    amour1.matri       , fGoo.clef_idDiscord    ,
+                                    fGoo.page1_InfoJoueurs                       )
+        
+        fGoo.ajoutVal_cellule_avec( f"A{amour1.matri} ", fGoo.clef_caractJoueur ,
+                                    amour2.matri       , fGoo.clef_idDiscord    ,
+                                    fGoo.page1_InfoJoueurs                       )
+        
+    
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgCupi_HistoDeb + f"\n     A choisi {amour1.user.mention}  |  **{amour1.prenom} {amour1.nom}**  et  {amour2.user.mention}  |  **{amour2.prenom} {amour2.nom}**")
+    
+### Fin de l'attente
+    
+        await msgAtt.delete()
+        
+        
+        """
+# =============================================================================
+# Message Dominicale
+# =============================================================================
+
+    elif False :
+                
+        await cupidon.user.send("Bonsoir Cupidon, aujourd'hui c'est dimanche et comme chaque dimanche vous allez pouvoir communiquer avec votre couple préféré !\n```\nLe prochain message partira directement en destination de votre couple cheri !\n - Vous pouvez y mettre ce que vous voulez, mais vous ne pourrez pas le modifier !```")
+                
+### Attente de Message
+                
+        msgAtt = await fDis.channelAttente.send(contenuMsgCupi_Attente)
+        messageReponse, aRepondu = await cupidon.attenteMessage(v.nuit_hFin)
+                
+### Cherche reponse.content, fonctionne si reponse est un discord.Message
+                
+        if aRepondu :
+            contenu = messageReponse.content
+                                            
+##  Envoie contenu aux membre du couple
+                        
+            for a in cupidon.couple :
+                await fHab.habitant_avec(int(a)).user.send(f"Vous avez reçu ceci :\n>>> {contenu}")
+        
+##  Historique
+    
+            village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgCupi_HistoDeb + f"\n     {cupidon.couple} ont reçu ceci :\n> {contenu}\n")
+    
+    
+### Cupidon n'a pas répondu
+    
+        else :
+            village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgCupi_HistoDeb + f"\n     {cupidon.couple} n'ont rien reçu.\n")
+                
+        await msgAtt.delete()
+        """
+
+
+
+
+async def fctNoct_Ancien (ancien, village):
+    pass
+
+
+
+
+
+async def fctNoct_Salvateur (salvateur, village):
+    
+    contenuMsgSalva_Question =  "Bonsoir Salvateur, qui allez vous protéger cette nuit ?"
+    contenuMsgSalva_Detail   =  "\n```\nVous pouvez protéger un joueur de toutes les attaques nocturnes !\n - Vous pouvez protéger plusieurs fois de suite la même personne.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n```"
+    
+    contenuMsgSalva_Attente  = f"{fDis.Emo_Salvateur} en tant que {fRol.emojiRole(salvateur.role, salvateur.estUnHomme)}   - {salvateur.user.mention}  |  {salvateur.prenom} {salvateur.nom}"
+    
+    contenuMsgSalva_HistoDeb = f"\n{fRol.emojiRole(salvateur.role, salvateur.estUnHomme)}   - {salvateur.user.mention}  |  {salvateur.prenom} {salvateur.nom}"
+    
+    
+    
+### Message
+    await salvateur.user.send(contenuMsgSalva_Question + contenuMsgSalva_Detail)
+           
+#### Attente du Matricule de la personne protégée
+    msgAtt = await fDis.channelAttente.send(contenuMsgSalva_Attente)
+    habProtege, aRepondu = await salvateur.attenteMatri_Habitant(v.nuit_hFin)
+    
+    
+    if aRepondu :
+        village.matriculeHab_protegeSalvat.append(habProtege.matri)
+        
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSalva_HistoDeb + f"\n     Ce salvateur a choisi {habProtege.user.mention}.")
+        
+    else :
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSalva_HistoDeb +  "\n     Ce salvateur n'a choisi personne.")
+
+### Fin de l'attente
+    await msgAtt.delete()
+
+
+
+
+
+async def fctNoct_Sorciere (sorciere, village):
+   
+
+    if (sorciere.nbPotionsVie + sorciere.nbPotionsMort) == 0 :
+        return
+
+### Attente du début de la partie 3
+    await sorciere.attente(v.avtP3_duree.seconds)
+        
+        
+        
+        
+        
+# =============================================================================
+#### === Messages de la Sorcière ===
+# =============================================================================
+        
+    contenuMsgSorci_Attente  = f"{fDis.Emo_Sorciere} en tant que {fRol.emojiRole(sorciere.role, sorciere.estUnHomme)}   - {sorciere.user.mention}  |  {sorciere.prenom} {sorciere.nom}"
+    contenuMsgSorci_HistoDeb = f"\n{fRol.emojiRole(sorciere.role, sorciere.estUnHomme)}   - {sorciere.user.mention}  |  {sorciere.prenom} {sorciere.nom}"
+        
+        
+#### --- Cas où les LG ont choisi quelqu'un ---
+        
+    if   village.matriculeHab_choixConseilLG != 0 :
+        persChoisie = fHab.habitant_avec(village.matriculeHab_choixConseilLG)
+            
+#### Construction du Message pour la Sorcière
+        ( msgNb_potVie , msgNb_potMort ,
+          detail_potVie, detail_potMort, et ) = ("", "", "", "", "")
+            
+        if   sorciere.nbPotionsVie  >= 2 : msgNb_potVie  = f"**{sorciere.nbPotionsVie} potions** de Vie"
+        elif sorciere.nbPotionsVie  == 1 : msgNb_potVie  =  "plus qu'**une potion** de Vie"
+            
+        if   sorciere.nbPotionsMort >= 2 : msgNb_potMort = f"**{sorciere.nbPotionsMort} potions** de Mort"
+        elif sorciere.nbPotionsMort == 1 : msgNb_potMort =  "plus qu'**une potion** de Mort"
+        
+        if   sorciere.nbPotionsVie != 0 and sorciere.nbPotionsMort != 0 : et = " et "
+        
+        
+        
+        if sorciere.nbPotionsVie  != 0 :
+            detail_potVie  = "\n - Pour sauver la victime du conseil, réagissez à ce message avec 🟢.\n - Si plusieurs sorcière la sauvent, seulement une choisie au hasard perdra sa potion."
+            
+        if sorciere.nbPotionsMort != 0 :
+            detail_potMort = "\n - Pour tuer quelqu'un d'autre, réagissez à ce message avec 🔴.\n - Si plusieurs sorcières tuent la même personne, seulement une choisie au hasard perdra sa potion."
+            
+        contenuMsgSorci_Question = f"Bonsoir Sorcière, les loups-garous ont choisi comme victime : **{persChoisie.prenom} {persChoisie.nom} {persChoisie.groupe}** ({fMeP.AjoutZerosAvant(persChoisie.matri, 3)}), voulez-vous utiliser une de vos potions ?\nIl vous reste {msgNb_potVie}{et}{msgNb_potMort}."
+        contenuMsgSorci_Detail   = f"\n```\n - Vous ne pouvez utiliser qu'une potion par nuit.{detail_potVie}{detail_potMort}\n - Pour ne rien faire, réagissez à ce message avec ⚫ (ou ne faites rien).\n```"
+    
+    
+    
+#### --- Cas où les LG n'ont choisi personne et quand la sorcière à encore des potions de mort ---
+        
+    elif sorciere.nbPotionsMort != 0 :
+            
+        contenuMsgSorci_Question = f"Bonsoir Sorcière, les loups-garous n'ont pas choisi de victime ce soir.\nNéanmoins, vous pouvez utiliser une de vos potions de mort (Il vous en reste **{sorciere.nbPotionsMort}**), voulez-vous en utiliser une ?"
+        contenuMsgSorci_Detail   =  "\n```\n - Pour tuer quelqu'un d'autre, réagissez à ce message avec 🔴.\n - Si plusieurs sorcières tuent la même personne, seulement une choisie au hasard perdra sa potion.\n - Pour ne rien faire, réagissez à ce message avec ⚫ (ou ne faites rien).\n```"
+            
+#### Envoie du Message à la Sorcière
+    msgQuestion = await sorciere.user.send(contenuMsgSorci_Question + contenuMsgSorci_Detail)
+        
+        
+        
+        
+        
+# =============================================================================
+#### === Détermination des réponses Possibles ===
+# =============================================================================
+        
+    choixRien = "La Sorcière a décidé de ne rien faire"
+    choixSauv = "La Sorcière a décidé de sauver la victime du conseil"
+    choixTuer = "La Sorcière a décidé de tuer quelqu'un d'autre"
+
+    emojisEtReturns = []
+        
+    if sorciere.nbPotionsVie  != 0 and village.matriculeHab_choixConseilLG != 0 : 
+        emojisEtReturns.append(["🟢", choixSauv])
+        
+    if sorciere.nbPotionsMort != 0 : 
+        emojisEtReturns.append(["🔴", choixTuer])
+        
+    emojisEtReturns.append(["⚫", choixRien])
+        
+        
+        
+
+        
+# =============================================================================
+#### === Attente de la Réponse de la Sorcière ===
+# =============================================================================       
+
+    msgAtt = await fDis.channelAttente.send( contenuMsgSorci_Attente )
+        
+    choixSorciere = await fDis.attente_Reaction(msgQuestion, sorciere.user, emojisEtReturns, timeout = v.nuit_hFin - v.maintenant())
+    
+#### --- Cas 1 : La sorcière ne réponds pas où elle répond "rR" ---
+    
+    if   choixSorciere in (choixRien, None) :
+            
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + "\n   La sorcière n'a rien fait cette nuit.")
+        
+        
+        
+#### --- Cas 2 : La sorcière sauve la victime des LG ---
+        
+    elif choixSorciere == choixSauv :
+            
+        village.matriculeSorciere_sauveuse.append( sorciere.matri )
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + "\n   La sorcière a sauvé la victime des Loups-Garous !")
+        
+        
+#### --- Cas 3 : La sorcière veut tuer quelqu'un d'autre ---
+    
+    elif choixSorciere == choixTuer :
+            
+#### Message
+        contenuMsgPoison_Question = "Sorcière, vous avez décidé d'utiliser une de vos potions de mort. Qui voulez-vous empoisonner ?"
+        contenuMsgPoison_Detail   = "\n```\nPour choisir votre victime, envoyez ici son matricule.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n```"
+            
+        await sorciere.user.send(contenuMsgPoison_Question + contenuMsgPoison_Detail)
+    
+#### Attente de Réponse
+        msgAtt2 = await fDis.channelAttente.send(contenuMsgSorci_Attente + "   ##### Choix de la personne à empoisonner #####")
+        victimeSorciere, aRepondu = await sorciere.attenteMatri_Habitant(v.nuit_hFin)
+    
+        if aRepondu :
+            village.matriculeSorciere_tueuses.append(        sorciere.matri )
+            village.matriculeHab_tuesSorciere.append( victimeSorciere.matri )
+            village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + f"\n   La sorcière a tué {victimeSorciere.user.mention} {victimeSorciere.prenom} {victimeSorciere.nom} !")
+        
+        else :
+            village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + "\n   La sorcière n'a tué personne.")
+
+    
+### Fin de l'attente (Empoisonnement)
+        await msgAtt2.delete()
+                    
+
+###############################################################################
+
+
+### Fin de l'attente                
+    await msgAtt.delete()
+
+
+
+
+
+async def fctNoct_Voyante (voyante, village):
+    
+    contenuMsgVoyante_Question =  "Bonsoir Voyante, c'est l'heure de faire chauffer votre boule de cristal ! Vous allez pouvoir voir le rôle d'un habitant, qui choisissez-vous ?"
+    contenuMsgVoyante_Detail   =  "\n```\nPour choisir un joueur, envoyez son matricule sous ce message.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n```"
+    
+    contenuMsgVoyante_Attente  = f"{fDis.Emo_Voyante} en tant que {fRol.emojiRole(voyante.role, voyante.estUnHomme)}   - {voyante.user.mention}  |  {voyante.prenom} {voyante.nom}"
+    
+    contenuMsgVoyante_HistoDeb = f"\n{fRol.emojiRole(voyante.role,voyante.estUnHomme)}   - {voyante.user.mention}  |  {voyante.prenom} {voyante.nom}"
+    
+#### Message
+    await voyante.user.send(contenuMsgVoyante_Question + contenuMsgVoyante_Detail)
+            
+#### Attente du Matricule d'habitant
+    msgAtt = await fDis.channelAttente.send(contenuMsgVoyante_Attente)
+    pers, aRepondu = await voyante.attenteMatri_Habitant(v.nuit_hFin)
+            
+
+
+    if aRepondu :
+                
+#   Cas où pers est un Loup Bleu
+        if pers.role == "Loup-Garou Bleu":
+            Role = rd.choice( ["Villageois", "Cupidon", "Sorcière", "Voyante", "Salvateur", "Corbeau", "Hirondelle", "Ancien", "Membre de la Famille Nombreuse"] )
+        else :
+            Role = pers.role
+
+#### Réponse de la boule de cristal
+        await voyante.user.send(f"Vous voyez dans votre boule que {fMeP.AjoutZerosAvant(pers.matri,3)}  |  **{pers.prenom} {pers.nom}** {pers.groupe} est **{Role}**.")
+
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgVoyante_HistoDeb + f"\n     Elle a vu dans sa boule que {pers.prenom} {pers.nom} ({pers.user.mention}) est **{Role}**.")
+
+    else :
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgVoyante_HistoDeb +  "\n     Elle n'a pas regardé sa boule.")
+
+### Fin de l'attente
+    await msgAtt.delete()
+
+
+
+
+
+async def fctNoct_Chasseur (chasseur, village):
+    pass
+    
+
+
+
+
+async def fctNoct_Corbeau (corbeau, village):
+    
+    contenuMsgCorbeau_Question =  "Bonsoir Corbeau, qui allez-vous désigner cette nuit ?"
+    contenuMsgCorbeau_Detail   =  "\n```\nVous allez pouvoir votez de manière anonyme pour la personne que vous voulez, elle recevra 2 voix, pour cela envoyez ici son matricule.\n - Si plusieurs Corbeaux font le même choix que vous, les voix se cumulerons.\n - Ces ne voix compterons que pour le premier tour.\n - Si le matricule ne correspond à personne, vous pourrez le retaper\n```"
+    
+    contenuMsgCorbeau_Attente  = f"{fDis.Emo_Corbeau} en tant que {fRol.emojiRole(corbeau.role, corbeau.estUnHomme)}   - {corbeau.user.mention}  |  {corbeau.prenom} {corbeau.nom}"
+    
+    contenuMsgCorbeau_HistoDeb = f"\n{fRol.emojiRole(corbeau.role, corbeau.estUnHomme)}   - {corbeau.user.mention}  |  {corbeau.prenom} {corbeau.nom}"
+    
+### Message
+    await corbeau.user.send( contenuMsgCorbeau_Question + contenuMsgCorbeau_Detail )
+            
+### Attente d'une Réponse
+    msgAtt = await fDis.channelAttente.send( contenuMsgCorbeau_Attente )
+    pers, aRepondu = await corbeau.attenteMatri_Habitant(v.nuit_hFin)
+
+
+
+    if aRepondu :
+        village.matricule_choixCorbeaux.append(pers.matri)
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgCorbeau_HistoDeb + f"\n     Ce corbeau a choisi {pers.user.mention}.")
+
+
+    else :
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgCorbeau_HistoDeb +  "\n     Ce corbeau n'a choisi personne.")
+
+### Fin de l'attente
+    await msgAtt.delete()
+
+
+
+
+
+async def fctNoct_Hirondelle (hirondelle, village):
+    
+    contenuMsgHirond_Question =  "Bonsoir Hirondelle, qui allez-vous désigner cette nuit ?"
+    contenuMsgHirond_Detail   =  "\n```\nVous allez pouvoir choisir une personne de manière anonyme, sa voix comptera triple, pour cela envoyez ici son matricule.\n - Si plusieurs Hirondelles font le même choix que vous, les voix se cumulerons.\n - Si le matricule ne correspond à personne, vous pourrez le retaper\n```"
+    
+    contenuMsgHirond_Attente  = f"{fDis.Emo_Hirondelle} en tant que {fRol.emojiRole(hirondelle.role, hirondelle.estUnHomme)}   - {hirondelle.user.mention}  |  {hirondelle.prenom} {hirondelle.nom}"
+    
+    contenuMsgHirond_HistoDeb = f"\n{fRol.emojiRole(hirondelle.role, hirondelle.estUnHomme)}   - {hirondelle.user.mention}  |  {hirondelle.prenom} {hirondelle.nom}"
+    
+### Message
+    await hirondelle.user.send(contenuMsgHirond_Question + contenuMsgHirond_Detail)
+            
+### Atente d'une Réponse
+    msgAtt = await fDis.channelAttente.send(contenuMsgHirond_Attente)
+    pers, aRepondu = await hirondelle.attenteMatri_Habitant(v.nuit_hFin)
+
+
+
+    if aRepondu :
+        v.choixHirondelles.append(pers.matri)
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgHirond_HistoDeb + f"\n     Cette hirondelle a choisi {pers.user.mention}.")
+            
+    else :
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgHirond_HistoDeb +  "\n     Cette hirondelle n'a choisi personne.")
+
+### Fin de l'attente
+    await msgAtt.delete()
+
+
+
+
+
+async def fctNoct_FamilleNombreuse (membreFN, village):
+    
+    contenuMsgFamiNom_Attente = f"{fDis.Emo_FNFrere} en tant que {fRol.emojiRole(membreFN.role, membreFN.estUnHomme)}   - {membreFN.user.mention}  |  {membreFN.prenom} {membreFN.nom}"
+    
+### Accès aux channels
+    await village.salonFamilleNb  .set_permissions ( membreFN.member , read_messages = True , send_messages = True )
+    await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = True )
+    
+### Attente            
+    msgAtt = await fDis.channelAttente.send(contenuMsgFamiNom_Attente)
+    await asyncio.sleep(v.nuit_duree.seconds)
+            
+    await msgAtt.delete()
+            
+### Fin de la nuit
+    await village.salonFamilleNb  .set_permissions ( membreFN.member , read_messages = True , send_messages = False )
+    await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = False )
+
+
+
+
+
+async def fctNoct_LG (lg, village):
+    pass
+
+
+
+
+
+async def fctNoct_LGNoir (lgNoir, village):
+    
+### Attente du début de la partie 3
+    await lgNoir.attente(v.avtP3_duree.seconds)
+    
+# =============================================================================
+# Construction des Messages pour le Loup-Garou Noir
+# =============================================================================
+
+    if lgNoir.nbInfRestantes >= 2 : s = "s"
+    else                          : s = ""
+    
+    contenuMsgLGNoir_Question = f"Bonsoir Loup-Garou Noir, est-ce que vous souhaitez infecter la victime du conseil pour qu'il devienne un des votres ?\nVous pouvez encore infecter {lgNoir.nbInfRestantes} joueur{s}."
+    contenuMsgLGNoir_Detail   =  "\n```\n - Si plusieurs Loups-Garous Noirs infectent la même personne, le loup qui infectera réellement sera choisi au hasard.\n - Si vous ne repondez pas, vous n'infecterez pas.\n```"
+    
+    contenuMsgLGNoir_HistoDeb = f"\n{fRol.emojiRole(lgNoir.role, lgNoir.estUnHomme)}   - {lgNoir.user.mention}  |  {lgNoir.prenom} {lgNoir.nom}"
+    
+    contenuMsgLGNoir_Attente  = f"{fDis.Emo_LGNoir} en tant que {contenuMsgLGNoir_HistoDeb}"
+    
+    
+    
+### Si les LG ont choisi quelqu'un
+    if village.matriculeHab_choixConseilLG != 0 :
+
+##  Envoie du Message
+        msgConfirmation_LGN = await lgNoir.user.send(contenuMsgLGNoir_Question + contenuMsgLGNoir_Detail)
+        
+        
+##  Attente de la Réaction du Loup Noir
+        msgAtt = await fDis.channelAttente.send(contenuMsgLGNoir_Attente)
+        
+        aChoisi_dInfecte = await fDis.attente_Confirmation(msgConfirmation_LGN, lgNoir.user, timeout = v.part3_duree.seconds)
+        
+        
+#   Erreur si aucune nouvelle réaction n'est ajouté pendant dureeP3
+        if aChoisi_dInfecte :
+            village.matriculeLGN_quiOntInfecte.append(lgNoir.matri)
+            village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgLGNoir_HistoDeb + "\n   Ce Loup Noir **Infecte** cette nuit !")
+            
+        else :
+            village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgLGNoir_HistoDeb + "\n   Ce Loup Noir n'infecte pas cette nuit.")
+            
+        
+##  Fin de l'attente
+        await msgAtt.delete()
+
+### Si les LG n'ont choisi personne
+    else :
+        await lgNoir.user.send("Les Loups-Garous n'ont choisi personne. Donc vous ne pouvez infecter personne.")
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgLGNoir_HistoDeb + "\n   Ce Loup Noir n'infecte pas cette nuit. (Les Loups n'ont choisi personne)")
+
+
+
+
+
+async def fctNoct_LGBleu (lgBleu, village):
+    return
+
+
+
+
+
+async def fctNoct_LGBlanc (lgBlanc, village):
+    
+    contenuMsgLGBlanc_Question =  "Bonsoir Loup-Garou Blanc, nous sommes mercredi soir, la nuit va donc être sanglante... Alors qui souhaitez-vous tuer ?"
+    contenuMsgLGBlanc_Detail   =  "\n```\nVous pouvez choisir n'importe quel joueur !\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne choisisez personne, le hasard décidera à votre place !\n```"
+    
+    contenuMsgLGBlanc_HistoDeb = f"\n{fRol.emojiRole(lgBlanc.role, lgBlanc.estUnHomme)}   - {lgBlanc.user.mention}  |  {lgBlanc.prenom} {lgBlanc.nom}"
+    
+    contenuMsgLGBlanc_Attente  = f"{fDis.Emo_LGBlanc} en tant que {contenuMsgLGBlanc_HistoDeb}"
+    
+    
+    if  v.ajd.weekday() == 2 :    
+
+### Message
+        await lgBlanc.user.send(contenuMsgLGBlanc_Question + contenuMsgLGBlanc_Detail)
+
+### Attente d'une réponse
+        msgAtt = await fDis.channelAttente.send(contenuMsgLGBlanc_Attente)
+        habTue, aRepondu = await lgBlanc.attenteMatri_Habitant(v.nuit_hFin)
+
+        if not aRepondu :
+            habTue = rd.choice(fHab.TousLesHabitants)
+            
+        village.matriculeHab_tuesLGBlanc.append(habTue.matri)
+
+### Historique et Fin de l'attente
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgLGBlanc_HistoDeb + f"\n     Ce Loup Blanc a choisi {habTue.user.mention}.")
+        await msgAtt.delete()
+
+
+
+
+
+async def fctNoct_EnfantSauvage (enfSauvage, village):
+    
+    contenuMsgEnfSauv_Question =  "Bonsoir Enfant Sauvage, quel sera votre modèle ?"
+    contenuMsgEnfSauv_Detail   =  "\n```\nPour le choisir, envoyez ici son matricule.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, votre modele vous sera attribué au hasard.\n```"
+    
+    contenuMsgEnfSauv_HistoDeb = f"\n{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
+    
+    contenuMsgEnfSauv_Attente  = f"{fDis.Emo_LGBlanc} en tant que {contenuMsgEnfSauv_HistoDeb}"
+    
+    
+    if v.nbTours == 0 :
+        
+### Message
+        await enfSauvage.user.send(contenuMsgEnfSauv_Question + contenuMsgEnfSauv_Detail)
+        
+        
+### Attente de Réponse
+        msgAtt = await fDis.channelAttente.send(contenuMsgEnfSauv_Attente)
+        
+        modele, aRepondu = await enfSauvage.attenteMatri_Habitant(v.nuit_hFin)
+        
+        
+##  Choix de modele au harsard, de manière à ce qu'il soit différent de pers
+        
+        if not aRepondu :
+            
+            modele = enfSauvage
+            while modele == enfSauvage :
+                modele = rd.choice(fHab.TousLesHabitants)
+            
+            await enfSauvage.user.send(f"Vous n'avez pas répondu, votre modèle vous a donc été attribué au hasard, c'est : {fMeP.AjoutZerosAvant(modele.matri ,3)}  |  **{modele.prenom} {modele.nom}** en {modele.groupe}.")
+        
+        
+### Ajout du matricule du modele dans Infos Joueurs
+        
+        fGoo.remplacerVal_ligne_avec( modele.matri     , fGoo.clef_caractRoles , 
+                                      enfSauvage.matri , fGoo.clef_idDiscord   ,
+                                      fGoo.page1_InfoJoueurs                    )
+        
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgEnfSauv_HistoDeb}\n     A choisi {modele.mention}  |  {modele.prenom} {modele.nom} comme modele\n")
+        
+        
+### Fin de l'attente
+        await msgAtt.delete()
+
+
+
+
+
+# %%%% Ajouts des fonctions nocturnes aux dictionnaires des Roles
+
+fRol.role_Villageois[fRol.clefFctsNoct] = fctNoct_Villageois
+fRol.role_Cupidon   [fRol.clefFctsNoct] = fctNoct_Cupidon
+fRol.role_Ancien    [fRol.clefFctsNoct] = fctNoct_Ancien
+
+fRol.role_Salvateur [fRol.clefFctsNoct] = fctNoct_Salvateur
+fRol.role_Sorciere  [fRol.clefFctsNoct] = fctNoct_Sorciere
+fRol.role_Voyante   [fRol.clefFctsNoct] = fctNoct_Voyante
+
+fRol.role_Chasseur  [fRol.clefFctsNoct] = fctNoct_Chasseur
+fRol.role_Corbeau   [fRol.clefFctsNoct] = fctNoct_Corbeau
+fRol.role_Hirondelle[fRol.clefFctsNoct] = fctNoct_Hirondelle
+      
+fRol.role_FamilleNb [fRol.clefFctsNoct] = fctNoct_FamilleNombreuse
+
+fRol.role_LG        [fRol.clefFctsNoct] = fctNoct_LG
+fRol.role_LGNoir    [fRol.clefFctsNoct] = fctNoct_LGNoir
+fRol.role_LGBleu    [fRol.clefFctsNoct] = fctNoct_LGBleu
+
+fRol.role_LGBlanc   [fRol.clefFctsNoct] = fctNoct_LGBlanc
+fRol.role_EnfantSauv[fRol.clefFctsNoct] = fctNoct_EnfantSauvage
+
+
+
+
+
+# %%% Conseil des Loups-Garous
+
+async def Conseil_LG (LoupGarou, villageois):
+    
+    contenuMsg_Attente = f"{fDis.Emo_LoupGarou} en tant que {fRol.emojiRole(LoupGarou.role, LoupGarou.estUnHomme)}   - {LoupGarou.user.mention}  |  {LoupGarou.prenom} {LoupGarou.nom}"
+    
+    msgAtt = await fDis.channelAttente.send( contenuMsg_Attente )
+            
+    await villageois.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
+    await villageois.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
+    await villageois.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = True                          )
+    
+    
+    while v.maintenant() < v.conseilLG_hFin :
+        await asyncio.sleep(1)
+    
+    
+### Fin du conseil
+    
+    await villageois.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = False , send_messages = False )
+    await villageois.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = False )
+    await villageois.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = False                         )
+
+
+### Fin de l'attente
+    await msgAtt.delete()
+
+
+
+
+
+async def evt_voteLG(memberLG, contenuMsg):
+    
+    habLG   = fHab.habitant_avec(memberLG.id)
+    village = village_avec( habLG.numVlg, "numero" )
+    
+#### Essaye de int le msg
+    try :    
+        matricule = int(contenuMsg)
+    except : 
+        matricule = None
+    
+    
+    
+#### Si le matricule correspond à quelqu'un en vie
+    if fHab.habitant_avec(matricule) != None :
+        
+#   Si ce LG a déjà voté, remplacement du vote
+        
+        if habLG.matri in village.LG_ayant_votes :
+            village.votesConseilLG[ village.LG_ayant_votes.index(habLG.matri) ] = matricule
+        
+#   Si ce LG n'a pas voté, ajout du vote
+        
+        else :
+            village.LG_ayant_votes.append(habLG.matri)
+            village.votesConseilLG.append(matricule)
+        
+#   Mise à Jour des Résultats
+        
+        msgResultat, resultatsTries = depouillement(village, 'LG')
+                                                
+        await fDis.effacerMsg(village.salonVoteLG)
+        await village.salonVoteLG.send(msgResultat)
+
+
+
+
+
+# %% Event Vote du Village
+
+async def evt_voteVlg (memberVlg, contenuMsg):
+    
+    habVlg  = fHab.habitant_avec( memberVlg.id            )
+    village =       village_avec( habVlg.numVlg, "numero" )
+    
+#### Essaye de int le msg
+    try :
+        matriculeHab_Choisi = int(contenuMsg)
+    except :
+        matriculeHab_Choisi = None
+    
+    
+#### Si le matricule correspond à quelqu'un en vie
+    if fHab.habitant_avec(matriculeHab_Choisi) != None :
+        
+        habVlg.choixVote = matriculeHab_Choisi
+        
+        village.msgHistorique_votes = await fDis.ajoutMsg(village.msgHistorique_votes, f"\n   - {habVlg.user.mention} vote {habVlg.nbVote} fois pour {habVlg.choixVote}\n") 
+        
+        contenuMsg_resultat, village.resultatVote = depouillement(village)
+        await village.msgResultat.edit(content = "Voici les résultats du vote :\n" + contenuMsg_resultat)
+        
+        

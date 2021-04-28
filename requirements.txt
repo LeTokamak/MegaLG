@@ -1,0 +1,8 @@
+git+https://github.com/Rapptz/discord.py
+dnspython==1.16.0
+gspread==3.6.0
+oauth2client==4.1.3
+nest_asyncio==1.4.3
+numpy==1.19.4
+datetime==4.3
+asyncio==3.4.3

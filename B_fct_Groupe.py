@@ -378,7 +378,7 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
             
             if grp.salon != None :
                 grp.init_surGroupes()

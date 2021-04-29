@@ -138,7 +138,7 @@ async def lancementInscriptions():
     
 #### Gestions des permissions
     
-    await fDis.channelAccueil.set_permissions(fDis.roleSpectateur, read_messages = True, send_messages = True)
+    await fDis.channelAccueil.set_permissions(fDis.roleSpectateurs, read_messages = True, send_messages = True)
     
     
 #### Message de Ré-Inscription

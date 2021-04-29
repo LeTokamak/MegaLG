@@ -387,7 +387,7 @@ async def redef_groupesExistants():
             
             else :
                 await grp.creation_salonEtMessages()
-                # await asyncio.sleep(1)
+                await asyncio.sleep(1)
 
 
 

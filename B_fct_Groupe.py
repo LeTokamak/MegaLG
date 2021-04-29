@@ -380,7 +380,7 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             if grp.salon != None :
-                ligne, numeroLigne = fGoo.ligne_avec(grp.numero,
+                ligneGrp, numLigneGrp = fGoo.ligne_avec(grp.numero,
                                                      fGoo.clefGrp_numGroupe,
                                                      fGoo.donneeGoogleSheet(fGoo.page_Groupes) )
                 

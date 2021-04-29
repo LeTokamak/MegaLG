@@ -559,15 +559,15 @@ async def com_NouveauGroupe(ctx, tupleNom):
 
 # %%% Event de Changement de Groupe
 
-async def evt_ChangementGroupe(membre, message_id, emoji):
+async def evt_ChangementGroupe(membre, message_id, strEmoji):
     
 #### Départ d'un ancien groupe
     
     futur_AncienGrp = await groupe_avec( message_id, "idMsg_Depart" )
     
-    print(futur_AncienGrp, emoji)
+    print(futur_AncienGrp, strEmoji)
     
-    if futur_AncienGrp != None  and  emoji == Emo_departGroupe :
+    if futur_AncienGrp != None  and  strEmoji == Emo_departGroupe :
         
         if   futur_AncienGrp.rang == 1 :
             numeroGrp = GroupeParDefaut.numero
@@ -587,9 +587,9 @@ async def evt_ChangementGroupe(membre, message_id, emoji):
     
     futur_NouveauGrp = await groupe_avec( message_id, "idMsg_Entree" )
     
-    print(futur_NouveauGrp, futur_NouveauGrp.Emo_Entree, emoji)
+    print(futur_NouveauGrp, futur_NouveauGrp.Emo_Entree, strEmoji)
     
-    if futur_NouveauGrp != None  and  emoji == futur_NouveauGrp.Emo_Entree :
+    if futur_NouveauGrp != None  and  strEmoji == futur_NouveauGrp.Emo_Entree :
         
         numeroGrp = futur_NouveauGrp.numero
         

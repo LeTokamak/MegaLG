@@ -563,33 +563,37 @@ async def evt_ChangementGroupe(membre, message_id, emoji):
 #### Départ d'un ancien groupe
     
     futur_AncienGrp = await groupe_avec( message_id, "idMsg_Depart" )
-        
+    
+    print(futur_AncienGrp, emoji)
+    
     if futur_AncienGrp != None  and  emoji == Emo_departGroupe :
-                
+        
         if   futur_AncienGrp.rang == 1 :
             numeroGrp = GroupeParDefaut.numero
-                                
+        
         elif futur_AncienGrp.rang in [2,3,4] :
             numeroGrp = futur_AncienGrp.sur_Groupes[-1].numero
-
+        
         fGoo.remplacerVal_ligne_avec( numeroGrp, fGoo.clef_Groupe   ,
                                       membre.id, fGoo.clef_idDiscord,
                                       fGoo.page1_InfoJoueurs         )
-
+        
         await autorisation_SalonsGrp(membre, numeroGrp)
     
-
-
+    
+    
 #### Entrée dans un nouveau groupe
     
     futur_NouveauGrp = await groupe_avec( message_id, "idMsg_Entree" )
-        
+    
+    print(futur_NouveauGrp, futur_NouveauGrp.Emo_Entree, emoji)
+    
     if futur_NouveauGrp != None  and  emoji == futur_NouveauGrp.Emo_Entree :
-                
+        
         numeroGrp = futur_NouveauGrp.numero
-
+        
         fGoo.remplacerVal_ligne_avec(numeroGrp, fGoo.clef_Groupe   ,
                                      membre.id, fGoo.clef_idDiscord,
                                      fGoo.page1_InfoJoueurs          )
-
+        
         await autorisation_SalonsGrp(membre, numeroGrp)

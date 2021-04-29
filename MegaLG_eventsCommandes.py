@@ -128,6 +128,8 @@ async def reaction_Groupe():
     
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifGroupe)
+        print(payload)
+        print(payload.member, payload.message_id, payload.emoji)
         await fGrp.evt_ChangementGroupe(payload.member, payload.message_id, payload.emoji)
 
 
@@ -146,10 +148,12 @@ async def event_reactions():
 async def message_Inscription():
     
     def verifInscription(message):
-        verifUser    = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        verifPhase = verifSalon = False
+        verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
         
-        verifPhase   = v.phaseEnCours   == v.phase1
-        verifSalon   = message.channel  == fDis.channelAccueil
+        if verifUser :
+            verifPhase = v.phaseEnCours  == v.phase1
+            verifSalon = message.channel == fDis.channelAccueil
         
         return verifUser  and  verifPhase and verifSalon
     
@@ -164,10 +168,12 @@ async def message_Inscription():
 async def message_voteVillage():
     
     def verifVoteVillage(message):
-        verifUser    = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        verifPhase = verifSalon = False
+        verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
         
-        verifPhase   = v.phaseEnCours   == v.phase3
-        verifSalon   = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
+        if verifUser :
+            verifPhase = v.phaseEnCours == v.phase3
+            verifSalon = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
         
         return verifUser  and  verifPhase and verifSalon
 
@@ -182,17 +188,18 @@ async def message_voteVillage():
 async def message_voteLoupGarou():
     
     def verifVoteLG(message):
-        verifUser    = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        verifPhase = verifSalon = False
+        verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
         
-        verifPhase   = v.phaseEnCours   == v.phase3
-        verifSalon   = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
+        if verifUser :
+            verifPhase = v.phaseEnCours == v.phase3
+            verifSalon = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
         
         return verifUser  and  verifPhase and verifSalon
 
 
     while True :
         message = await fDis.bot.wait_for('message', check = verifVoteLG)
-        ##  Efface le msg
         await fDis.effacerMsg(message.channel)
         await fVlg.evt_voteLG(message.author, message.content)
 

@@ -62,10 +62,10 @@ class Groupe :
         self.MsgSortie   = None
         self.MsgEntree   = None
         self.Emo_Entree  = None
-        
-        
-        
-        
+    
+    
+    
+    
     
     async def init_surGroupes(self, creation_si_existe_pas = True):
         
@@ -84,14 +84,12 @@ class Groupe :
                 
         elif self.rang in [2,3,4]:
             self.salon_GroupeSup = self.sur_Groupes[-1].salon        
-            
-            
-            
-    async def creation_salonEtMessages (self):
-
-        
-
-        
+    
+    
+    
+    
+    
+    async def creation_salonEtMessages (self):       
         
 # =============================================================================
 #### Création du Salon du Groupe
@@ -380,6 +378,8 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             if grp.salon != None :
+                grp.init_surGroupes()
+                
                 ligneGrp, numLigneGrp = fGoo.ligne_avec(grp.numero,
                                                      fGoo.clefGrp_numGroupe,
                                                      fGoo.donneeGoogleSheet(fGoo.page_Groupes) )

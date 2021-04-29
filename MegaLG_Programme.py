@@ -127,6 +127,7 @@ async def on_ready():
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def Inscription (ctx):
+    
     await lancementInscriptions()
 
 

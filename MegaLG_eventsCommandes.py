@@ -78,13 +78,14 @@ idMessage_Artisans      = 817809404359081994
 
 async def ajout_roleArtisans():
     
+    print("Lancement role Artisans")
+    
     def verifArtisans(payload):
-        verifServeur = payload.  guild_id == fDis.serveurMegaLG.id
         verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
         
         verifMessage = payload.message_id == idMessage_Artisans
         
-        return verifServeur and verifUser  and  verifMessage
+        return verifUser  and  verifMessage
     
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifArtisans)
@@ -94,15 +95,16 @@ async def ajout_roleArtisans():
 
 async def reaction_reInscription():
     
+    print("Lancement reInscription")
+    
     def verifReInscription(payload):
-        verifServeur = payload.  guild_id == fDis.serveurMegaLG.id
         verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
         
         verifPhase   = v.phaseEnCours     == v.phase1
         verifMessage = payload.message_id == fIns.idMessage_ReInscription
         verifEmoji   = str(payload.emoji) == fDis.Emo_BabyOrange
         
-        return verifServeur and verifUser  and  verifPhase and verifMessage and verifEmoji
+        return verifUser  and  verifPhase and verifMessage and verifEmoji
     
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifReInscription)
@@ -112,16 +114,17 @@ async def reaction_reInscription():
 
 async def reaction_Groupe():
     
+    print("Lancement Groupe")
+    
     def verifGroupe(payload):
         salon        = fDis.serveurMegaLG.get_channel(payload.channel_id)
         
-        verifServeur = payload.  guild_id == fDis.serveurMegaLG.id
         verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
         
         verifPhase   = v.phaseEnCours     == v.phase1
         verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
         
-        return verifServeur and verifUser  and  verifPhase and verifCategCh
+        return verifUser  and  verifPhase and verifCategCh
     
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifGroupe)
@@ -143,13 +146,12 @@ async def event_reactions():
 async def message_Inscription():
     
     def verifInscription(message):
-        verifServeur = message.guild.id == fDis.serveurMegaLG.id
         verifUser    = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
         
         verifPhase   = v.phaseEnCours   == v.phase1
         verifSalon   = message.channel  == fDis.channelAccueil
         
-        return verifServeur and verifUser  and  verifPhase and verifSalon
+        return verifUser  and  verifPhase and verifSalon
     
     
     while True :
@@ -162,13 +164,12 @@ async def message_Inscription():
 async def message_voteVillage():
     
     def verifVoteVillage(message):
-        verifServeur = message.guild.id == fDis.serveurMegaLG.id
         verifUser    = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
         
         verifPhase   = v.phaseEnCours   == v.phase3
         verifSalon   = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
         
-        return verifServeur and verifUser  and  verifPhase and verifSalon
+        return verifUser  and  verifPhase and verifSalon
 
 
     while True :
@@ -181,13 +182,12 @@ async def message_voteVillage():
 async def message_voteLoupGarou():
     
     def verifVoteLG(message):
-        verifServeur = message.guild.id == fDis.serveurMegaLG.id
         verifUser    = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
         
         verifPhase   = v.phaseEnCours   == v.phase3
         verifSalon   = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
         
-        return verifServeur and verifUser  and  verifPhase and verifSalon
+        return verifUser  and  verifPhase and verifSalon
 
 
     while True :

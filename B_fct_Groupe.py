@@ -18,7 +18,7 @@ import A_variables            as v
 
 rd = fMeP.rd
 
-
+import asyncio
 
 
 
@@ -377,6 +377,9 @@ async def redef_groupesExistants():
     if v.phaseEnCours == v.phase1 :
         
         for grp in TousLesGroupes :
+            
+            await asyncio.sleep(1)
+            
             if grp.salon != None :
                 grp.init_surGroupes()
                 

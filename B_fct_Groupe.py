@@ -376,7 +376,7 @@ async def redef_groupesExistants():
 
     if v.phaseEnCours == v.phase1 :
         
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
         
         for grp in TousLesGroupes :
             await grp.init_surGroupes()

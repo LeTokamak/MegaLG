@@ -304,7 +304,7 @@ async def groupe_avec (info, type_dinfo, creation_si_existe_pas = False):
     elif type_dinfo == "idMsg_Depart" :
         
         for g in TousLesGroupes :
-            if g.MsgDepart.id == info :
+            if g.MsgSortie.id == info :
                 return g
     
     

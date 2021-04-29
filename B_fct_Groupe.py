@@ -380,6 +380,10 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             if grp.salon != None :
+                ligne, numeroLigne = fGoo.ligne_avec(grp.numero,
+                                                     fGoo.clefGrp_numGroupe,
+                                                     fGoo.donneeGoogleSheet(fGoo.page_Groupes) )
+                
                 print(grp, ligneGrp, ligneGrp[fGoo.clefGrp_MsgEntree], type(ligneGrp[fGoo.clefGrp_MsgEntree]))
                 grp.MsgEntree = await grp.salon_GroupeSup.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
                 

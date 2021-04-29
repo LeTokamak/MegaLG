@@ -378,10 +378,10 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             
-            await asyncio.sleep(5)
+            #await asyncio.sleep(5)
             
             if grp.salon != None :
-                grp.init_surGroupes()
+                await grp.init_surGroupes()
                 
                 ligneGrp, numLigneGrp = fGoo.ligne_avec(grp.numero,
                                                      fGoo.clefGrp_numGroupe,

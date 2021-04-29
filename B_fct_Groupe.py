@@ -378,7 +378,7 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             
-            await asyncio.sleep(2)
+            await asyncio.sleep(5)
             
             if grp.salon != None :
                 grp.init_surGroupes()
@@ -389,7 +389,7 @@ async def redef_groupesExistants():
                 
                 print(grp, ligneGrp, ligneGrp[fGoo.clefGrp_MsgEntree], type(ligneGrp[fGoo.clefGrp_MsgEntree]))
                 grp.MsgEntree = await grp.salon_GroupeSup.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
-                
+            
             else :
                 await grp.creation_salonEtMessages()
                 

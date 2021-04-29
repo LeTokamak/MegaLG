@@ -377,9 +377,6 @@ async def redef_groupesExistants():
     if v.phaseEnCours == v.phase1 :
         
         for grp in TousLesGroupes :
-            
-            #await asyncio.sleep(5)
-            
             if grp.salon != None :
                 await grp.init_surGroupes()
                 
@@ -392,6 +389,7 @@ async def redef_groupesExistants():
             
             else :
                 await grp.creation_salonEtMessages()
+                await asyncio.sleep(1)
                 
 
 

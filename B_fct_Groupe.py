@@ -380,7 +380,7 @@ async def redef_groupesExistants():
         
         for grp in TousLesGroupes :
             if grp.salon != None :
-                print(ligneGrp[fGoo.clefGrp_MsgEntree], type(ligneGrp[fGoo.clefGrp_MsgEntree]))
+                print(grp, ligneGrp, ligneGrp[fGoo.clefGrp_MsgEntree], type(ligneGrp[fGoo.clefGrp_MsgEntree]))
                 grp.MsgEntree = await grp.salon_GroupeSup.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
                 
             else :

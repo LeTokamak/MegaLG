@@ -128,8 +128,6 @@ async def reaction_Groupe():
     
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifGroupe)
-        print(payload)
-        print(payload.member, payload.message_id, payload.emoji)
         await fGrp.evt_ChangementGroupe(payload.member, payload.message_id, str(payload.emoji))
 
 

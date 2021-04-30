@@ -231,7 +231,7 @@ async def creationGroupe (cheminBrut, ajout_A_TousLesGroupes = True):
     numTrouve       = False
     numNouvGroupe   = 0
 
-    numDejaUtilises = fGoo.colonne_avec(fGoo.page_Groupes, fGoo.clefGrp_NumGroupe)
+    numDejaUtilises = fGoo.colonne_avec(fGoo.page_Groupes, fGoo.clefGrp_numGroupe)
 
     while not numTrouve :
         numNouvGroupe += 1
@@ -565,8 +565,6 @@ async def evt_ChangementGroupe(membre, message_id, strEmoji):
     
     futur_AncienGrp = await groupe_avec( message_id, "idMsg_Depart" )
     
-    print(futur_AncienGrp, strEmoji)
-    
     if futur_AncienGrp != None  and  strEmoji == Emo_departGroupe :
         
         if   futur_AncienGrp.rang == 1 :
@@ -586,8 +584,6 @@ async def evt_ChangementGroupe(membre, message_id, strEmoji):
 #### Entrée dans un nouveau groupe
     
     futur_NouveauGrp = await groupe_avec( message_id, "idMsg_Entree" )
-    
-    print(futur_NouveauGrp, futur_NouveauGrp.Emo_Entree, strEmoji)
     
     if futur_NouveauGrp != None  and  strEmoji == futur_NouveauGrp.Emo_Entree :
         

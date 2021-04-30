@@ -165,17 +165,27 @@ class Groupe :
         
         
         
+        
+        
 #### Recherche du numéro de ligne
-
+        
         ligne, numeroLigne = fGoo.ligne_avec(self.numero,
                                              fGoo.clefGrp_numGroupe,
                                              fGoo.donneeGoogleSheet(fGoo.page_Groupes))
-                    
-            
         
+#### --- Cas 1 : Le groupe viens d'être créé ---
+
 #### Ajout d'une nouvelle ligne à fGoo.page_Groupe
-        
-        fGoo.remplacerLigne(ligneGroupe, numeroLigne, fGoo.page_Groupes)
+
+        if ligne == None :
+            fGoo.ajoutLigne(ligneGroupe, fGoo.page_Groupes, numero_nvlLigne = "fin")
+
+
+
+#### --- Cas 2 : Le groupe à déjà été noté dans le Google Sheet ---
+                    
+        else :
+            fGoo.remplacerLigne(ligneGroupe, numeroLigne, fGoo.page_Groupes)
     
     
     

@@ -78,8 +78,6 @@ idMessage_Artisans      = 817809404359081994
 
 async def ajout_roleArtisans():
     
-    print("Lancement role Artisans")
-    
     def verifArtisans(payload):
         verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
         
@@ -94,8 +92,6 @@ async def ajout_roleArtisans():
 
 
 async def reaction_reInscription():
-    
-    print("Lancement reInscription")
     
     def verifReInscription(payload):
         verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
@@ -114,14 +110,12 @@ async def reaction_reInscription():
 
 async def reaction_Groupe():
     
-    print("Lancement Groupe")
-    
     def verifGroupe(payload):
         salon        = fDis.serveurMegaLG.get_channel(payload.channel_id)
         
         verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
         
-        verifPhase   = v.phaseEnCours     == v.phase1
+        verifPhase   = v.phaseEnCours == v.phase1
         verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
         
         return verifUser  and  verifPhase and verifCategCh
@@ -143,15 +137,28 @@ async def event_reactions():
 
 # %%% Envoie d'un message
 
+def verifServeur (message):
+    try :
+        if message.guild == fDis.serveurMegaLG :
+            return True
+        else :
+            return False
+    except :
+        return False
+
+
+
 async def message_Inscription():
     
     def verifInscription(message):
-        verifPhase = verifSalon = False
-        verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        verifPhase = verifSalon = verifUser = False
         
-        if verifUser :
-            verifPhase = v.phaseEnCours  == v.phase1
-            verifSalon = message.channel == fDis.channelAccueil
+        if verifServeur(message) :
+            verifUser = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+            
+            if verifUser :
+                verifPhase = v.phaseEnCours  == v.phase1
+                verifSalon = message.channel == fDis.channelAccueil
         
         return verifUser  and  verifPhase and verifSalon
     
@@ -166,12 +173,14 @@ async def message_Inscription():
 async def message_voteVillage():
     
     def verifVoteVillage(message):
-        verifPhase = verifSalon = False
-        verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        verifPhase = verifSalon = verifUser = False
         
-        if verifUser :
-            verifPhase = v.phaseEnCours == v.phase3
-            verifSalon = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
+        if verifServeur(message) :
+            verifUser = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+            
+            if verifUser :
+                verifPhase = v.phaseEnCours == v.phase3
+                verifSalon = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
         
         return verifUser  and  verifPhase and verifSalon
 
@@ -186,12 +195,14 @@ async def message_voteVillage():
 async def message_voteLoupGarou():
     
     def verifVoteLG(message):
-        verifPhase = verifSalon = False
-        verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        verifPhase = verifSalon = verifUser = False
         
-        if verifUser :
-            verifPhase = v.phaseEnCours == v.phase3
-            verifSalon = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
+        if verifServeur(message) :
+            verifUser = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+        
+            if verifUser :
+                verifPhase = v.phaseEnCours == v.phase3
+                verifSalon = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
         
         return verifUser  and  verifPhase and verifSalon
 

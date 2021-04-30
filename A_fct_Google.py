@@ -193,6 +193,7 @@ def ajoutLigne(nvlLigne, page_fichier, numero_nvlLigne = 2) :
     nvlLigne doit être un dictionnaire, les clefs doivent être celles du fichier
     
     Si des colonnes ne sont pas spécifiés, elles sont comblé par rien ("") 
+    Si numero_nvlLigne == "Fin", alors la ligne est ajouté à la fin de page_fichier
     """
     
     clefs          = page_fichier.get()[0]
@@ -201,7 +202,10 @@ def ajoutLigne(nvlLigne, page_fichier, numero_nvlLigne = 2) :
     for c in clefs :
         try    : liste_nvlLigne.append( str(nvlLigne[c]) )
         except : liste_nvlLigne.append(        ""        )
-            
+    
+    if numero_nvlLigne == "fin":
+        numero_nvlLigne = len(donneeGoogleSheet(page_fichier)) + 2
+    
     page_fichier.insert_row( liste_nvlLigne, numero_nvlLigne )
 
 

@@ -55,7 +55,9 @@ LGNoir_nbInfect  = 1
 #### Paramètre de la Partie
 
 vote_aucunHabChoisi_meutreHasard = False
-partiePdt_Weekend = True
+vote_maire_plus2Voix             = True
+
+partiePdt_Weekend                = True
 
 
 # %% Variables de la Partie

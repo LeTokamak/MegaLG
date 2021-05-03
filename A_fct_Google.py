@@ -280,6 +280,20 @@ def ajoutVal_cellule_avec(valeur_aAjoutee, clefColonne_cellule, info, clefColonn
 
 # %%% Mise en forme de Donnée ou de Liste
 
+def dfToList(DataFrame) :
+    """Transforme un DataFrame en Liste, le premier élément de la liste renvoyée est l'en-tete du DataFrame"""
+    
+    entete = list(DataFrame)
+    donnee = DataFrame.values
+    
+    ListeFinale = [entete]
+    for d in donnee :
+        ListeFinale.append(list(d))
+    
+    return ListeFinale
+
+
+
 def listeDonnee(donnee):
     """
     Renvoie la liste des données sous forme de liste de liste
@@ -318,7 +332,7 @@ def strListe(listeInitiale):
 
 
 
-# %%% Recherche de ligne
+# %%% Recherche de ligne / cellule
 
 def ligne_avec(info, clefColonne, donnee) :
     """
@@ -335,3 +349,21 @@ def ligne_avec(info, clefColonne, donnee) :
             return donnee[i], i+2
 
     return None, None
+
+
+
+"""def ligne_avec(info, clefColonne, donnee) :
+    "
+    Cette Fonction renvoie : 
+        - le dictionnaire de la ligne du fichierGoogleSheet correspondant à l'info donnée en argument 
+        - le numéro de la ligne dans fichierGoogleSheet
+        
+    Si aucune ligne ne correspond, elle renvoie None, None.
+    "
+        
+    for i in range(len(donnee)) :
+       
+        if donnee[i][clefColonne] == info :
+            return donnee[i], i+2
+
+    return None, None"""

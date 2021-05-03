@@ -117,8 +117,6 @@ mortPhrases_Femme_AmourDe_Fem = [
 # %%% Classe Habitant
 
 class Habitant :
-
-# %%% Initialisation
     
     def __init__ (self, matricule, prenom, nom, numeroGroupe, numeroVillage, sexe, idDiscord, nomRole, caractRole, caractPers) :
 
@@ -148,11 +146,11 @@ class Habitant :
         
         self.estMorte  = False
         
-     
+        
 #### Variables de Role
         
         caractRole = str(caractRole)
-
+        
         if   self.role == fRol.role_Cupidon :
             self.couple         = caractRole.split()
 
@@ -176,8 +174,13 @@ class Habitant :
         
         caractPersonelles = str(caractPers).split()
         
-        self.estAmoureux  = False
         self.estInf       = False
+        
+        self.estAmoureux  = False
+        self.amants       = []
+        
+        self.estMaire     = False
+        self.gardesMaire  = []
         
         for c in caractPersonelles :
             if   "Infecté" == c :
@@ -189,8 +192,20 @@ class Habitant :
                 
             elif "A" in c and     self.estAmoureux :
                 self.amants.append ( int(c[1:]) )
+                
+            elif "Maire" == c :
+                self.estMaire = True
+                
+            elif "M" in c :
+                self.gardesMaire.append( int(c[1:]) )
             
-            
+        
+#### ||| Variante ||| Donne 2 voix de plus au maire lors des votes
+        
+        if self.estMaire  and  v.vote_maire_plus2Voix :
+            self.nbVote += 2
+        
+        
 #### Fonctions de Vérifications
         
         def verif_Msg_DMChannel(msg):
@@ -205,7 +220,9 @@ class Habitant :
     async def init_groupe(self):
         
         self.groupe = await fGrp.groupe_avec(self.numGrp, "numero")
-        await fGrp.autorisation_SalonsGrp(self.member, self.numGrp)
+        
+        if v.phaseEnCours == v.phase1 :
+            await fGrp.autorisation_SalonsGrp(self.member, self.numGrp)
 
 
 

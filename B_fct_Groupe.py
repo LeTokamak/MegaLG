@@ -40,7 +40,7 @@ class GroupeParDefaut :
     
     
     def __str__(self):
-        return " > ".join( self.chemin )
+        return self.nom
 
 
 

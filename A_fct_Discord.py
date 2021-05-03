@@ -309,6 +309,8 @@ def def_rolesMegaLG ():
 
 # %%% Emojis du Serveur
 
+Emo_Maire       = ":military_medal:"
+
 Emo_Villageois  = "<:Villageois:788784861682204682>"
 Emo_Voyante     = "<:V_Voyante:788784786164285482>"
 Emo_Salvateur   = "<:V_Salvateur:788778406337576981>"

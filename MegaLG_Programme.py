@@ -715,7 +715,7 @@ async def numerotationHabitants():
 async def repartionGroupes_Villages() :
     
     listeGroupes = list(fGrp.TousLesGroupes)
-    
+
     margeHabitants = 0.05
     
     
@@ -755,7 +755,7 @@ async def repartionGroupes_Villages() :
     
 #### --- Variables ---
 
-    nbHabitants_parVillage_Souhaite = 30
+    nbHabitants_parVillage_Souhaite = 5
     
     nbVillages_Reel                 = 0
     nbHabitants_parVillage_Reel     = 0
@@ -788,7 +788,10 @@ async def repartionGroupes_Villages() :
         
         grp.nbPersonne = len(grp.personnes)
     
+    print("Tous Les Groupes :")
     
+    for grp in listeGroupes:
+        print(grp.nbPersonne, str(grp))
     
     
     
@@ -802,6 +805,7 @@ async def repartionGroupes_Villages() :
         
         if   grp.nbPersonne == 0 :
             listeGroupes.remove(grp)
+            print(f"nbPersonne == 0  =>  Suppr de {grp}")
         
         
         
@@ -811,7 +815,7 @@ async def repartionGroupes_Villages() :
             listeVillages_Valides.append( (grp,) )
             
 ##   Suppression du groupe et des ses sous-groupes
-            
+            print(f"grp bon  =>  Suppr de {grp}")
             listeGroupes.remove(grp)
             for grp2 in listeGroupes :
                 if grp in grp2.sur_Groupes :
@@ -827,7 +831,8 @@ async def repartionGroupes_Villages() :
             for grp2 in listeGroupes :
                 if grp in grp2.sur_Groupes :
                     grpEstUnSurGroupe = True
-
+                    
+            print(f"grp surchargé  =>  Suppr de {grp}")
 ##   Si c'est un sur-groupe, il est supprimé
             if grpEstUnSurGroupe :
                 listeGroupes.remove(grp)
@@ -842,7 +847,7 @@ async def repartionGroupes_Villages() :
     for grp in listeGroupes :
         for surGrp in grp.sur_Groupes :
             if surGrp in listeGroupes :
-                print(f"Pour simplifier : le sur-groupe {surGrp} à été supprimé")
+                print(f"Pour simplifier, le sur-groupe à été supprimé : {surGrp} ")
                 listeGroupes.remove(surGrp)
     
     
@@ -865,7 +870,12 @@ async def repartionGroupes_Villages() :
     composition_canton_Trouve = False
     
     while not composition_canton_Trouve :
+        
+        print("Tous Les Groupes :")
     
+        for grp in listeGroupes:
+            print(grp.nbPersonne, str(grp))
+        
 #### --- Listage de toutes les combinaison ---
         
         liste_VlgPossibles = []
@@ -898,7 +908,7 @@ async def repartionGroupes_Villages() :
             
             if   nbHab_Vlg not in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
                 liste_VlgPossibles.remove(vlg)
-                
+                print(vlg)
             elif verifVlg_Incoherent(vlg):
                 liste_VlgPossibles.remove(vlg)
                 
@@ -915,7 +925,10 @@ async def repartionGroupes_Villages() :
                 if grp in grpManquant :
                     grpManquant.remove(grp)
         
-        
+        print("Groupes Manquants :")
+    
+        for grp in listeGroupes:
+            print(grp.nbPersonne, str(grp))
         
 #### Ajouts des petits groupes manquants au villages qui peuvent les accueillir 
         

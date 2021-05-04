@@ -976,7 +976,7 @@ async def repartionGroupes_Villages() :
         
         print("\nTous Les Villages Possibles :" )
 
-        for vlg in listeVillages_Valides :
+        for vlg in liste_VlgPossibles :
             
             print(vlg)
             

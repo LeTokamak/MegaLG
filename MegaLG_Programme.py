@@ -752,8 +752,8 @@ async def repartionGroupes_Villages() :
     def suppressionVlg_identiques(liste_vlg):
         for vlg in liste_vlg :
             for vlg2 in liste_vlg :
-                if habitants(vlg) == habitants(vlg2):
-                    print(f"Suppression de {vlg}, normalement impossible avec uniquement des sous-groupes \n{vlg} == {vlg2}")
+                if vlg != vlg2  and  habitants(vlg) == habitants(vlg2):
+                    print(f"Suppression de {vlg} \n{vlg} == {vlg2}")
                     liste_vlg.remove(vlg)
     
 #### --- Variables ---

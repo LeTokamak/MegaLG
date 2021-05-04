@@ -815,11 +815,15 @@ async def repartionGroupes_Villages() :
             listeGroupes.remove(grp)
             print(f"nbPersonne == 0  =>  Suppr de {grp}")
         
+      
         
+    for grp in listeGroupes :
+        
+        print(grp.nbPersonne, grp)
         
 #### Groupes bons || Villages déjà formés (groupes ayant un bon nombre de personne)
         
-        elif grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
+        if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
             listeVillages_Valides.append( (grp,) )
             
 ##   Suppression du groupe et des ses sous-groupes
@@ -830,11 +834,15 @@ async def repartionGroupes_Villages() :
                     print(f"         =>  Suppr du ssgrp {grp2}")
                     listeGroupes.remove(grp2)
         
+    
+    
+    for grp in listeGroupes :
         
+        print(grp.nbPersonne, grp)
         
 #### Groupes surchargés || Suppression des sur-groupes ayant un trop grand nombre de personnes
         
-        elif grp.nbPersonne > nbHab_parVlg_Max :
+        if grp.nbPersonne > nbHab_parVlg_Max :
             grpEstUnSurGroupe = False
             
             for grp2 in listeGroupes :
@@ -851,6 +859,7 @@ async def repartionGroupes_Villages() :
                 listeVillages_Valides.append( (grp,) )
                 listeGroupes.remove(grp)
     
+
 
 #### ===== SIMPLIFICATION DU CODE ===== : Je ne travaile que sur les sous-groupes
     for grp in listeGroupes :

@@ -569,6 +569,8 @@ async def on_ready():
     
     await fDis.channelHistorique.send(f"```⬢ -  Fin du 'on_ready'  - ⬢```\n{v.maintenant()}")
     
+    await repartionGroupes_Villages()
+    
 #### Phase 3 - Récupération du numéro de Tour
     
     if v.phaseEnCours == v.phase3 :
@@ -775,6 +777,9 @@ async def repartionGroupes_Villages() :
     
     nbHab_parVlg_Min = int(nbHabitants_parVillage_Reel * (1 - margeHabitants) - 1)
     nbHab_parVlg_Max = int(nbHabitants_parVillage_Reel * (1 + margeHabitants) + 1)
+    
+    TousLesGens = fDis.serveurMegaLG.members
+    print("Tous les Gens : ", len(TousLesGens))
     
     
     

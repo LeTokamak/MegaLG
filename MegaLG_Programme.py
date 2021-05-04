@@ -778,13 +778,14 @@ async def repartionGroupes_Villages() :
     nbHab_parVlg_Min = int(nbHabitants_parVillage_Reel * (1 - margeHabitants) - 1)
     nbHab_parVlg_Max = int(nbHabitants_parVillage_Reel * (1 + margeHabitants) + 1)
     
-    TousLesMembres = fDis.serveurMegaLG.members
-    print("Tous les Gens : ", len(TousLesMembres))
+    
     
     
     
 #### --- Nombre de personne dans chaque groupe ---
     
+    TousLesMembres = fDis.serveurMegaLG.members
+
     for grp in listeGroupes :
         grp.personnes = []
         for member in TousLesMembres :
@@ -821,7 +822,15 @@ async def repartionGroupes_Villages() :
 
 #### Groupes bons || Villages déjà formés (groupes ayant un bon nombre de personne)
     
-    listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)])
+    def estUnSousGroupe_dUnVlgValide(grp):
+        for vlg in listeVillages_Valides :
+            for surGrp in vlg :
+                if surGrp in grp.sur_Groupes :
+                    return True
+        return False
+    
+    
+    listeVillages_Valides.extend([ (grp,)  for  grp   in listeGroupes          if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)])
     
     print("\n\nTous Les Villages Validés : nbHab_parVlg_Min", nbHab_parVlg_Min, ",    nbHab_parVlg_Max", nbHab_parVlg_Max)
 
@@ -832,13 +841,20 @@ async def repartionGroupes_Villages() :
         for grp in vlg :
             print("      ", grp)
     
-    def estUnSousGroupe_dUnVlgValide(grp):
-        for vlg in listeVillages_Valides :
-            for surGrp in vlg :
-                if surGrp in grp.sur_Groupes :
-                    return True
-                
-        return False
+    
+    
+    listeVillages_Valides =      [ (grp,)  for (grp,) in listeVillages_Valides if not estUnSousGroupe_dUnVlgValide(grp)]
+    
+    print("\nTous Les Villages Validés (Après nettoyage) :" )
+
+    for vlg in listeVillages_Valides :
+        
+        print(vlg)
+        
+        for grp in vlg :
+            print("      ", grp)
+    
+
     
     listeGroupes = [ grp for grp in listeGroupes if (grp.nbPersonne not in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)  and  not estUnSousGroupe_dUnVlgValide(grp) )]
     
@@ -850,32 +866,35 @@ async def repartionGroupes_Villages() :
         print(grp.nbPersonne, grp)
         
 
-    """    
-        if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
-            
-            
-##   Suppression du groupe et des ses sous-groupes
-            print(f"grp bon  =>  Suppr de {grp}")
-            listeGroupes.remove(grp)
-            for grp2 in listeGroupes :
-                if grp in grp2.sur_Groupes :
-                    print(f"         =>  Suppr du ssgrp {grp2}")
-                    listeGroupes.remove(grp2)
-     """   
+
     
+#### Groupes surchargés || Suppression des sur-groupes ayant un trop grand nombre de personnes
     
+    def estUnSurGroupe(surGrp):
+        for grp in listeGroupes :
+            if surGrp in grp.sur_Groupes :
+                return True
+                
+        return False
+
+
+# Créations de village composé d'un seul sous-groupe ayant trop de membre
+    listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes   if (grp.nbPersonne > nbHab_parVlg_Max  and  not estUnSurGroupe(grp))])
+
+
+# Suppression des groupes ayant trop de membre (sur-groupes ==> A supprimé , sous-groupe ==> devenu des villages )
+
+    listeGroupes =               [  grp    for grp in listeGroupes   if grp.nbPersonne <= nbHab_parVlg_Max]
+    
+    """                
     for grp in listeGroupes :
         
         print(grp.nbPersonne, grp)
         
-#### Groupes surchargés || Suppression des sur-groupes ayant un trop grand nombre de personnes
+
         
         if grp.nbPersonne > nbHab_parVlg_Max :
-            grpEstUnSurGroupe = False
             
-            for grp2 in listeGroupes :
-                if grp in grp2.sur_Groupes :
-                    grpEstUnSurGroupe = True
                     
             print(f"grp surchargé  =>  Suppr de {grp} (Il est un surGroupe : {grpEstUnSurGroupe})")
 ##   Si c'est un sur-groupe, il est supprimé
@@ -886,6 +905,7 @@ async def repartionGroupes_Villages() :
             else :
                 listeVillages_Valides.append( (grp,) )
                 listeGroupes.remove(grp)
+    """
     
 
 

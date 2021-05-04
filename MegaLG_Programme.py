@@ -752,7 +752,7 @@ async def repartionGroupes_Villages() :
     def suppressionVlg_identiques(liste_vlg):
         for vlg in liste_vlg :
             for vlg2 in liste_vlg :
-                if habitants(vlg) == habitants(vlg):
+                if habitants(vlg) == habitants(vlg2):
                     print(f"Suppression de {vlg}, normalement impossible avec uniquement des sous-groupes \n{vlg} == {vlg2}")
                     liste_vlg.remove(vlg)
     
@@ -957,7 +957,7 @@ async def repartionGroupes_Villages() :
         
         print("Groupes Manquants :")
     
-        for grp in listeGroupes:
+        for grp in grpManquant :
             print(grp.nbPersonne, str(grp))
         
 #### Ajouts des petits groupes manquants au villages qui peuvent les accueillir 

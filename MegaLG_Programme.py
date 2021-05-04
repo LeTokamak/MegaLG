@@ -787,22 +787,25 @@ async def repartionGroupes_Villages() :
     
     for grp in listeGroupes :
         grp.personnes = []
-        print("\n")
-        print(grp)
         for member in TousLesMembres :
-            #print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
             if grp.salon.permissions_for(member).read_messages == True  and  not (fDis.roleBot in member.roles)  and  not (fDis.roleMaitre in member.roles) :
-                print(f"\n Ajout de {member.display_name}")
                 grp.personnes.append(member)
         
         grp.nbPersonne = len(grp.personnes)
     
     print("Tous Les Groupes :")
     
+    for grp in listeGroupes :
+        
+        print(grp.nbPersonne, grp)
     
+    
+    print("Nettoyage de la liste des Groupes :")
     
 #### --- Nettoyages de listeGroupes ---
     
+    listeGroupes2 = list(listeGroupes)
+
     listeVillages_Valides = []
 
     for grp in listeGroupes :
@@ -815,8 +818,22 @@ async def repartionGroupes_Villages() :
             listeGroupes.remove(grp)
             print(f"nbPersonne == 0  =>  Suppr de {grp}")
         
-      
+    listeGroupes2 = [grp for grp in listeGroupes2 if grp.nbPersonne != 0]
+    
+    print("les liste sont elles egales ?", listeGroupes == listeGroupes2)
+    
+    print("listeGroupes2 :")
+    
+    for grp in listeGroupes2 :
         
+        print(grp.nbPersonne, grp)
+    
+    print("\nlisteGroupes2 :")
+    
+    for grp in listeGroupes2 :
+        
+        print(grp.nbPersonne, grp)
+    
     for grp in listeGroupes :
         
         print(grp.nbPersonne, grp)

@@ -716,7 +716,7 @@ async def repartionGroupes_Villages() :
     
     listeGroupes = list(fGrp.TousLesGroupes)
 
-    margeHabitants = 0.05
+    margeHabitants = 0.00 #0.05
     
     
     def habitants(vlg):
@@ -781,8 +781,9 @@ async def repartionGroupes_Villages() :
     
     for grp in listeGroupes :
         grp.personnes  = grp.salon.members
-        
+        print(grp)
         for member in grp.personnes :
+            print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
             if fDis.roleBot in member.roles  or  fDis.roleMaitre in member.roles :
                 grp.personnes.remove(member)
         
@@ -908,7 +909,7 @@ async def repartionGroupes_Villages() :
             
             if   nbHab_Vlg not in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
                 liste_VlgPossibles.remove(vlg)
-                print(vlg)
+                #print(vlg)
             elif verifVlg_Incoherent(vlg):
                 liste_VlgPossibles.remove(vlg)
                 

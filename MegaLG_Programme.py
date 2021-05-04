@@ -567,6 +567,7 @@ async def on_ready():
         if fDis.Emo_Red == message.content.split()[0] :
             asyncio.Task( fHab.cimetiere(message = message, rappelDeFonction = True) )
     
+    await fDis.channelHistorique.send(f"```⬢ -  Fin du 'on_ready'  - ⬢```\n{v.maintenant()}")
     
 #### Phase 3 - Récupération du numéro de Tour
     
@@ -780,11 +781,13 @@ async def repartionGroupes_Villages() :
 #### --- Nombre de personne dans chaque groupe ---
     
     for grp in listeGroupes :
-        grp.personnes  = grp.salon.members
+        grp.personnes = list(grp.salon.members)
+        print("/n")
         print(grp)
         for member in grp.personnes :
             print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
-            if fDis.roleBot in member.roles  or  fDis.roleMaitre in member.roles :
+            if (fDis.roleBot in member.roles)  or  (fDis.roleMaitre in member.roles) :
+                print(f"\n Suppression de {member.display_name}")
                 grp.personnes.remove(member)
         
         grp.nbPersonne = len(grp.personnes)

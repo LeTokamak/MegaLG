@@ -11,11 +11,11 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ1                                28/04/2021
+Version Delta                             δ2                                28/04/2021
 
 """
 
-version = "δ1"
+version = "δ2"
 
 
 # Niveau E
@@ -778,21 +778,21 @@ async def repartionGroupes_Villages() :
     nbHab_parVlg_Min = int(nbHabitants_parVillage_Reel * (1 - margeHabitants) - 1)
     nbHab_parVlg_Max = int(nbHabitants_parVillage_Reel * (1 + margeHabitants) + 1)
     
-    TousLesGens = fDis.serveurMegaLG.members
-    print("Tous les Gens : ", len(TousLesGens))
+    TousLesMembres = fDis.serveurMegaLG.members
+    print("Tous les Gens : ", len(TousLesMembres))
     
     
     
 #### --- Nombre de personne dans chaque groupe ---
     
     for grp in listeGroupes :
-        grp.personnes = list(grp.salon.members)
-        print("/n")
+        grp.personnes = []
+        print("\n")
         print(grp)
-        for member in grp.personnes :
+        for member in TousLesMembres :
             print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
-            if (fDis.roleBot in member.roles)  or  (fDis.roleMaitre in member.roles) :
-                print(f"\n Suppression de {member.display_name}")
+            if grp.salon.permissions_for(member).read_messages == True  and  (fDis.roleBot in member.roles)  or  (fDis.roleMaitre in member.roles) :
+                print(f"\n Ajout de {member.display_name}")
                 grp.personnes.remove(member)
         
         grp.nbPersonne = len(grp.personnes)

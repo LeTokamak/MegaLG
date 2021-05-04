@@ -948,7 +948,7 @@ async def repartionGroupes_Villages() :
         
         def verif_personneGrpDansVillagePossible(grp):
             for vlg in liste_VlgPossibles:
-                if grp.personnes in habitants(vlg) :
+                if grp.personnes[0] in habitants(vlg) :
                     return True
                 
             return False

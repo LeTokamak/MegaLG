@@ -794,14 +794,6 @@ async def repartionGroupes_Villages() :
         
         grp.nbPersonne = len(grp.personnes)
     
-    print("Tous Les Groupes :")
-    
-    for grp in listeGroupes :
-        
-        print(grp.nbPersonne, grp)
-    
-    
-    print("Nettoyage de la liste des Groupes :")
     
 #### --- Nettoyages de listeGroupes ---
 
@@ -809,14 +801,8 @@ async def repartionGroupes_Villages() :
 
 #### Groupes vides || Suppression des groupes vides ou ne contanant qu'une personne (géré après en tant que personne manquante)
         
-    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne not in (0,1)]
+    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne >= 2]
         
-    print("\n\nTous Les Groupes > 2 :")
-    
-    for grp in listeGroupes :
-        
-        print(grp.nbPersonne, grp)
-    
     
     
 
@@ -944,19 +930,8 @@ async def repartionGroupes_Villages() :
 #### 1er Tri : Suppression des villages trop petit ou trop grop et des villages incohérents
         
         liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) ]
-        
-        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg) ]
+        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg)                                     ]
 
-        """
-        for vlg in liste_VlgPossibles :
-            nbHab_Vlg = nbHabitant(vlg)
-            
-            if   nbHab_Vlg not in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
-                liste_VlgPossibles.remove(vlg)
-                #print(vlg)
-            elif verifVlg_Incoherent(vlg):
-                liste_VlgPossibles.remove(vlg)
-        """
         print("nbVillage Possible restant :", len(liste_VlgPossibles))
     
 #### 2ème Tri : Gestions des groupes Supprimé lors du 1er Tri
@@ -971,14 +946,14 @@ async def repartionGroupes_Villages() :
                     grpManquant.remove(grp)
         """
         
-        def verif_personneGrpDansVillageValide(grp):
+        def verif_personneGrpDansVillagePossible(grp):
             for vlg in liste_VlgPossibles:
                 if grp.personnes in habitants(vlg) :
                     return True
                 
             return False
         
-        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillageValide(grp) ]
+        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillagePossible(grp) ]
         
         print("Groupes Manquants :")
     
@@ -992,14 +967,30 @@ async def repartionGroupes_Villages() :
                 if nbHabitant(vlg) + grp.nbPersonne < nbHab_parVlg_Max :
                     vlg += ( grp ,)
         
-        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillageValide(grp) ]
+        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillagePossible(grp) ]
     
 #### Formation d'un village avec les groupes manquants restants
         
         if len(grpManquant) != 0 :
             liste_VlgPossibles.append(tuple(grpManquant))
         
+        print("\nTous Les Villages Possibles :" )
+
+        for vlg in listeVillages_Valides :
+            
+            print(vlg)
+            
+            for grp in vlg :
+                print("      ", grp)
         
+        print("\nTous Les Villages Validés :" )
+
+        for vlg in listeVillages_Valides :
+            
+            print(vlg)
+            
+            for grp in vlg :
+                print("      ", grp)
         
 #### 3ème Tri : Suppresion des villages ayant les même habitants
         

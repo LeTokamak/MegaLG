@@ -791,7 +791,7 @@ async def repartionGroupes_Villages() :
         print(grp)
         for member in TousLesMembres :
             print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
-            if grp.salon.permissions_for(member).read_messages == True  and  (fDis.roleBot in member.roles)  or  (fDis.roleMaitre in member.roles) :
+            if grp.salon.permissions_for(member).read_messages == True  and  not (fDis.roleBot in member.roles)  and  not (fDis.roleMaitre in member.roles) :
                 print(f"\n Ajout de {member.display_name}")
                 grp.personnes.remove(member)
         

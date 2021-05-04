@@ -1036,6 +1036,8 @@ async def repartionGroupes_Villages() :
         for grp in vlg :
             message += f"{grp} ({grp.nbPersonne})   ,   "
     message += ")"
+    
+    await fDis.userCamp.send(message)
 
 
 

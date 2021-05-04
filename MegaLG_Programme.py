@@ -817,39 +817,12 @@ async def repartionGroupes_Villages() :
     
     
     listeVillages_Valides.extend([ (grp,)  for  grp   in listeGroupes          if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)])
-    
-    print("\n\nTous Les Villages Validés : nbHab_parVlg_Min", nbHab_parVlg_Min, ",    nbHab_parVlg_Max", nbHab_parVlg_Max)
-
-    for vlg in listeVillages_Valides :
-        
-        print(vlg)
-        
-        for grp in vlg :
-            print("      ", grp)
-    
-    
-    
     listeVillages_Valides =      [ (grp,)  for (grp,) in listeVillages_Valides if not estUnSousGroupe_dUnVlgValide(grp)]
     
-    print("\nTous Les Villages Validés (Après nettoyage) :" )
 
-    for vlg in listeVillages_Valides :
-        
-        print(vlg)
-        
-        for grp in vlg :
-            print("      ", grp)
-    
-
-    
     listeGroupes = [ grp for grp in listeGroupes if (grp.nbPersonne not in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)  and  not estUnSousGroupe_dUnVlgValide(grp) )]
     
 
-    print("\n\nTous Les Groupes non vide restants :")
-
-    for grp in listeGroupes :
-        
-        print(grp.nbPersonne, grp)
         
 
 
@@ -937,25 +910,17 @@ async def repartionGroupes_Villages() :
 #### 2ème Tri : Gestions des groupes Supprimé lors du 1er Tri
         
 #### Listage des groupes manquants
-        """
-        grpManquant = list(listeGroupes)
-        
-        for vlg in liste_VlgPossibles :
-            for grp in vlg :
-                if grp in grpManquant :
-                    grpManquant.remove(grp)
-        """
-        
-        def verif_personneGrpDansVillagePossible(grp):
-            for vlg in liste_VlgPossibles:
+
+        def verif_personneGrpDansVillage(liste_Vlg, grp):
+            for vlg in liste_Vlg:
                 if grp.personnes[0] in habitants(vlg) :
                     return True
                 
             return False
         
-        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillagePossible(grp) ]
+        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
         
-        print("Groupes Manquants :")
+        print("\nGroupes Manquants :")
     
         for grp in grpManquant :
             print(grp.nbPersonne, str(grp))
@@ -967,7 +932,7 @@ async def repartionGroupes_Villages() :
                 if nbHabitant(vlg) + grp.nbPersonne < nbHab_parVlg_Max :
                     vlg += ( grp ,)
         
-        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillagePossible(grp) ]
+        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
     
 #### Formation d'un village avec les groupes manquants restants
         
@@ -1033,8 +998,10 @@ async def repartionGroupes_Villages() :
                 
         suppressionVlg_identiques(listeVillages_Valides)
 
-
-
+        listeGroupes = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(listeVillages_Valides, grp) ]
+        
+        
+        
 #### ===== FIN DE LA BOUCLE ====
 
         if len(listeGroupes) == 0 :
@@ -1043,7 +1010,7 @@ async def repartionGroupes_Villages() :
         else :
             message = "On a tous tenté mais il reste des groupes qui respecte tous les critères, lesquels veux-tu choisir et garder (envoie les villages a garder sous cette forme : '12 54 94 2 0 47') :"
             
-            for i in range(liste_VlgPossibles) :
+            for i in range(len(liste_VlgPossibles)) :
                 vlg = liste_VlgPossibles[i]
                 message += f"\n> n°{i}    [{nbHabitant(vlg)}]   - (  "
                 for grp in vlg :
@@ -1063,7 +1030,7 @@ async def repartionGroupes_Villages() :
     
     message = "Voici la liste des villages définitive :"
             
-    for i in range(listeVillages_Valides) :
+    for i in range(len(listeVillages_Valides)) :
         vlg = listeVillages_Valides[i]
         message += f"\n> n°{i}    [{nbHabitant(vlg)}]   - (  "
         for grp in vlg :

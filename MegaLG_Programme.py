@@ -809,7 +809,7 @@ async def repartionGroupes_Villages() :
 
 #### Groupes vides || Suppression des groupes vides ou ne contanant qu'une personne (géré après en tant que personne manquante)
         
-    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne in (0,1)]
+    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne not in (0,1)]
         
     print("\n\nTous Les Groupes > 2 :")
     

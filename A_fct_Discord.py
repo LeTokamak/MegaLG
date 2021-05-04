@@ -270,6 +270,9 @@ roleEveryone    = None
 roleMaitre      = None
 roleBot         = None
 
+roleMdJ         = None
+roleAssistant   = None
+
 roleArtisans    = None
 roleSpectateurs = None
 
@@ -285,11 +288,20 @@ def def_rolesMegaLG ():
     Elle doit être appelé lors du on_ready() pour définir tout les rôles du serveur, une fois que le bot est connecté 
     """
     
-    global roleEveryone, roleMaitre, roleBot, roleArtisans, roleSpectateurs, roleJoueurs, roleMorts
+    global roleEveryone, roleMaitre, roleBot
     
     roleEveryone          = serveurMegaLG.get_role (769495045308940288)
     roleMaitre            = serveurMegaLG.get_role (782627464530755604)  
-    roleBot               = serveurMegaLG.get_role (769496917797109771)
+    roleBot               = serveurMegaLG.get_role (783283411833978901)
+    
+    
+    global roleMdJ, roleAssistant
+    
+    roleMdJ               = serveurMegaLG.get_role (769496917797109771)
+    roleAssistant         = serveurMegaLG.get_role (783281237481619467)
+    
+    
+    global roleArtisans, roleSpectateurs, roleJoueurs, roleMorts
     
     roleArtisans          = serveurMegaLG.get_role (769985455470018620)
     roleSpectateurs       = serveurMegaLG.get_role (795550455224205312)

@@ -761,7 +761,7 @@ async def repartionGroupes_Villages() :
     nbHabitants_parVillage_Souhaite = 5
     
     nbVillages_Reel                 = 0
-    nbHabitants_parVillage_Reel     = 0
+    nbHabitants_parVillage_Reel     = nbHabitants_parVillage_Souhaite
     
     ecartMin                        = len(fHab.TousLesHabitants) + 1
     

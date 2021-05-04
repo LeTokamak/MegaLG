@@ -790,7 +790,7 @@ async def repartionGroupes_Villages() :
         print("\n")
         print(grp)
         for member in TousLesMembres :
-            print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
+            #print(member.display_name, member.roles, fDis.roleBot in member.roles, fDis.roleMaitre in member.roles)
             if grp.salon.permissions_for(member).read_messages == True  and  not (fDis.roleBot in member.roles)  and  not (fDis.roleMaitre in member.roles) :
                 print(f"\n Ajout de {member.display_name}")
                 grp.personnes.append(member)
@@ -799,9 +799,6 @@ async def repartionGroupes_Villages() :
     
     print("Tous Les Groupes :")
     
-    for grp in listeGroupes:
-        print(grp.nbPersonne, str(grp))
-    
     
     
 #### --- Nettoyages de listeGroupes ---
@@ -809,6 +806,8 @@ async def repartionGroupes_Villages() :
     listeVillages_Valides = []
 
     for grp in listeGroupes :
+        
+        print(grp.nbPersonne, grp)
         
 #### Groupes vides || Suppression des groupes vides
         

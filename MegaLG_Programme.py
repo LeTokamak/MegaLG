@@ -803,45 +803,56 @@ async def repartionGroupes_Villages() :
     print("Nettoyage de la liste des Groupes :")
     
 #### --- Nettoyages de listeGroupes ---
-    
-    listeGroupes2 = list(listeGroupes)
 
     listeVillages_Valides = []
 
-    for grp in listeGroupes :
-        
-        print(grp.nbPersonne, grp)
-        
 #### Groupes vides || Suppression des groupes vides
         
-        if   grp.nbPersonne == 0 :
-            listeGroupes.remove(grp)
-            print(f"nbPersonne == 0  =>  Suppr de {grp}")
+    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne != 0]
         
-    listeGroupes2 = [grp for grp in listeGroupes2 if grp.nbPersonne != 0]
-    
-    print("les liste sont elles egales ?", listeGroupes == listeGroupes2)
-    
-    print("listeGroupes1 :")
+    print("\n\nTous Les Groupes non vide :")
     
     for grp in listeGroupes :
         
         print(grp.nbPersonne, grp)
     
-    print("\nlisteGroupes2 :")
     
-    for grp in listeGroupes2 :
-        
-        print(grp.nbPersonne, grp)
     
-    for grp in listeGroupes :
-        
-        print(grp.nbPersonne, grp)
-        
+
 #### Groupes bons || Villages déjà formés (groupes ayant un bon nombre de personne)
+    
+    listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)])
+    
+    print("\n\nTous Les Villages Validés : nbHab_parVlg_Min", nbHab_parVlg_Min, ",    nbHab_parVlg_Max", nbHab_parVlg_Max)
+
+    for vlg in listeVillages_Valides :
         
+        print(vlg)
+        
+        for grp in vlg :
+            print("      ", grp)
+    
+    def estUnSousGroupe_dUnVlgValide(grp):
+        for vlg in listeVillages_Valides :
+            for surGrp in vlg :
+                if surGrp in grp.sur_Groupes :
+                    return True
+                
+        return False
+    
+    listeGroupes = [ grp for grp in listeGroupes if (grp.nbPersonne not in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)  and  not estUnSousGroupe_dUnVlgValide(grp) )]
+    
+
+    print("\n\nTous Les Groupes non vide restants :")
+
+    for grp in listeGroupes :
+        
+        print(grp.nbPersonne, grp)
+        
+
+    """    
         if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
-            listeVillages_Valides.append( (grp,) )
+            
             
 ##   Suppression du groupe et des ses sous-groupes
             print(f"grp bon  =>  Suppr de {grp}")
@@ -850,7 +861,7 @@ async def repartionGroupes_Villages() :
                 if grp in grp2.sur_Groupes :
                     print(f"         =>  Suppr du ssgrp {grp2}")
                     listeGroupes.remove(grp2)
-        
+     """   
     
     
     for grp in listeGroupes :

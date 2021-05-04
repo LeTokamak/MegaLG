@@ -822,9 +822,9 @@ async def repartionGroupes_Villages() :
     
     print("les liste sont elles egales ?", listeGroupes == listeGroupes2)
     
-    print("listeGroupes2 :")
+    print("listeGroupes1 :")
     
-    for grp in listeGroupes2 :
+    for grp in listeGroupes :
         
         print(grp.nbPersonne, grp)
     

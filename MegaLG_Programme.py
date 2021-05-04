@@ -827,6 +827,7 @@ async def repartionGroupes_Villages() :
             listeGroupes.remove(grp)
             for grp2 in listeGroupes :
                 if grp in grp2.sur_Groupes :
+                    print(f"         =>  Suppr du ssgrp {grp2}")
                     listeGroupes.remove(grp2)
         
         
@@ -840,7 +841,7 @@ async def repartionGroupes_Villages() :
                 if grp in grp2.sur_Groupes :
                     grpEstUnSurGroupe = True
                     
-            print(f"grp surchargé  =>  Suppr de {grp}")
+            print(f"grp surchargé  =>  Suppr de {grp} (Il est un surGroupe : {grpEstUnSurGroupe})")
 ##   Si c'est un sur-groupe, il est supprimé
             if grpEstUnSurGroupe :
                 listeGroupes.remove(grp)

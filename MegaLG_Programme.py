@@ -830,7 +830,7 @@ async def repartionGroupes_Villages() :
 #### Groupes surchargés || Suppression des sur-groupes ayant un trop grand nombre de personnes
     
     def estUnSurGroupe(surGrp):
-        for grp in listeGroupes :
+        for grp in fGrp.TousLesGroupes :
             if surGrp in grp.sur_Groupes :
                 return True
                 

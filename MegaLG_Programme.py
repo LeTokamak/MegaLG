@@ -807,11 +807,11 @@ async def repartionGroupes_Villages() :
 
     listeVillages_Valides = []
 
-#### Groupes vides || Suppression des groupes vides
+#### Groupes vides || Suppression des groupes vides ou ne contanant qu'une personne (géré après en tant que personne manquante)
         
-    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne != 0]
+    listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne in (0,1)]
         
-    print("\n\nTous Les Groupes non vide :")
+    print("\n\nTous Les Groupes > 2 :")
     
     for grp in listeGroupes :
         
@@ -879,42 +879,16 @@ async def repartionGroupes_Villages() :
 
 
 # Créations de village composé d'un seul sous-groupe ayant trop de membre
-    listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes   if (grp.nbPersonne > nbHab_parVlg_Max  and  not estUnSurGroupe(grp))])
+    listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes   if (grp.nbPersonne >  nbHab_parVlg_Max  and  not estUnSurGroupe(grp))])
 
 
-# Suppression des groupes ayant trop de membre (sur-groupes ==> A supprimé , sous-groupe ==> devenu des villages )
-
-    listeGroupes =               [  grp    for grp in listeGroupes   if grp.nbPersonne <= nbHab_parVlg_Max]
+# Suppression des groupes ayant trop de membre (sur-groupes ==> A supprimer (les personnes supprimées sont gérés dans personnes manquantes) , sous-groupe ==> devenu des villages )
+    listeGroupes =               [  grp    for grp in listeGroupes   if  grp.nbPersonne <= nbHab_parVlg_Max ]
     
-    """                
-    for grp in listeGroupes :
-        
-        print(grp.nbPersonne, grp)
-        
-
-        
-        if grp.nbPersonne > nbHab_parVlg_Max :
-            
-                    
-            print(f"grp surchargé  =>  Suppr de {grp} (Il est un surGroupe : {grpEstUnSurGroupe})")
-##   Si c'est un sur-groupe, il est supprimé
-            if grpEstUnSurGroupe :
-                listeGroupes.remove(grp)
-
-##   Sinon, il forme un village et il est supprimé (on ne supprime PAS les sous-groupes (car il n'en a pas))
-            else :
-                listeVillages_Valides.append( (grp,) )
-                listeGroupes.remove(grp)
-    """
-    
+ 
 
 
-#### ===== SIMPLIFICATION DU CODE ===== : Je ne travaile que sur les sous-groupes
-    for grp in listeGroupes :
-        for surGrp in grp.sur_Groupes :
-            if surGrp in listeGroupes :
-                print(f"Pour simplifier, le sur-groupe à été supprimé : {surGrp} ")
-                listeGroupes.remove(surGrp)
+
     
     
 #### --- Classement des Groupes par nombre de personne ---
@@ -962,13 +936,18 @@ async def repartionGroupes_Villages() :
             await fDis.channel("**ERREUR** - Il y a trop de groupes (> 30)")
         
         
-        
+        print("nbVillage Possible :", len(liste_VlgPossibles))
         
         
 #### --- Tri des villages Possibles ---    
     
 #### 1er Tri : Suppression des villages trop petit ou trop grop et des villages incohérents
-    
+        
+        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) ]
+        
+        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg) ]
+
+        """
         for vlg in liste_VlgPossibles :
             nbHab_Vlg = nbHabitant(vlg)
             
@@ -977,19 +956,29 @@ async def repartionGroupes_Villages() :
                 #print(vlg)
             elif verifVlg_Incoherent(vlg):
                 liste_VlgPossibles.remove(vlg)
-                
-            
+        """
+        print("nbVillage Possible restant :", len(liste_VlgPossibles))
     
 #### 2ème Tri : Gestions des groupes Supprimé lors du 1er Tri
         
 #### Listage des groupes manquants
-    
+        """
         grpManquant = list(listeGroupes)
         
         for vlg in liste_VlgPossibles :
             for grp in vlg :
                 if grp in grpManquant :
                     grpManquant.remove(grp)
+        """
+        
+        def verif_personneGrpDansVillageValide(grp):
+            for vlg in liste_VlgPossibles:
+                if grp.personne in habitants(vlg) :
+                    return True
+                
+            return False
+        
+        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillageValide(grp) ]
         
         print("Groupes Manquants :")
     
@@ -1002,8 +991,8 @@ async def repartionGroupes_Villages() :
             for vlg in liste_VlgPossibles : 
                 if nbHabitant(vlg) + grp.nbPersonne < nbHab_parVlg_Max :
                     vlg += ( grp ,)
-                    grpManquant.remove(grp)
         
+        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillageValide(grp) ]
     
 #### Formation d'un village avec les groupes manquants restants
         

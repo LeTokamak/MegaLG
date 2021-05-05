@@ -1060,7 +1060,7 @@ async def repartionGroupes_Villages() :
             
         for i in range(len(listeVillages_Valides)) :
             vlg = listeVillages_Valides[i]
-            message += f"\n> n°{i}    [{nbHabitant(vlg)}]   - (  "
+            message += f"\n> n°{i}    [liste_VlgValides_Habs[i]]   - (  "
             for grp in vlg :
                 message += f"{grp} ({grp.nbPersonne})   ,   "
             message += ")"
@@ -1080,7 +1080,7 @@ async def repartionGroupes_Villages() :
             
     for i in range(len(liste_VlgValides_Habs)) :
         vlg = liste_VlgValides_Habs[i]
-        message += f"\n> n°{i}    [{len(liste_VlgValides_Habs)}]   - (   "
+        message += f"\n> n°{i}    [{len(vlg)}]   - (   "
         for joueur in vlg :
             message += f"{joueur.display_name}   ,   "
         message += ")"

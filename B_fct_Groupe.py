@@ -10,10 +10,10 @@
 """
 
 # Niveau A
+import A_variables            as v
 import A_fct_Google           as fGoo
 import A_fct_Discord          as fDis
 import A_fct_MiseEnPage       as fMeP
-import A_variables            as v
 
 
 rd = fMeP.rd

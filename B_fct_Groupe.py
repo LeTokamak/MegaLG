@@ -22,7 +22,6 @@ import asyncio
 
 
 
-# %% Définition de la Classe Groupe et GroupeParDefaut
 
 Emo_departGroupe = "❌"
 
@@ -357,21 +356,19 @@ async def redef_groupesExistants():
         if v.phaseEnCours == v.phase1  and  type(ligneGrp[fGoo.clefGrp_idSalon]) == int :
             
             nouvGroupe.salon      = fDis.bot.get_channel(ligneGrp[fGoo.clefGrp_idSalon])
-            
             nouvGroupe.MsgSortie  = await nouvGroupe.salon.fetch_message(ligneGrp[fGoo.clefGrp_MsgSortie])   
-            
             nouvGroupe.Emo_Entree = ligneGrp[fGoo.clefGrp_EmoEntree]
             
         TousLesGroupes.append(nouvGroupe)
-        
-
-
+            
+    
+    
 # =============================================================================
 #### Initialisation des surGroupes de chacun des groupes préalablement redéfinit
 # =============================================================================
-
+    
 #    (Création éventuelle de groupe n'étant pas inscrit dans le Google Sheet)        
-
+    
     for grp in TousLesGroupes :
         await grp.init_surGroupes()
 
@@ -386,18 +383,15 @@ async def redef_groupesExistants():
 
     if v.phaseEnCours == v.phase1 :
         
-        await asyncio.sleep(1)
-        
         for grp in TousLesGroupes :
             await grp.init_surGroupes()
             
             if grp.salon != None :
-                ligneGrp, numLigneGrp = fGoo.ligne_avec( grp.numero, fGoo.clefGrp_numGroupe,
-                                                         fGoo.donneeGoogleSheet(fGoo.page_Groupes) )
-                
+                ligneGrp, numLigneGrp = fGoo.ligne_avec( grp.numero, fGoo.clefGrp_numGroupe, donneeGroupes)
                 grp.MsgEntree = await grp.salon_GroupeSup.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
             
             else :
+                await asyncio.sleep(1)
                 await grp.creation_salonEtMessages()
 
 

@@ -77,8 +77,9 @@ async def Inscription(membre_aInscrire, nb):
     nvlLigne = { fGoo.clef_Sexe       : sexe                        , 
                  fGoo.clef_Prenom     : prenom                      ,
                  fGoo.clef_Nom        : nom                         , 
-                 fGoo.clef_Groupe     : fGrp.GroupeParDefaut.chemin ,
-                 fGoo.clef_idDiscord  : str(membre_aInscrire.id)      }
+                 fGoo.clef_Groupe     : fGrp.GroupeParDefaut.numero , 
+                 fGoo.clef_numVillage : 0                           ,
+                 fGoo.clef_idDiscord  : membre_aInscrire.id          }
     
     fGoo.ajoutLigne(nvlLigne, fGoo.page1_InfoJoueurs)
     
@@ -203,7 +204,7 @@ async def ReInscription (membre_ReInscrit):
     await membre_ReInscrit.remove_roles(fDis.roleSpectateurs, fDis.roleMorts) 
     
     await membre_ReInscrit      .send(f"**Salut {nvlLigne[fGoo.clef_Prenom]}, tu as bien été reinscrit !**\nTu n'as plus qu'à attendre le début de la partie !")
-    await fDis.channelHistorique.send(f"{fDis.Emo_BabyOrange}  |  ReInscription de {membre_ReInscrit.mention} : {nvlLigne[fGoo.clef_Prenom]} {nvlLigne[fGoo.clef_Nom]}   |   {nvlLigne[fGoo.clef_Groupe]}")
+    await fDis.channelHistorique.send(f"{fDis.Emo_BabyOrange}  |  Ré-inscription de {membre_ReInscrit.mention} : {nvlLigne[fGoo.clef_Prenom]} {nvlLigne[fGoo.clef_Nom]}   |   {nvlLigne[fGoo.clef_Groupe]}")
 
     await fGrp.autorisation_SalonsGrp(membre_ReInscrit, nvlLigne[fGoo.clef_Groupe])
     

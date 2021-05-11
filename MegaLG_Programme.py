@@ -11,11 +11,11 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ2                                28/04/2021
+Version Delta                             δ3                                12/05/2021
 
 """
 
-version = "δ2"
+version = "δ3"
 
 
 # Niveau E
@@ -327,7 +327,52 @@ async def csg(ctx, *tupleNom):
     
     
     
+
+
+# %%%% Commandes des Habitants 
+
+# %%%%% Vote
+
+@fDis.bot.command()
+async def Vote(ctx, matricule):
+    await fVlg.cmd_voteVlg(ctx.author, matricule)
     
+    
+@fDis.bot.command()
+async def vote(ctx, matricule):
+    await fVlg.cmd_voteVlg(ctx.author, matricule)
+
+
+
+# %%%%% VoteLG
+
+@fDis.bot.command()
+async def VoteLG(ctx, matricule):
+    await fVlg.cmd_voteLG(ctx.author, matricule)
+
+@fDis.bot.command()
+async def voteLG(ctx, matricule):
+    await fVlg.cmd_voteLG(ctx.author, matricule)
+    
+@fDis.bot.command()
+async def votelg(ctx, matricule):
+    await fVlg.cmd_voteLG(ctx.author, matricule)
+    
+    
+
+# %%%%% Exil (reservée aux Juges et au Maire)
+
+@fDis.bot.command()
+async def Exil(ctx):
+    await fVlg.cmd_demandeExilVote(ctx.author)
+
+@fDis.bot.command()
+async def exil(ctx):
+    await fVlg.cmd_demandeExilVote(ctx.author)
+    
+
+    
+
 
 # %%%% Commandes de Maires 
 
@@ -368,6 +413,45 @@ async def renommage(ctx, *tupleNom):
 # %%% Commandes des Admins
 
 # %%%% Toujours Utilisables
+
+@fDis.bot.command()
+@fDis.commands.has_any_role(fDis.roleMaitre.id, fDis.roleArtisans.id)
+async def Bug (ctx, *descriptionBug):
+    """
+    N'a qu'un seul niveau de bug ==> Vilebrequin
+    """
+    
+    messagesGif = []
+    
+    async for message in fDis.channelGifVilebrequin.history():
+        messagesGif.append(message)
+    
+    
+    
+    messagesBug = []
+    
+    async for message in fDis.channelBugs.history():
+        if "Bug n°" in message.content :
+            messagesBug.append(message)
+    
+    numero = int( messagesBug[-1].content.split() [1] [2:] ) + 1
+    
+    await fDis.channelBugs.send(f"Bug n°{numero} : \n>>> { ' '.join(descriptionBug) }")
+    await fDis.channelBugs.send( rd.choice(messagesGif).content )
+    await fDis.channelBugs.send( "_ _\n\n\n_ _")
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def TachesEnCours (ctx):
+    
+    Taches = asyncio.all_tasks()
+    
+    for t in Taches :
+        print(t.get_name(), t, t.done())
+
+
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
@@ -539,7 +623,7 @@ async def on_ready():
     
     phaseTrouvee = False
     
-    async for message in fDis.channelHistorique.history(limit = 10**9):
+    async for message in fDis.channelHistorique.history():
         
         if "```Phase " in message.content  and  not phaseTrouvee :
             v.phaseEnCours = message.content
@@ -556,8 +640,8 @@ async def on_ready():
     
 #### Lancement des events 
     
-    asyncio.Task(event_reactions())
-    asyncio.Task(event_messages() )
+    asyncio.Task( event_reactions() )
+    asyncio.Task( event_messages () )
     
     
 #### Lancement des attendes d'épitaphe
@@ -569,7 +653,6 @@ async def on_ready():
     
     await fDis.channelHistorique.send(f"```⬢ -  Fin du 'on_ready'  - ⬢```\n{v.maintenant()}")
     
-    await repartionGroupes_Villages()
     
 #### Phase 3 - Récupération du numéro de Tour
     
@@ -627,20 +710,41 @@ async def lancementInscription():
 @fDis.commands.has_permissions(ban_members = True)
 async def DebutPartie (ctx):
     
-    #await finInscription()
+    v.phaseEnCours = v.phase2
+    await fDis.channelHistorique.send(v.phaseEnCours)
     
-    #await numerotationHabitants()
-    
+    await finInscription()
+    await numerotationHabitants()
     await repartionGroupes_Villages()
     
-    #await distributionRole()
+
+    #for vlg in fVlg.TousLesVillages :
+        #await distributionRole(vlg)
+
     
+    await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()
+    
+    
+    
+    for vlg in fVlg.TousLesVillages :
+        await vlg.rapportMunicipal()
+        
+    v.phaseEnCours = v.phase3
+    await fDis.channelHistorique.send(v.phaseEnCours)
+    
+    v.nbTours = 0
+    await fDis.channelHistorique.edit(topic = f"Tour n°{v.nbTours}")
+    
+    await attente_lancementTour()
+
+
+
+
+
 
 
 async def finInscription():
-    
-    v.phaseEnCours = v.phase2
-    await fDis.channelHistorique.send(v.phaseEnCours)
     
 #### Gestions des permissions
     
@@ -650,6 +754,10 @@ async def finInscription():
 #### Nettoyage des salons de groupes
     
     "A programmer"
+
+
+
+
 
 
 
@@ -890,9 +998,6 @@ async def repartionGroupes_Villages() :
             await fDis.channel("**ERREUR** - Il y a trop de groupes (> 30)")
         
         
-        print("nbVillage Possible :", len(liste_VlgPossibles))
-        
-        
         
         
         
@@ -902,8 +1007,6 @@ async def repartionGroupes_Villages() :
         
         liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) ]
         liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg)                                     ]
-        
-        print("nbVillage Possible restant :", len(liste_VlgPossibles))
         
         
         
@@ -920,11 +1023,6 @@ async def repartionGroupes_Villages() :
         
         grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
         
-        print("\nGroupes Manquants :")
-    
-        for grp in grpManquant :
-            print(grp.nbPersonne, str(grp))
-        
 #### Ajouts des petits groupes manquants au villages qui peuvent les accueillir 
         
         for grp in grpManquant :
@@ -938,24 +1036,6 @@ async def repartionGroupes_Villages() :
         
         if len(grpManquant) != 0 :
             liste_VlgPossibles.append(tuple(grpManquant))
-        
-        print("\nTous Les Villages Possibles :" )
-
-        for vlg in liste_VlgPossibles :
-            
-            print(vlg)
-            
-            for grp in vlg :
-                print("      ", grp)
-        
-        print("\nTous Les Villages Validés :" )
-
-        for vlg in listeVillages_Valides :
-            
-            print(vlg)
-            
-            for grp in vlg :
-                print("      ", grp)
         
         
         
@@ -1045,7 +1125,14 @@ async def repartionGroupes_Villages() :
                 listeJoueursRestants.remove(hab)
             except :
                 print(f"ERREUR - Cet personne à déjà été supprimmé : {hab.display_name} ({vlg})")
-                    
+          
+            
+    if len(listeJoueursRestants) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
+        liste_VlgValides_Habs.append(tuple(listeJoueursRestants))
+        listeJoueursRestants = []
+        
+        
+            
 #### Ajout des personnes restantes aux autres villages (manuellement)
 
     for joueur in listeJoueursRestants :
@@ -1073,8 +1160,6 @@ async def repartionGroupes_Villages() :
         
         
 #### Création d'un village avec toutes les personnes restantes, si possible
-
-    #if len(listeJoueursRestants) in 
     
     message = "Voici la liste des villages définitive :"
             
@@ -1089,37 +1174,21 @@ async def repartionGroupes_Villages() :
 
 
 
-    """
-    #### Suppression de villages qui contiennent des groupes de village déjà validé
+#### --- Création des villages ---
     
-    for vlg in listeVillages_Valides :
-        for grp in vlg :
-            for vlg2 in liste_VlgPossibles:
-                if grp in vlg :
-                    liste_VlgPossibles
+    donneeJoueur = fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs)
 
-    for grp in listeGroupes :
+    for i in range(len(liste_VlgValides_Habs)) :
         
-        vlgs_persGrpPresent = []
+        vlg = liste_VlgValides_Habs[i]
         
-        for vlg in liste_VlgPossibles + listeVillages_Valides :
-            if grp.personne in habitants(vlg) :
-                vlgs_persGrpPresent.append(vlg)
-
-    """
-    """
-    for grp in listeGroupes :
+        for hab in vlg :
+            ligne, numLigne = fGoo.ligne_avec( hab.id, fGoo.clef_idDiscord, donneeJoueur )
+            fGoo.remplacerVal_ligne( i+1 , fGoo.clef_numVillage, numLigne, fGoo.page1_InfoJoueurs )
+    
+        await fVlg.creationVillage( numNouvVillage = i+1 )
         
-        vlgs_persGrpPresent = []
-        
-        for vlg in liste_VlgPossibles + listeVillages_Valides :
-            if grp.personne in habitants(vlg) :
-                vlgs_persGrpPresent.append(vlg)
-        
-        if len(vlgs_persGrpPresent) > 1 :
-            for vlg in vlgs_persGrpPresent :
-                
-                """                
+        await asyncio.sleep(1)
 
 
 
@@ -1127,192 +1196,84 @@ async def repartionGroupes_Villages() :
 
 
 
+async def distributionRole(village):
+    
+#### Paquet des Rôles
+    
+    paquetRoles  =   []
+    
+    paquetRoles += 0*[fRol.role_Villageois]
+    paquetRoles += 1*[fRol.role_VillaVilla]
+    paquetRoles += 1*[fRol.role_Cupidon   ]
+    paquetRoles += 0*[fRol.role_Ancien    ]
+    
+    paquetRoles += 2*[fRol.role_Salvateur ]
+    paquetRoles += 2*[fRol.role_Sorciere  ]
+    paquetRoles += 2*[fRol.role_Voyante   ]
+    
+    paquetRoles += 2*[fRol.role_Corbeau   ]
+    paquetRoles += 2*[fRol.role_Hirondelle]
+    paquetRoles += 2*[fRol.role_Juge      ]
+    
+    paquetRoles += 5*[fRol.role_FamilleNb ]
     
     
-
-"""
-
-################################################################################
-#####                                                                      #####
-#####                           - Paquet Roles -                           #####
-#####                                                                      #####
-################################################################################
-
-
-### Création de paquetRoles, le paquet qui sera mélanger puis qui sera distribué aux joueurs
-
-paquetRoles  = list(fRol.paquetRoles_Initial)
-
-rd.shuffle(paquetRoles)
-
-
-
-
-################################################################################
-#####                                                                      #####
-#####                      - Distribution des Rôles -                      #####
-#####                                                                      #####
-################################################################################
-
-
-@fDis.bot.command()
-@commands.has_permissions(ban_members = True)
-async def Distrib (ctx):    
     
-### Efface le !Distrib
-    await fDis.effacerMsg(ctx)
+    paquetRoles += 4*[fRol.role_LG        ]
+    paquetRoles += 1*[fRol.role_LGNoir    ]
+    paquetRoles += 1*[fRol.role_LGBleu    ]
+    
+    paquetRoles += 3*[fRol.role_LGBlanc   ]
+    paquetRoles += 2*[fRol.role_EnfantSauv]
+    
+    
+    
+#### Paquet des Rôles Restants
+    
+    paquetRoles_Restant = list(paquetRoles)
+    
+    rd.shuffle(paquetRoles_Restant)
+    
+
+
+#### --- Distribution des Rôles ---
+    
+    for hab in village.habitants :
         
-    
-# ----------------------------------------------
-# --- Numérotation et distribution des rôles ---
-# ----------------------------------------------
-    
-    Joueurs   = pd.DataFrame(fGoo.page1_InfoJoueurs.get_all_records())
-    
-    Ville   = []
-    Annee   = []
-    Filiere = []
-    Comu    = []
-    
-    for j in Joueurs["Groupe"] :
-        
-        if j[:4] == "ISEN":
-            Ville  .append(j[  -1])
-            Annee  .append(j[  -3])
-            Filiere.append(j[5:-4])
-            Comu   .append("ISEN")
-        
+        if len(paquetRoles_Restant) != 0 :
+            habRole = paquetRoles_Restant.pop(0)
+            
         else :
-            Ville  .append("None")
-            Annee  .append("None")
-            Filiere.append("None")
-            
-            if   j != "Autre" :
-                Comu   .append(j)
-            else :
-                Comu   .append("ZZZZZZZZ")
-            
-    
-    Joueurs["Ville"]   = Ville
-    Joueurs["Année"]   = Annee
-    Joueurs["Filière"] = Filiere
-    Joueurs["Comu"]    = Comu
-    
-### Rangement des joueurs par Ville, Année, Filière, Nom et enfin par Prénom
-
-    JouRanges = Joueurs.sort_values(by = ["Comu", "Ville", "Année", "Filière", "Nom", "Prénom"])
-
-    
-### Numérotation et distribution des rôles    
-
-    JouRanges["Mat"]  = range(1, len(JouRanges) + 1)
-    JouRanges["Role"] = paquetRoles
-    
-    JouReduit = JouRanges.drop(["Ville", "Année", "Filière", "Comu"], axis = 1)
-    
-    JouTerm   = fGoo.dfToList(JouReduit)
-
-    
-### Caractéristiques des Rôles
-
-    for num in range(1, len(JouRanges) + 1) :
-        role = JouTerm[num][7]
+            habRole = rd.choice(paquetRoles)
         
-        if   role == fRol.info_Ancien["nom"] : JouTerm[num][8] =    c.Ancien_nbProtec
-        elif role == fRol.info_Sorcie["nom"] : JouTerm[num][8] = f"{c.Sorcie_nbPotVie} {c.Sorcie_nbPotMort}"
-        elif role == fRol.info_LGNoir["nom"] : JouTerm[num][8] =    c.LGNoir_nbInfect
+        
+        
+#### Caractéristiques des Rôles
 
-
-### Réécriture de Infos Joueurs et Sauvegarde
-
-    fGoo.page1_InfoJoueurs.clear()
-    fGoo.page1_InfoJoueurs.insert_rows(fGoo.strListe(JouTerm))
-    
-    fGoo.page1_Sauvegarde .clear()
-    fGoo.page1_Sauvegarde .insert_rows(fGoo.strListe(JouTerm))
-    
-    
-    
-# ----------------------------------------------------
-# --- Envoie des rôles et modification des pseudos ---
-# ----------------------------------------------------
-
-    for j in JouTerm[1:] :
+        if   habRole == fRol.role_Ancien   : caractRole =    v.Ancien_nbProtec
+        elif habRole == fRol.role_Sorciere : caractRole = f"{v.Sorcie_nbPotVie} {v.Sorcie_nbPotMort}"
+        elif habRole == fRol.role_Juge     : caractRole =    v.Juge_nbExil
+        elif habRole == fRol.role_LGNoir   : caractRole =    v.LGNoir_nbInfect
         
-#   j = [23, H, Clément, Campana, ISEN CSI 2 N, 269051521272905728, , "Loup-Garou", '', , '']
-                
-        membJou = fDis.serveurMegaLG.get_member(int(j[5]))
         
-        await membJou.send(f"Vous êtes **{j[7]}** :")
-        await membJou.send(embed = fRol.Role_avec(j[7])["embeds"])
         
-        surnom  = membJou.display_name
+#### Enregistrement
         
-        while len(surnom) > 26 :
-            surnom = surnom[:-1]
+        ligne, numLigne = fGoo.ligne_avec( hab.matri, fGoo.clef_Matricule, fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs) )
         
-        await membJou.edit(nick = f"{fMeP.AjoutZerosAvant(j[0],3)} | {surnom}")
-    
-    
-    
-# ---------------------------
-# --- Rapports municipaux ---
-# ---------------------------
-    
-    villePrec = ""
-    anneePrec = ""
-    filiePrec = ""
-    groupPrec = ""
-    
-    msgJoueurs = await channelRapport.send("Recencement de début de Partie :\n\n\n\n")
-    
-    for j in dfToList(JouRanges)[1:] :
+        fGoo.remplacerVal_ligne( habRole[fRol.clefNom], fGoo.clef_Role       , numLigne, fGoo.page1_InfoJoueurs )
+        fGoo.remplacerVal_ligne( caractRole           , fGoo.clef_caractRoles, numLigne, fGoo.page1_InfoJoueurs )
         
-#   j = [23, H, Clément, Campana, ISEN CSI 2 N, 269051521272905728, , "Loup-Garou", '', , '', 'N', '2', 'CSI', 'ISEN']
-#        0   1     2        3           4                5         6       7        8  9  10  11   12    13      14
-
-        if groupPrec != j[14]:
-            prefixe = "\n\n\n"
-            if j[14] == "ISEN" : msgJoueurs = await ajoutMsg(msgJoueurs, prefixe +  "__**⬢⬢⬢⬢⬢   ISEN   ⬢⬢⬢⬢⬢**__")
-            else               : msgJoueurs = await ajoutMsg(msgJoueurs, prefixe + f"__**⬢⬢⬢⬢⬢   {j[4]}   ⬢⬢⬢⬢⬢**__")
-            villePrec = ""
-            anneePrec = ""
-            filiePrec = ""
+        await asyncio.sleep(0.1)
         
-        if j[14] == "ISEN" :
-            if villePrec != j[11] :
-                prefixe = ""
-                if villePrec != "" : prefixe = "\n"
-                if j[11] == "B" : msgJoueurs = await ajoutMsg(msgJoueurs, prefixe + "\n> **⬢⬢⬢ -   BREST   - ⬢⬢⬢**")
-                if j[11] == "C" : msgJoueurs = await ajoutMsg(msgJoueurs, prefixe + "\n> **⬢⬢⬢ -   CAEN   - ⬢⬢⬢**")
-                if j[11] == "N" : msgJoueurs = await ajoutMsg(msgJoueurs, prefixe + "\n> **⬢⬢⬢ -   NANTES   - ⬢⬢⬢**")
-                if j[11] == "R" : msgJoueurs = await ajoutMsg(msgJoueurs, prefixe + "\n> **⬢⬢⬢ -   RENNES   - ⬢⬢⬢**")
-                anneePrec = ""
-                filiePrec = ""
-            
-            if anneePrec != j[12] :
-                if j[12] == "1" : msgJoueurs = await ajoutMsg(msgJoueurs, "\n> \n> --- 1ère Année ---")
-                if j[12] == "2" : msgJoueurs = await ajoutMsg(msgJoueurs, "\n> \n> --- 2ème Année ---")
-                if j[12] == "3" : msgJoueurs = await ajoutMsg(msgJoueurs, "\n> \n> --- 3ème Année ---")
-                if j[12] == "4" : msgJoueurs = await ajoutMsg(msgJoueurs, "\n> \n> --- 4ème Année ---")
-                if j[12] == "5" : msgJoueurs = await ajoutMsg(msgJoueurs, "\n> \n> --- 5ème Année ---")
-                if j[12] == "P" : msgJoueurs = await ajoutMsg(msgJoueurs, "\n> \n> --- Profs ---")
-                filiePrec = ""
-                
-            if filiePrec != j[13]  and  j[13] != "M"  and  j[12] != "P" :
-                msgJoueurs = await ajoutMsg(msgJoueurs, f"\n> {j[13]}")
-            
-        villePrec = j[11]
-        anneePrec = j[12]
-        filiePrec = j[13]
-        groupPrec = j[14]
         
-        membJou = serveurMegaLG.get_member(int(j[5]))
         
-        msgJoueurs = await ajoutMsg(msgJoueurs, f"\n>       ⬢ {membJou.mention} - {j[2]} {j[3]}")
-
-
-"""
+#### Envoie du Rôle
+        
+        await hab.member.send( f"Vous êtes **{habRole[fRol.clefNom]}** :" )
+        await hab.member.send( embed = habRole[fRol.clefEmbed]            )
+        
+        
 
 
 
@@ -1327,12 +1288,16 @@ async def Tour(ctx):
 
 
 
+
+
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def Lancement(ctx):
     
     await fDis.effacerMsg(ctx)
     await attente_lancementTour()
+
+
 
 
 
@@ -1356,6 +1321,8 @@ async def attente_lancementTour() :
         await asyncio.sleep(tempsAtt.seconds)
     
     await fTou.Tour()
+
+
 
 
 

@@ -25,9 +25,9 @@ rd   = fMeP.rd
 
 
 
-# %% Définition de la Classe Habitant
 
-# %%% Phrases de Mort
+
+#### Phrases de Mort
 
 inv = "invariable"
 
@@ -114,7 +114,6 @@ mortPhrases_Femme_AmourDe_Fem = [
 
 
 
-# %%% Classe Habitant
 
 class Habitant :
     
@@ -168,6 +167,9 @@ class Habitant :
         
         elif self.role == fRol.role_Ancien :
             self.nbProtectRest  = int(caractRole)
+            
+        elif self.role == fRol.role_Juge :
+            self.nbExilRest     = int(caractRole)
         
         
 #### Variables Personnelles

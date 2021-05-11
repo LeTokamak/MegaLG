@@ -21,10 +21,10 @@ def def_cstsMegaLG ():
     Redef de toutes les variables liés au serveur MégaLG
     """
     
-    print("Redef des Constantes")
+    print("Redef des Constantes liées à Discord")
     
-    def_userAdmins()
     def_serveurMegaLG()
+    def_userAdmins()
     def_categoryChannelsMegaLG()
     def_channelsMegaLG()
     def_rolesMegaLG()
@@ -124,70 +124,38 @@ def def_categoryChannelsMegaLG ():
 # %%% Channels
 
 
-# Autres Chanels (le 10/03/2021)
 
-"""
- <TextChannel id=817798385821155339 name='⬢_6│anges-et-démons' position=32 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798571604705382 name='⬢_9│' position=35 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798264384389121 name='⬢_5│mode-obscure' position=31 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=778275316971864094 name='🚬┃salon-privé-avec-dè-gro-cigar-é-tou' position=43 nsfw=False news=False category_id=786274888465252352>,
- <TextChannel id=817798234247397386 name='⬢_4│génocide-de-tout-l-univers' position=30 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=796450089303932948 name='☕┃le-salon-du-personnel' position=22 nsfw=False news=False category_id=817842578581880863>,
- <TextChannel id=817803097199738910 name='👾┃proposition-de-roles' position=23 nsfw=False news=False category_id=817843165855219734>,
- <TextChannel id=817798768766091304 name='⬢_e│' position=40 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798546635096075 name='⬢_8│' position=34 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=778152934948470834 name='💎┃archive-du-programmeur' position=21 nsfw=False news=False category_id=782626299146403861>,
- <TextChannel id=783611815313408040 name='🥃┃boulot' position=44 nsfw=False news=False category_id=786274888465252352>,
- <TextChannel id=817816477464789052 name='💬┃phrases-de-mort' position=25 nsfw=False news=False category_id=817843165855219734>,
- <TextChannel id=817798672682975233 name='⬢_b│' position=37 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=788005245799497728 name='🐍┃programmes' position=26 nsfw=False news=False category_id=817843165855219734>,
- <TextChannel id=817804723490914305 name='🤖┃nouvelles-commandes' position=24 nsfw=False news=False category_id=817843165855219734>,
- <VoiceChannel id=790157873078337556 name='🥀┃discutions fantomatiques' position=3 bitrate=64000 user_limit=0 category_id=790156426739056650>,
- <VoiceChannel id=786275485029105704 name="∯┃Vocal privé (réservé à l'élite du serveur)" position=5 bitrate=64000 user_limit=0 category_id=786274888465252352>,
- <TextChannel id=817798696267284520 name='⬢_c│' position=38 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798134956032000 name='⬢_2│meurtre-des-afk' position=28 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798432054837308 name='⬢_7│modification-horaire' position=33 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798213779718224 name='⬢_3│compo-de-la-prochaine-partie' position=29 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817797845007466546 name='⬢_1│système-de-groupe' position=27 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=790157757557768222 name='🍂┃discutions-fantomatiques' position=18 nsfw=False news=False category_id=790156426739056650>,
- <TextChannel id=817798793416015893 name='⬢_f│' position=41 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=776187355497103360 name='🎨┃écrivains-dignes-de-rembrandt' position=42 nsfw=False news=False category_id=776186937219350569>,
- <TextChannel id=817798744044732416 name='⬢_d│' position=39 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=817798639208366141 name='⬢_a│le-canton' position=36 nsfw=False news=False category_id=817797543324680254>,
- <TextChannel id=787400715562909737 name='🕸┃le-vieux-salon-du-personnel-abandonné' position=45 nsfw=False news=False category_id=786274888465252352>,
- <VoiceChannel id=778290209489027112 name='☕┃le salon du personnel' position=4 bitrate=64000 user_limit=0 category_id=817842578581880863>
- """
+channelAccueil        = None
+channelGeneral        = None
 
+channelRegles         = None
+channelInfos          = None
+channelRoles          = None
+channelAmeliorations  = None
 
+channelFctmentGrp     = None
+channelGalaxie        = None
+channelEtoile         = None
+channelPlanete        = None
+channelLune           = None
 
-channelAccueil       = None
-channelGeneral       = None
+channelRapport        = None
+channelCimetiere      = None
+channelBucher         = None
+channelDebat          = None
+vocalDebat            = None
 
-channelRegles        = None
-channelInfos         = None
-channelRoles         = None
-channelAmeliorations = None
+channelVotesLG        = None
+channelLoupsGarous    = None
+vocalLoupsGarous      = None
+channelFamilleNom     = None
+vocalFamilleNom       = None
 
-channelFctmentGrp    = None
-channelGalaxie       = None
-channelEtoile        = None
-channelPlanete       = None
-channelLune          = None
+channelHistorique     = None
+channelAttente        = None
+channelGifVilebrequin = None
 
-channelRapport       = None
-channelCimetiere     = None
-channelBucher        = None
-channelDebat         = None
-vocalDebat           = None
-
-channelVotesLG       = None
-channelLoupsGarous   = None
-vocalLoupsGarous     = None
-channelFamilleNom    = None
-vocalFamilleNom      = None
-
-channelHistorique    = None
-channelAttente       = None
+channelBugs           = None
 
 
 def def_channelsMegaLG ():
@@ -254,13 +222,18 @@ def def_channelsMegaLG ():
 
 #### Historique
 
-    global channelHistorique, channelAttente
+    global channelHistorique, channelAttente, channelGifVilebrequin
 
     channelHistorique     = bot.get_channel        (782626433255997480)
     channelAttente        = bot.get_channel        (789105310408900619)
+    channelGifVilebrequin = bot.get_channel        (818580306318721055) 
 
 
+#### Ajouts
+    
+    global channelBugs
 
+    channelBugs           = bot.get_channel        (841694226206294036) 
 
 
 
@@ -335,6 +308,7 @@ Emo_Cupidon     = "<:V_Cupidon:788784786155634719>"
 Emo_Corbeau     = "<:V_Corbeau:788778409203073054>"
 Emo_Chasseur    = "<:V_Chassseur:788784786332319774>"
 Emo_Ancien      = "<:V_Ancien:788778406476251146>"
+Emo_Juge        = "<:V_Juge:839754641192648704>"
 
 Emo_LoupGarou   = "<:Loup_Garou:788778408477327401>"
 Emo_LGNoir      = "<:LG_Noir:788778408867266651>"

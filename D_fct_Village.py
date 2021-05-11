@@ -46,6 +46,8 @@ class Village :
         self.habitants      = []
         self.maire          = None
         
+        
+        
 #### Constantes Discord
         
         self.roleDiscord    = None
@@ -88,10 +90,14 @@ class Village :
         
 #### Variables Diurnes
         
-        self.votesEnPlus  = []
-        self.typeScrutin  = None
+        self.votesEnPlus          = []
+        self.typeScrutin          = None
         
-        self.resultatVote = []
+        self.resultatVote         = []
+        
+        self.exilOrdonne          = False
+        self.exilOrdonne_parMaire = False
+        self.juges_OrdonantExil    = []
         
         
 
@@ -294,7 +300,7 @@ class Village :
                 else                     : prefixe = "\n> "
                 
                 listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, prefixe + f"\n> --- {hab.groupe.chemin[2]} ---")
-                grpPrec_rang4                                      =  None
+                grpPrec_rang4                                      = (None)
             
             
 #### Groupe de Rang 4
@@ -314,7 +320,13 @@ class Village :
             elif hab.groupe.rang == 3 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin + [None                  ]
             elif hab.groupe.rang == 4 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin
             
-            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢ {hab.user.mention} - {hab.prenom} {hab.nom}")
+            if hab.role == fRol.role_VillaVilla : texteVilVil = fRol.roleVillaVilla[fRol.clefEmoji]
+            else                                : texteVilVil = ":black_circle:"
+            
+            if hab.role == fRol.role_VillaVilla : texteMaire  = fDis.Emo_Maire
+            else                                : texteMaire  = ":black_circle:"
+            
+            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢ {texteVilVil} {texteMaire}   {hab.user.mention} - {hab.prenom} {hab.nom}")
             
 #### Role
             
@@ -360,9 +372,35 @@ class Village :
         await self.salonRapport.send( msgNbRole )
 
 
+    
 
+    async def dissolution(self) :
+        
+#### Choix du village d'arrivé au hasard
 
+        nouvVillage = self
+        while nouvVillage == self :
+            nouvVillage = rd.choice(TousLesVillages)
+            
 
+#### Exil de tous les habitants
+
+        self.redef_habitants()
+        
+        for hab in self.habitants :
+            await exil(hab, nouvVillage, ancienVillage = self)
+            await asyncio.sleep(0.1)
+            
+
+#### Message dans le nouveau Village
+        
+        contenuMsg_AnnonceExil = f"**{self.nom}** a été détruit... {len(self.habitants)} habitants viennent d'arriver à {nouvVillage.nom} !"
+        
+        await nouvVillage.salonDebat.send(contenuMsg_AnnonceExil)
+            
+            
+            
+            
 
 # %% Nuit
 
@@ -774,9 +812,9 @@ class Village :
         
 #### Début de Journée
         
-        await self.salonRapport    .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.dem)}\n\n⬢⬢⬢\n```\n_ _")
-        await self.salonBucher     .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.dem)}\n\n⬢⬢⬢\n```\n_ _")
-        await self.salonDebat      .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.dem)}\n\n⬢⬢⬢\n```")
+        await self.salonRapport    .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```\n_ _")
+        await self.salonBucher     .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```\n_ _")
+        await self.salonDebat      .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
         
         
         
@@ -785,7 +823,11 @@ class Village :
 #### Annonce des morts de la nuit
         
         for matri in self.matriculeHab_vraimentTues :
-            await fHab.habitant_avec(matri).Tuer()
+            habTue = fHab.habitant_avec(matri)
+            await habTue.Tuer()
+            
+            if habTue.estMaire :
+                await self.dissolution()
         
         
         if len(self.matriculeHab_vraimentTues) == 0 :
@@ -1013,9 +1055,42 @@ class Village :
             persTue = rd.choice(persDesignes)
             
 #### Annonce de la sentence
-            await self.salonBucher.send(f"Le village a choisi de tuer {persTue.prenom} {persTue.nom} ({persTue.member.mention} - {persTue.groupe})")
+            await self.salonBucher.send(f"Le village a choisi de tuer {persTue.prenom} {persTue.nom} ({persTue.member.mention} - {persTue.groupe}).")
             
-            await persTue.Tuer(meurtreNocturne = False)
+            
+#### Gestion de l'exil
+            if self.exilOrdonne  and  not persTue.estMaire :
+                
+                if self.exilOrdonne_parMaire :
+                    contenuMsgAnnonce_Exil = "**CEPENDANT**, __le maire__ a décidé de l'exiler dans un autre village !"
+                    
+                else :
+                    contenuMsgAnnonce_Exil = "**CEPENDANT**, un juge a décidé d'être clément et il l'a exilé dans un autre village !"
+                
+                await self.salonBucher.send(contenuMsgAnnonce_Exil)
+                
+                
+                
+                if not self.exilOrdonne_parMaire :
+                    juge = rd.choice(self.juges_OrdonantExil)
+                    
+                    fGoo.ajoutVal_cellule_avec( -1                  , fGoo.clef_caractRoles ,
+                                                juge.matri          , fGoo.clef_Matricule   ,
+                                                fGoo.page1_InfoJoueurs                      ,
+                                                typeObjetCellule = int                        )   
+                    
+                    await juge.member.send(f"Vous avez exilé {persTue.prenom} {persTue.nom}.")
+                    
+                    
+                
+                await self.exilVote(persTue)
+                
+                
+            else :
+                await persTue.Tuer(meurtreNocturne = False)
+                
+                if persTue.estMaire : 
+                    await self.dissolution()
         
         
         
@@ -1028,8 +1103,41 @@ class Village :
             if v.vote_aucunHabChoisi_meutreHasard :
                 persTue        = rd.choice( self.habitants )
                 phraseSentence = f"Comme personne n'a voté, un habitant choisi au hasard partira sur le bûcher !\nLa personne choisie est {persTue.prenom} {persTue.nom} ({persTue.member.mention} - {persTue.groupe})"
-                
-                await persTue.Tuer(meurtreNocturne = False)
+
+#### Annonce de la sentence
+    
+                await self.salonBucher.send( phraseSentence )
+
+#### Gestion de l'exil
+                if self.exilOrdonne  and  not persTue.estMaire :
+                    
+                    if self.exilOrdonne_parMaire :
+                        contenuMsgAnnonce_Exil = "**CEPENDANT**, __le maire__ a décidé de l'exiler dans un autre village !"
+                        
+                    else :
+                        contenuMsgAnnonce_Exil = "**CEPENDANT**, un juge a décidé d'être clément et il l'a exilé dans un autre village !"
+                    
+                    await self.salonBucher.send(contenuMsgAnnonce_Exil)
+                    
+                    
+                    if not self.exilOrdonne_parMaire :
+                        juge = rd.choice(self.juges_OrdonantExil)
+                        
+                        fGoo.ajoutVal_cellule_avec( -1                  , fGoo.clef_caractRoles ,
+                                                    juge.matri          , fGoo.clef_Matricule   ,
+                                                    fGoo.page1_InfoJoueurs                      ,
+                                                    typeObjetCellule = int                        )   
+                        
+                        await juge.member.send(f"Vous avez exilé {persTue.prenom} {persTue.nom}")
+                        
+                        
+                    await self.exilVote(persTue)
+                    
+                else :
+                    await persTue.Tuer(meurtreNocturne = False)
+                    
+                    if persTue.estMaire : 
+                        await self.dissolution()
 
 
 
@@ -1037,11 +1145,11 @@ class Village :
 
             else :
                 phraseSentence = "Comme personne n'a voté, personne ne sera tué."
-    
-        
 #### Annonce de la sentence
     
-            await self.salonBucher.send( phraseSentence )
+                await self.salonBucher.send( phraseSentence )
+        
+
 
 
 
@@ -1196,13 +1304,34 @@ class Village :
 
 
 
+    async def exilVote(self, habitant):
+        
+#### Choix du village d'arrivé au hasard
+
+        nouvVillage = self
+        while nouvVillage == self :
+            nouvVillage = rd.choice(TousLesVillages)
+            
+#### Exil
+        
+        await exil(habitant, nouvVillage, ancienVillage = self)
+        
+#### Message dans le nouveau Village
+        
+        if habitant.estUnHomme : contenuMsg_AnnonceExil = f"Un petit nouveau vient d'arriver en ville, il s'agit de {habitant.member.mention}  |  {habitant.prenom} {habitant.nom}."
+        else                   : contenuMsg_AnnonceExil = f"Une petite nouvelle vient d'arriver en ville, il s'agit de {habitant.member.mention}  |  {habitant.prenom} {habitant.nom}."
+
+        await nouvVillage.salonDebat.send(contenuMsg_AnnonceExil)
+
+
+
 
 
 # %% Fonctions liés aux Villages
 
 TousLesVillages = []
 
-async def creationVillage (nom = None, ajout_A_TousLesVillages = True):
+async def creationVillage (numNouvVillage = 0, nom = None, ajout_A_TousLesVillages = True):
     """
     Créée un nouveau village, ajoute ce village à TousLesVillages si ajout_A_TousLesVillages == True
     """   
@@ -1211,18 +1340,18 @@ async def creationVillage (nom = None, ajout_A_TousLesVillages = True):
 #### Recherche d'un numéro disponible pour le nouveau groupe
 # =============================================================================
     
-    numTrouve       = False
-    numNouvVillage  = 0
+    if numNouvVillage == 0 :
+        numTrouve       = False
+        
+        numDejaUtilises = fGoo.colonne_avec(fGoo.page_Villages, fGoo.clefVlg_numVillage)
+        
+        while not numTrouve :
+            numNouvVillage += 1
+            if numNouvVillage not in numDejaUtilises :
+                numTrouve = True
     
-    numDejaUtilises = fGoo.colonne_avec(fGoo.page_Villages, fGoo.clefVlg_numVillage)
-
-    while not numTrouve :
-        numNouvVillage += 1
-        if numNouvVillage not in numDejaUtilises :
-            numTrouve = True
     
     
-
 # =============================================================================
 #### Nom par Défaut
 # =============================================================================
@@ -1261,7 +1390,7 @@ async def creationVillage (nom = None, ajout_A_TousLesVillages = True):
 
 
 
-async def redef_villagesExistants():
+def redef_villagesExistants():
     """
     Fonction re-définissant les villages créés précédemment
     """
@@ -1400,7 +1529,51 @@ def village_avec (info, type_dinfo):
     return None
 
 
+    
+
+async def exil(habitant, nouvVillage, ancienVillage = None):
+    """
+    Cette fonction enlève l'habitant de son ancien village et le place dans un nouveau
+    """
+    
+#### Remplacement dans Info Joueur
+    
+    fGoo.remplacerVal_ligne_avec( nouvVillage.numero, fGoo.clef_numVillage,
+                                  habitant.matri    , fGoo.clef_Matricule , 
+                                  fGoo.page1_InfoJoueurs                    )
+    
+    
+#### Gestion des Rôles
+
+    if ancienVillage == None :
+        ancienVillage = village_avec(habitant.numVlg, "numero")
+    
+    await habitant.member.remove_roles( ancienVillage.roleDiscord )
+    await habitant.member.   add_roles(   nouvVillage.roleDiscord )
+    
+    
+#### Gestion des permitions
+    
+    await ancienVillage.salonVoteLG   .set_permissions( habitant , read_messages = False , send_messages = False )
+    await ancienVillage.salonConseilLG.set_permissions( habitant , read_messages = False , send_messages = False )
+    await ancienVillage.vocalConseilLG.set_permissions( habitant , read_messages = False                         )
+    
+    await ancienVillage.salonFamilleNb.set_permissions( habitant , read_messages = False , send_messages = False )
+    await ancienVillage.vocalFamilleNb.set_permissions( habitant , read_messages = False                         )
+    
+    
+#### Message d'exil 
+
+    contenuMsg_Exil  = f"Vous avez été exilé de votre ancien village, vous habiterez maintenant à **{nouvVillage.nom}** !"
+    contenuMsg_Exil +=  "\n\n*Rappel des règles* :"
+    contenuMsg_Exil +=  "\n> - Au niveau de vos éventuels pouvoirs, **rien ne change** : Si vous êtes sorcière par exemple, votre nombre de potions ne change pas."
+    contenuMsg_Exil +=  "\n> - Loin des Yeux, près du Cœur... Les flèches de Cupidon sont puissantes, donc si vous l'étiez, vous restez **amoureux**, malgré la distance !"
+    contenuMsg_Exil +=  "\n> - Malheurement, la salive du Loup-Garou Noir est aussi très puissante, donc si vous l'étiez, vous restez **infecté**."
         
+    await habitant.member.send(contenuMsg_Exil)
+
+
+
 
 
 # %% Autres Fonctions
@@ -1422,13 +1595,13 @@ def depouillement (village, typeDeSuffrage = None):
     symbolesVote = "⬢"
     
 #### Type de Suffrage
-
+    
     if typeDeSuffrage == None :
         typeDeSuffrage = village.typeScrutin
     
     
-#### Rassemblement de tout les votes
     
+#### Rassemblement de tout les votes
     
     if typeDeSuffrage == "LG" :
         votes = list(village.votesConseilLG)
@@ -2283,15 +2456,15 @@ fRol.role_EnfantSauv[fRol.clefFctsNoct] = fctNoct_EnfantSauvage
 
 # %%% Conseil des Loups-Garous
 
-async def Conseil_LG (LoupGarou, villageois):
+async def Conseil_LG (LoupGarou, village):
     
     contenuMsg_Attente = f"{fDis.Emo_LoupGarou} en tant que {fRol.emojiRole(LoupGarou.role, LoupGarou.estUnHomme)}   - {LoupGarou.user.mention}  |  {LoupGarou.prenom} {LoupGarou.nom}"
     
     msgAtt = await fDis.channelAttente.send( contenuMsg_Attente )
             
-    await villageois.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
-    await villageois.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
-    await villageois.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = True                          )
+    await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
+    await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
+    await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = True                          )
     
     
     while v.maintenant() < v.conseilLG_hFin :
@@ -2300,9 +2473,9 @@ async def Conseil_LG (LoupGarou, villageois):
     
 ### Fin du conseil
     
-    await villageois.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = False , send_messages = False )
-    await villageois.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = False )
-    await villageois.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = False                         )
+    await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = False , send_messages = False )
+    await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = False )
+    await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = False                         )
 
 
 ### Fin de l'attente
@@ -2345,11 +2518,11 @@ async def evt_voteLG(memberLG, contenuMsg):
                                                 
         await fDis.effacerMsg(village.salonVoteLG)
         await village.salonVoteLG.send(msgResultat)
-
-
-
-
-
+    
+    
+    
+    
+    
 # %% Event Vote du Village
 
 async def evt_voteVlg (memberVlg, contenuMsg):
@@ -2357,25 +2530,29 @@ async def evt_voteVlg (memberVlg, contenuMsg):
     habVlg  = fHab.habitant_avec( memberVlg.id            )
     village =       village_avec( habVlg.numVlg, "numero" )
     
+    if village.typeScrutin != None :
+        
 #### Essaye de int le msg
-    try :
-        matriculeHab_Choisi = int(contenuMsg)
-    except :
-        matriculeHab_Choisi = None
-    
-    
+        try :
+            matriculeHab_Choisi = int(contenuMsg)
+        except :
+            matriculeHab_Choisi = None
+        
+        
 #### Si le matricule correspond à quelqu'un en vie
-    if fHab.habitant_avec(matriculeHab_Choisi) != None :
-        
-        habVlg.choixVote = matriculeHab_Choisi
-        
-        village.msgHistorique_votes = await fDis.ajoutMsg(village.msgHistorique_votes, f"\n   - {habVlg.user.mention} vote {habVlg.nbVote} fois pour {habVlg.choixVote}\n") 
-        
-        contenuMsg_resultat, village.resultatVote = depouillement(village)
-        await village.msgResultat.edit(content = "Voici les résultats du vote :\n" + contenuMsg_resultat)
-        
-        
-        
+        if fHab.habitant_avec(matriculeHab_Choisi) != None :
+            
+            habVlg.choixVote = matriculeHab_Choisi
+            
+            village.msgHistorique_votes = await fDis.ajoutMsg(village.msgHistorique_votes, f"\n   - {habVlg.user.mention} vote {habVlg.nbVote} fois pour {habVlg.choixVote}\n") 
+            
+            contenuMsg_resultat, village.resultatVote = depouillement(village)
+            await village.msgResultat.edit(content = "Voici les résultats du vote :\n" + contenuMsg_resultat)
+
+
+
+
+
 # %% Commandes Village
 
 async def cmd_changementNomVillage(memberVlg, tupleNom):
@@ -2386,9 +2563,64 @@ async def cmd_changementNomVillage(memberVlg, tupleNom):
     if habitant != None  and  habitant.estMaire :
         village = village_avec(habitant.numVlg, "numero")
         village.changementNom(nouveauNom)
-        
+    
     else :
         await memberVlg.send("**ERREUR** - Seul un maire peut changer le nom de son village !")
-                
+    
+    
+    
+async def cmd_voteVlg(memberVlg, matricule):
+    await evt_voteVlg(memberVlg, matricule)
+    
+    
+    
+async def cmd_voteLG (memberLG, matricule):
+    
+    hab = fHab.habitant_avec(memberLG.id)
+    
+    verifLG_Camp = hab.role[fRol.clefCamp] == fRol.campLG
+    verifLG_Infe = hab.estInf
+    verif_LGBlan = hab.role == fRol.role_LGBlanc
+    verif_EnfSau = hab.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(hab.pereProtecteur) == None
+            
+    if verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau :
+        await evt_voteLG(memberLG, matricule)
+    
+    
+
+async def cmd_demandeExilVote (member) :
+    
+    hab = fHab.habitant_avec(member.id)
+
+    if not hab.estMaire  and  not hab.role == fRol.role_Juge  and  hab.nbExilRest == 0 :
+        return
+    
+    
+#### Message de confirmation
+    
+    contenuMsg_confirm_exilVote = "Êtes-vous certain de vouloir sauver la personne désignée par le village en l'**exilant** (dans un autre village choisi au hasard) ?" 
+
+    if   hab.estMaire :
+        contenuMsg_confirm_exilVote +=  "\n> Attention : Vous êtes maire, vous pouvez exiler autant de personne que vous voulez mais votre choix sera **public**."
         
+    elif hab.role == fRol.role_Juge  and  hab.nbExilRest != 0 :
+        contenuMsg_confirm_exilVote += f"\n> Il vous reste encore **{hab.nbExilRest} exils**, si le maire fait le même choix que vous, vous ne perderez pas d'exils !"
         
+    message_aConfirmer = await member.send(contenuMsg_confirm_exilVote)
+    exilConfirme       = await fDis.attente_Confirmation(message_aConfirmer, member)
+    
+    
+#### ordreExil
+
+    if exilConfirme :
+        
+        vlg = village_avec(hab.numVlg, 'numero')
+        vlg.exilOrdonne = True
+        
+        if   hab.estMaire :
+            vlg.exilOrdonne_parMaire = True
+            
+        else :
+            vlg.juges_OrdonantExil.append(hab)
+    
+    

@@ -27,6 +27,7 @@ role_Villageois, role_Cupidon   , role_Ancien     = {}, {}, {}
 role_Salvateur , role_Sorciere  , role_Voyante    = {}, {}, {}
 role_Chasseur  , role_Corbeau   , role_Hirondelle = {}, {}, {}
 role_FamilleNb                                    = {}
+role_VillaVilla, role_Juge                        = {}, {}
 role_LG        , role_LGNoir    , role_LGBleu     = {}, {}, {}
 role_LGBlanc   , role_EnfantSauv                  = {}, {}
 
@@ -35,6 +36,7 @@ TousLesRoles = [ role_Villageois, role_Cupidon   , role_Ancien    ,
                  role_Salvateur , role_Sorciere  , role_Voyante   ,
                  role_Chasseur  , role_Corbeau   , role_Hirondelle,
                  role_FamilleNb ,
+                 role_VillaVilla, role_Juge      ,
                  role_LG        , role_LGNoir    , role_LGBleu    ,
                  role_LGBlanc   , role_EnfantSauv                  ]
 
@@ -58,6 +60,9 @@ role_Hirondelle[clefNom] = "Hirondelle"
       
 role_FamilleNb [clefNom] = "Membre de la Famille Nombreuse"
 
+role_VillaVilla[clefNom] = "Villageois - Villageois"
+role_Juge      [clefNom] = "Juge"
+
 role_LG        [clefNom] = "Loup-Garou"
 role_LGNoir    [clefNom] = "Loup-Garou Noir"
 role_LGBleu    [clefNom] = "Loup-Garou Bleu"
@@ -67,30 +72,33 @@ role_EnfantSauv[clefNom] = "Enfant Sauvage"
 
 
 
-# %%% Nombre de chaque rôle
+# %%% Proportion de chaque rôle dans la compo
 
-clefNb = "nombre"
+clefProp = "proportion"
 
-role_Villageois[clefNb] = v.nb_Villag
-role_Cupidon   [clefNb] = v.nb_Cupido
-role_Ancien    [clefNb] = v.nb_Ancien
+role_Villageois[clefProp] = v.prop_Villag
+role_Cupidon   [clefProp] = v.prop_Cupido
+role_Ancien    [clefProp] = v.prop_Ancien
 
-role_Salvateur [clefNb] = v.nb_Salvat
-role_Sorciere  [clefNb] = v.nb_Sorcie
-role_Voyante   [clefNb] = v.nb_Voyant
+role_Salvateur [clefProp] = v.prop_Salvat
+role_Sorciere  [clefProp] = v.prop_Sorcie
+role_Voyante   [clefProp] = v.prop_Voyant
 
-role_Chasseur  [clefNb] = v.nb_Chasse
-role_Corbeau   [clefNb] = v.nb_Corbea
-role_Hirondelle[clefNb] = v.nb_Hirond
+role_Chasseur  [clefProp] = v.prop_Chasse
+role_Corbeau   [clefProp] = v.prop_Corbea
+role_Hirondelle[clefProp] = v.prop_Hirond
       
-role_FamilleNb [clefNb] = v.nb_Famill
+role_FamilleNb [clefProp] = v.prop_Famill
 
-role_LG        [clefNb] = v.nb_LG
-role_LGNoir    [clefNb] = v.nb_LGNoir
-role_LGBleu    [clefNb] = v.nb_LGBleu
+role_VillaVilla[clefProp] = v.prop_VillaVilla
+role_Juge      [clefProp] = v.prop_Juge
 
-role_LGBlanc   [clefNb] = v.nb_LGBlan
-role_EnfantSauv[clefNb] = v.nb_EnSauv
+role_LG        [clefProp] = v.prop_LG
+role_LGNoir    [clefProp] = v.prop_LGNoir
+role_LGBleu    [clefProp] = v.prop_LGBleu
+
+role_LGBlanc   [clefProp] = v.prop_LGBlan
+role_EnfantSauv[clefProp] = v.prop_EnSauv
 
 
 
@@ -111,6 +119,9 @@ role_Corbeau   [clefCouleur] = 0xC79900
 role_Hirondelle[clefCouleur] = 0x00B3C7
       
 role_FamilleNb [clefCouleur] = 0x44FF00
+
+role_VillaVilla[clefCouleur] = role_Villageois[clefCouleur]
+role_Juge      [clefCouleur] = 0x8A2BE2
 
 role_LG        [clefCouleur] = 0xFF0000
 role_LGNoir    [clefCouleur] = 0x9F0000
@@ -139,6 +150,9 @@ role_Hirondelle[clefEmoji] = fDis.Emo_Hirondelle
       
 role_FamilleNb [clefEmoji] =(fDis.Emo_FNFrere, fDis.Emo_FNSoeur)
 
+role_VillaVilla[clefEmoji] = role_Villageois[clefEmoji]
+role_Juge      [clefEmoji] = fDis.Emo_Juge
+
 role_LG        [clefEmoji] = fDis.Emo_LoupGarou
 role_LGNoir    [clefEmoji] = fDis.Emo_LGNoir
 role_LGBleu    [clefEmoji] = fDis.Emo_LGBleu
@@ -147,7 +161,42 @@ role_LGBlanc   [clefEmoji] = fDis.Emo_LGBlanc
 role_EnfantSauv[clefEmoji] = fDis.Emo_EnfSauv
 
 
+
+# %%% Camp du rôle
+
+campVillage = "Village"
+campLG      = "Loups-Garous"
+campSolo    = "Solitaire"
+campVilLG   = "Village puis Loups-Garous"
+
+clefCamp = "camp"
+
+role_Villageois[clefCamp] = campVillage
+role_Cupidon   [clefCamp] = campVillage
+role_Ancien    [clefCamp] = campVillage
+
+role_Salvateur [clefCamp] = campVillage
+role_Sorciere  [clefCamp] = campVillage
+role_Voyante   [clefCamp] = campVillage
+
+role_Chasseur  [clefCamp] = campVillage
+role_Corbeau   [clefCamp] = campVillage
+role_Hirondelle[clefCamp] = campVillage
+      
+role_FamilleNb [clefCamp] = campVillage
+
+role_VillaVilla[clefCamp] = campVillage
+role_Juge      [clefCamp] = campVillage
+
+role_LG        [clefCamp] = campLG
+role_LGNoir    [clefCamp] = campLG
+role_LGBleu    [clefCamp] = campLG
+
+role_LGBlanc   [clefCamp] = campSolo
+role_EnfantSauv[clefCamp] = campVilLG
     
+
+
 # %%% URL des Images de chaque rôle
 
 clefImage = "urlImage"
@@ -165,6 +214,9 @@ role_Corbeau   [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/i
 role_Hirondelle[clefImage] = "https://media.discordapp.net/attachments/677824808221933585/715106297825067088/image0.png?width=677&height=677"
       
 role_FamilleNb [clefImage] =("https://www.loups-garous-en-ligne.com/jeu/assets/images/carte26.png", "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte22.png")
+
+role_VillaVilla[clefImage] =  role_Villageois[clefImage]
+role_Juge      [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte29.png"
 
 role_LG        [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte2.png"
 role_LGNoir    [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte21.png"
@@ -191,17 +243,21 @@ else                                             : s_Ancien = ""
 #   Sorcière
 
 if   v.Sorcie_nbPotVie + v.Sorcie_nbPotMort >= 2 : s_So_Potion = "s"
-else                                             : s_So_Potion  = ""
+else                                             : s_So_Potion = ""
 
 if   v.Sorcie_nbPotVie  == 0                     : So_potsVie =  ""
-elif v.Sorcie_nbPotVie  == 1                     : So_potsVie =  "\n - **1** potion de vie, qui peut sauver une victime des loups."
+elif v.Sorcie_nbPotVie  == 1                     : So_potsVie = f"\n - **{v.Sorcie_nbPotVie}** potion de vie, qui peut sauver une victime des loups."
 elif v.Sorcie_nbPotVie  >= 2                     : So_potsVie = f"\n - **{v.Sorcie_nbPotVie}** potions de vie, qui peuvent sauver la victime des loups."
 
 if   v.Sorcie_nbPotMort == 0                     : So_potsMort =  ""
-elif v.Sorcie_nbPotMort == 1                     : So_potsMort =  "\n - **1** potion de mort, pour se débarrasser d'un gêneur."
+elif v.Sorcie_nbPotMort == 1                     : So_potsMort = f"\n - **{v.Sorcie_nbPotMort}** potion de mort, pour se débarrasser d'un gêneur."
 elif v.Sorcie_nbPotMort >= 2                     : So_potsMort = f"\n - **{v.Sorcie_nbPotMort}** potions de mort, pour se débarrasser des gêneurs."
 
 
+#   Juge
+
+if v.Juge_nbExil >= 2                            : s_juge = "s"
+else                                             : s_juge = ""
 
 # =============================================================================
 # Ecriture des descriptions
@@ -222,6 +278,9 @@ role_Corbeau   [clefDescription] =  "Chaque nuit, il désigne un joueur qui aura
 role_Hirondelle[clefDescription] =  "Chaque nuit, elle choisit un joueur, sa voix comptera 3 fois plus lors du vote du village."
 
 role_FamilleNb [clefDescription] =  "Les membres de la famille nombreuse se connaissent tous et passent toutes leurs soirées ensemble, ils sont unis et rien ne les divisera ! (sauf peut-être les loups...)"
+
+role_VillaVilla[clefDescription] =  "Comme le Villageois, il n'a aucun pouvoir particulier... Néanmoins, tous le village sait qu'il est innocent !"
+role_Juge      [clefDescription] = f"A la fin du vote, il peut décider d'**exiler** l'habitant désigné par le village. Il a le doit à **{v.Juge_nbExil}** exil{s_juge}."
 
 role_LG        [clefDescription] =  "La pilosité exceptionnelle de cette bête lui permet de prendre part au débat nocturne, avec ses compères Loups-Garous, pour décider d'une victime à dévorer..."
 role_LGNoir    [clefDescription] = f"Il peut transformer la victime des loups en loup-garou, et il le peut **{v.LGNoir_nbInfect}** fois !\nUne infection qui peut se révéler cruciale, car l'infecté garde ses pouvoirs d'innocent !"
@@ -250,44 +309,15 @@ role_Hirondelle[clefDetails] =  "*Les hirondelles sont appelées individuellemen
 
 role_FamilleNb [clefDetails] =  "*Pendant toute la nuit, deux salons (un textuel et un vocal) leur sont ouverts.\nIls peuvent y faire ce qu'ils veulent, il n'y a aucune modération !*"
 
+role_VillaVilla[clefDetails] =  None
+role_Juge      [clefDetails] =  """*Le juge ne recevra **pas** de message à la fin du vote, pour exiler la victime du village, il devrat taper la commande "!exil" pour utiliser son pouvoir !*"""
+
 role_LG        [clefDetails] =  "*Le système de vote du conseil des loups-garous est le même que celui du village, les résultats du vote sont envoyés après chaque vote.\nEn cas d'égalité ou si personne n'a voté, personne ne sera dévoré.*"
 role_LGNoir    [clefDetails] =  "*Seul l'infecté sera averti du choix du Loup-Garou Noir, le village ne le saura pas (contrairement à Wolfy).*"
 role_LGBleu    [clefDetails] =  "*Si la Voyante tente de le démasquer, elle verra un rôle choisi au hasard parmi les rôles étant du côté du village.*"
 
 role_LGBlanc   [clefDetails] =  "*Le joueur choisi (qui peut être un villageois ou un loup-garou), ne peut pas être sauvé par les Sorcières...\nSeuls les Salvateurs peuvent le protéger.*"
 role_EnfantSauv[clefDetails] =  "*Il est appelé lors de la première nuit, pour choisir son modèle.*"
-
-
-
-# %%% Camp du rôle
-
-campVillage = "Village"
-campLG      = "Loups-Garous"
-campSolo    = "Solitaire"
-campVilLG   = "Village puis Loups-Garous"
-
-clefCamp = "camp"
-
-role_Villageois[clefCamp] = campVillage
-role_Cupidon   [clefCamp] = campVillage
-role_Ancien    [clefCamp] = campVillage
-
-role_Salvateur [clefCamp] = campVillage
-role_Sorciere  [clefCamp] = campVillage
-role_Voyante   [clefCamp] = campVillage
-
-role_Chasseur  [clefCamp] = campVillage
-role_Corbeau   [clefCamp] = campVillage
-role_Hirondelle[clefCamp] = campVillage
-      
-role_FamilleNb [clefCamp] = campVillage
-
-role_LG        [clefCamp] = campLG
-role_LGNoir    [clefCamp] = campLG
-role_LGBleu    [clefCamp] = campLG
-
-role_LGBlanc   [clefCamp] = campSolo
-role_EnfantSauv[clefCamp] = campVilLG
 
 
 
@@ -302,11 +332,11 @@ motCamp    = "Camp"
 # Création de l'embeds de la Famille Nombreuse
 # =============================================================================
 
-Ebd_Famill =         Embed( title = "**Famille Nombreuse**"         , description = role_FamilleNb[clefDescription]   , color = role_FamilleNb[clefCouleur] )
-Ebd_Famill . set_thumbnail(   url = role_FamilleNb[clefImage][0]                                                                                            )
-Ebd_Famill .     add_field(  name = motCamp                         ,       value = role_FamilleNb[clefCamp]          , inline = True                       )
-Ebd_Famill .     add_field(  name = "Taille de la Famille Nombreuse",       value = role_FamilleNb[clefNb]            , inline = True                       )
-Ebd_Famill .     add_field(  name = "__Détails Techniques du Rôle__",       value = role_FamilleNb[clefDetails]       , inline = False                      )    
+Ebd_Famill =         Embed( title = "**Famille Nombreuse**"             , description = role_FamilleNb[clefDescription] , color = role_FamilleNb[clefCouleur] )
+Ebd_Famill . set_thumbnail(   url = role_FamilleNb[clefImage][0]                                                                                              )
+Ebd_Famill .     add_field(  name = motCamp                             , value = role_FamilleNb[clefCamp]              , inline = True                       )
+Ebd_Famill .     add_field(  name = "Proportion de la Famille Nombreuse", value = f"{role_FamilleNb[clefProp]*100} %"   , inline = True                       )
+Ebd_Famill .     add_field(  name = "__Détails Techniques du Rôle__"    , value = role_FamilleNb[clefDetails]           , inline = False                      )    
 
 
 role_FamilleNb [clefEmbed] = Ebd_Famill
@@ -324,13 +354,13 @@ AutresRoles = [role_Villageois, role_Cupidon    , role_Ancien    ,
 
 for role in AutresRoles :
     
-    Ebd_Role =         Embed( title = f"**{role[clefNom]}**"                        , description = role[clefDescription],  color = role[clefCouleur] )
-    Ebd_Role . set_thumbnail(   url = role[clefImage]                                                                                                 )
-    Ebd_Role .     add_field(  name = motCamp                                       ,       value = role[clefCamp]       , inline = True              )
-    Ebd_Role .     add_field(  name = f"Nombre {fMeP.de_dApostrophe(role[clefNom])}",       value = role[clefNb]         , inline = True              )
+    Ebd_Role =         Embed( title = f"**{role[clefNom]}**"                            , description = role[clefDescription]         , color = role[clefCouleur] )
+    Ebd_Role . set_thumbnail(   url = role[clefImage]                                                                                                             )
+    Ebd_Role .     add_field(  name = motCamp                                           , value = role[clefCamp]                      , inline = True             )
+    Ebd_Role .     add_field(  name = f"Proportion {fMeP.de_dApostrophe(role[clefNom])}", value = f"{role_FamilleNb[clefProp]*100} %" , inline = True             )
     
     if role[clefDetails] != None :
-        Ebd_Role . add_field(  name = "__Détails Techniques du Rôle__"              ,       value = role[clefDetails]    , inline = False             )
+        Ebd_Role . add_field(  name = "__Détails Techniques du Rôle__"                  , value = role[clefDetails]                   , inline = False            )
         
     role[clefEmbed] = Ebd_Role
 
@@ -349,19 +379,6 @@ clefFctsNoct = "fonction nocturne"
 
 
 # %% Fonctions liées aux rôles
-
-# =============================================================================
-# Paquet de tous les Roles
-# =============================================================================
-
-paquetRoles_Initial = []
-
-for role in TousLesRoles :
-    paquetRoles_Initial += role[clefNb] * [ role[clefNom] ]
-
-
-
-
 
 def role_avec (info, type_dinfo):
     """Renvoie le dictionnaire du role correspondant à info
@@ -402,9 +419,9 @@ def emojiRole (info, estUnHomme):
     
     else :
         return emoji[1]
-    
-    
-    
+
+
+
 def imageRole (info, estUnHomme):
     """Renvoie l'url correspondant à info (en prenant en compte le sexe)
     
@@ -429,7 +446,7 @@ def imageRole (info, estUnHomme):
 
 
 
-   
+
 async def envoie_EmbedsRoles ():
     """Fonction renvoyant tous les embeds de TousLesRoles"""
 
@@ -437,41 +454,51 @@ async def envoie_EmbedsRoles ():
 
     await fDis.channelRoles.send("```Camp du Village```")
     
-    if role_Villageois[clefNb] != 0 : await fDis.channelRoles.send( embed = role_Villageois[clefEmbed] )
-    if role_Cupidon   [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Cupidon   [clefEmbed] )
-    if role_Ancien    [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Ancien    [clefEmbed] )
+    if role_Villageois[clefProp] != 0 : await fDis.channelRoles.send( embed = role_Villageois[clefEmbed] )
+    if role_VillaVilla[clefProp] != 0 : await fDis.channelRoles.send( embed = role_VillaVilla[clefEmbed] )
     
-    if role_Villageois[clefNb] + role_Cupidon   [clefNb] + role_Ancien    [clefNb] != 0 : await fDis.channelRoles.send( separation )
+    if role_Cupidon   [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Cupidon   [clefEmbed] )
+    if role_Ancien    [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Ancien    [clefEmbed] )
     
-    
-    if role_Salvateur [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Salvateur [clefEmbed] )
-    if role_Sorciere  [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Sorciere  [clefEmbed] )
-    if role_Voyante   [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Voyante   [clefEmbed] )
-    
-    if role_Salvateur [clefNb] + role_Sorciere  [clefNb] + role_Voyante   [clefNb] != 0 : await fDis.channelRoles.send( separation )
+    if role_VillaVilla[clefProp] + role_Villageois[clefProp] + role_Cupidon   [clefProp] + role_Ancien    [clefProp] != 0 : await fDis.channelRoles.send( separation )
     
     
-    if role_Chasseur  [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Chasseur  [clefEmbed] )
-    if role_Corbeau   [clefNb] != 0 : await fDis.channelRoles.send( embed = role_Corbeau   [clefEmbed] )
-    if role_Hirondelle[clefNb] != 0 : await fDis.channelRoles.send( embed = role_Hirondelle[clefEmbed] )
     
-    if role_Chasseur  [clefNb] + role_Corbeau   [clefNb] + role_Hirondelle[clefNb] != 0 : await fDis.channelRoles.send( separation )
+    if role_Salvateur [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Salvateur [clefEmbed] )
+    if role_Sorciere  [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Sorciere  [clefEmbed] )
+    if role_Voyante   [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Voyante   [clefEmbed] )
+    
+    if role_Salvateur [clefProp] + role_Sorciere  [clefProp] + role_Voyante   [clefProp]                             != 0 : await fDis.channelRoles.send( separation )
     
     
-    if role_FamilleNb [clefNb] != 0 :
+    
+    if role_Corbeau   [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Corbeau   [clefEmbed] )
+    if role_Hirondelle[clefProp] != 0 : await fDis.channelRoles.send( embed = role_Hirondelle[clefEmbed] )
+    
+    if role_Juge      [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Juge      [clefEmbed] )
+    if role_Chasseur  [clefProp] != 0 : await fDis.channelRoles.send( embed = role_Chasseur  [clefEmbed] )
+    
+    if role_Corbeau   [clefProp] + role_Hirondelle[clefProp] + role_Chasseur  [clefProp] + role_Juge      [clefProp] != 0 : await fDis.channelRoles.send( separation )   
+    
+    
+    
+    if role_FamilleNb [clefProp] != 0 :
         await fDis.channelRoles.send( embed = role_FamilleNb[clefEmbed] )
         await fDis.channelRoles.send( separation )
     
     
     
+    
+    
     await fDis.channelRoles.send("```Camp des Loups-Garous```")
     
-    if role_LG        [clefNb] != 0 : await fDis.channelRoles.send( embed = role_LG        [clefEmbed] )
-    if role_LGNoir    [clefNb] != 0 : await fDis.channelRoles.send( embed = role_LGNoir    [clefEmbed] )
-    if role_LGBleu    [clefNb] != 0 : await fDis.channelRoles.send( embed = role_LGBleu    [clefEmbed] )
+    if role_LG        [clefProp] != 0 : await fDis.channelRoles.send( embed = role_LG        [clefEmbed] )
+    if role_LGNoir    [clefProp] != 0 : await fDis.channelRoles.send( embed = role_LGNoir    [clefEmbed] )
+    if role_LGBleu    [clefProp] != 0 : await fDis.channelRoles.send( embed = role_LGBleu    [clefEmbed] )
     
-    if role_LG        [clefNb] + role_LGNoir    [clefNb] + role_LGBleu    [clefNb] != 0 : await fDis.channelRoles.send( separation )
+    if role_LG        [clefProp] + role_LGNoir    [clefProp] + role_LGBleu    [clefProp]                             != 0 : await fDis.channelRoles.send( separation )
     
     
-    if role_LGBlanc   [clefNb] != 0 : await fDis.channelRoles.send( embed = role_LGBlanc   [clefEmbed] )
-    if role_EnfantSauv[clefNb] != 0 : await fDis.channelRoles.send( embed = role_EnfantSauv[clefEmbed] )
+    
+    if role_LGBlanc   [clefProp] != 0 : await fDis.channelRoles.send( embed = role_LGBlanc   [clefEmbed] )
+    if role_EnfantSauv[clefProp] != 0 : await fDis.channelRoles.send( embed = role_EnfantSauv[clefEmbed] )

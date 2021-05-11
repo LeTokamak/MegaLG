@@ -22,26 +22,29 @@ separation  = "_ _\n_ _\n_ _"
 
 #### Nombre de rôles
 
-nb_Villag = 10
-nb_Cupido = 0
-nb_Ancien = 0
+prop_Villag     = 10
+prop_Cupido     = 0
+prop_Ancien     = 0
 
-nb_Salvat = 0
-nb_Sorcie = 5
-nb_Voyant = 5
+prop_Salvat     = 0
+prop_Sorcie     = 5
+prop_Voyant     = 5
 
-nb_Chasse = 0
-nb_Corbea = 4
-nb_Hirond = 4
+prop_Chasse     = 0
+prop_Corbea     = 4
+prop_Hirond     = 4
       
-nb_Famill = 3
+prop_Famill     = 3
 
-nb_LG     = 4
-nb_LGNoir = 3
-nb_LGBleu = 2
+prop_VillaVilla = 0.05
+prop_Juge       = 0.05
 
-nb_LGBlan = 0
-nb_EnSauv = 0
+prop_LG         = 4
+prop_LGNoir     = 3
+prop_LGBleu     = 2
+
+prop_LGBlan     = 0
+prop_EnSauv     = 0
 
 
 #### Paramètres de ces rôles
@@ -50,7 +53,7 @@ Ancien_nbProtec  = 3
 Sorcie_nbPotVie  = 2
 Sorcie_nbPotMort = 1
 LGNoir_nbInfect  = 1
-
+Juge_nbExil      = 1
 
 #### Paramètre de la Partie
 
@@ -96,7 +99,7 @@ dem       = ajd + timedelta(days = 1)
 
 #### Heure de début de nuit
 
-nuit_hDeb_Theo = datetime( ajd.year, ajd.month, ajd.day, 18, 00, tzinfo = HParis )
+nuit_hDeb_Theo = datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis )
 nuit_hDeb      = nuit_hDeb_Theo
 
 if hInit > nuit_hDeb_Theo :
@@ -104,27 +107,27 @@ if hInit > nuit_hDeb_Theo :
 
 
 
-#### Autre moment important de la nuit
+#### Autres moments important de la nuit
 
-conseilLG_hFin = datetime( ajd.year, ajd.month, ajd.day, 20, 00, tzinfo = HParis )
+conseilLG_hFin = datetime( ajd.year, ajd.month, ajd.day, 14, 00, tzinfo = HParis )
 part3_hDeb     = conseilLG_hFin + timedelta(seconds = 30)
-nuit_hFin      = datetime( dem.year, dem.month, dem.day,  9, 00, tzinfo = HParis )
+nuit_hFin      = datetime( ajd.year, ajd.month, ajd.day, 18, 00, tzinfo = HParis )
 
 
 
 #### Durée des différentes phases
 
-nuit_duree  = nuit_hFin  - nuit_hDeb
-avtP3_duree = part3_hDeb - nuit_hDeb
-part3_duree = nuit_hFin  - part3_hDeb
+nuit_duree  =  nuit_hFin -  nuit_hDeb
+avtP3_duree = part3_hDeb -  nuit_hDeb
+part3_duree =  nuit_hFin - part3_hDeb
 
 
 
-#### Moment important de la journée
+#### Moments important de la journée
 
-tour1Vote_hFin  = datetime(dem.year, dem.month, dem.day, 13, 00, tzinfo = HParis)
-envDefVote_hFin = datetime(dem.year, dem.month, dem.day, 17, 00, tzinfo = HParis)
-tour2Vote_hFin  = datetime(dem.year, dem.month, dem.day, 17, 30, tzinfo = HParis)
+tour1Vote_hFin  = datetime( ajd.year, ajd.month, ajd.day, 21, 30, tzinfo = HParis )
+envDefVote_hFin = datetime( dem.year, dem.month, dem.day,  7, 00, tzinfo = HParis )
+tour2Vote_hFin  = datetime( dem.year, dem.month, dem.day,  7, 30, tzinfo = HParis )
 
 
 def dans_premierTour() :

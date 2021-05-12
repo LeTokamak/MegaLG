@@ -411,7 +411,7 @@ def emojiRole (info, estUnHomme):
         emoji = role_avec(info, "nom")[clefEmoji]
     
     
-    if type(emoji) != tuple :
+    if type(info) != tuple :
         return emoji
     
     elif estUnHomme :

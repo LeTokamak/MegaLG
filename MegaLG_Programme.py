@@ -1030,7 +1030,7 @@ async def repartionGroupes_Villages() :
 #### Il y a trop de groupe : Listage impossible
         
         else :
-            await fDis.channel("**ERREUR** - Il y a trop de groupes (> 30)")
+            await fDis.channelHistorique.send("**ERREUR** - Il y a trop de groupes (> 30)")
         
         
         
@@ -1142,15 +1142,32 @@ async def repartionGroupes_Villages() :
     
     
     
-#### --- Transformation des villages validés en liste d'habitants ---
 
+    
+#### --- Suppression des villages qui contiennent toutes les pers d'un autre village ---
+    
+    for vlg in listeVillages_Valides :
+        for vlg2 in listeVillages_Valides :
+            
+            habDansVlg2 = True
+            
+            for hab in habitants(vlg) :
+                habDansVlg2 = habDansVlg2  and  hab in habitants(vlg2)
+            
+            if habDansVlg2 and vlg != vlg2 :
+                listeVillages_Valides.remove(vlg)
+    
+    
+    
+#### --- Transformation des villages validés en liste d'habitants ---
+    
     liste_VlgValides_Habs = []
     
     for vlg in listeVillages_Valides:
         liste_VlgValides_Habs.append(habitants(vlg))
-        
-        
-    
+
+
+
 #### --- Gestion des personnes manquantes ---
     
     listeJoueursRestants = list(TousLesJoueurs)
@@ -1159,17 +1176,17 @@ async def repartionGroupes_Villages() :
             try :
                 listeJoueursRestants.remove(hab)
             except :
-                print(f"ERREUR - Cet personne à déjà été supprimmé : {hab.display_name} ({vlg})")
-          
-            
+                print(f"ERREUR - Cette personne a déjà été supprimmé : {hab.display_name} ({vlg})")
+    
+    
     if len(listeJoueursRestants) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
         liste_VlgValides_Habs.append(tuple(listeJoueursRestants))
         listeJoueursRestants = []
-        
-        
-            
+    
+    
+    
 #### Ajout des personnes restantes aux autres villages (manuellement)
-
+    
     for joueur in listeJoueursRestants :
         
         grpJoueur = None
@@ -1179,7 +1196,7 @@ async def repartionGroupes_Villages() :
         
         
         message = f"Il reste {joueur} (il est dans {grpJoueur}) (envoie le village sous cette forme : '12') :"
-            
+        
         for i in range(len(listeVillages_Valides)) :
             vlg = listeVillages_Valides[i]
             message += f"\n> n°{i}    [{len(liste_VlgValides_Habs[i])}]   - (  "
@@ -1191,13 +1208,13 @@ async def repartionGroupes_Villages() :
         reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
         
         liste_VlgValides_Habs[int(reponse.content)].append(joueur)
-        
-        
-        
+    
+    
+    
 #### Création d'un village avec toutes les personnes restantes, si possible
     
     message = "Voici la liste des villages définitive :"
-            
+    
     for i in range(len(liste_VlgValides_Habs)) :
         vlg = liste_VlgValides_Habs[i]
         message += f"\n> n°{i}    [{len(vlg)}]   - (   "
@@ -1206,15 +1223,15 @@ async def repartionGroupes_Villages() :
         message += ")"
     
     await fDis.userCamp.send(message)
-
-
-
+    
+    
+    
 #### --- Création des villages ---
     
     donneeJoueur = fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs)
-
+    
 #### Association des habitants à leur village
-
+    
     for i in range(len(liste_VlgValides_Habs)) :
         
         vlg = liste_VlgValides_Habs[i]
@@ -1227,8 +1244,8 @@ async def repartionGroupes_Villages() :
     
     await fHab.redef_TousLesHabitants()
     
-#### Association des habitants à leur village
-        
+#### Création des villages
+    
     for i in range(len(liste_VlgValides_Habs)) :
     
         await fVlg.creationVillage( numNouvVillage = i+1 )

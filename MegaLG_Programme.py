@@ -804,9 +804,9 @@ async def numerotationHabitants():
     
     for j in listeJoueurs[1:] :
         
-#   j = [23, H, Clément, Campana, 27, 269051521272905728, '', '', '']
+#   j = ['', H, Clément, CAMPANA, 27, 0, 269051521272905728, '', '', '']
                 
-        membJou = fDis.serveurMegaLG.get_member(int(j[5]))
+        membJou = fDis.serveurMegaLG.get_member(int(j[6]))
                 
         surnom  = membJou.display_name
         

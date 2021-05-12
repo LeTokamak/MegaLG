@@ -1164,10 +1164,10 @@ async def repartionGroupes_Villages() :
     liste_VlgValides_Habs = []
     
     for vlg in listeVillages_Valides:
-        liste_VlgValides_Habs.append(habitants(vlg))
-
-
-
+        liste_VlgValides_Habs.append( habitants(vlg) )
+    
+    
+    
 #### --- Gestion des personnes manquantes ---
     
     listeJoueursRestants = list(TousLesJoueurs)

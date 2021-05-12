@@ -330,7 +330,7 @@ class Village :
             elif hab.groupe.rang == 3 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin + [None                  ]
             elif hab.groupe.rang == 4 : grpPrec_rang1, grpPrec_rang2, grpPrec_rang3, grpPrec_rang4 = hab.groupe.chemin
             
-            if hab.role == fRol.role_VillaVilla : texteVilVil = fRol.roleVillaVilla[fRol.clefEmoji]
+            if hab.role == fRol.role_VillaVilla : texteVilVil = fRol.role_VillaVilla[fRol.clefEmoji]
             else                                : texteVilVil = ":black_circle:"
             
             if hab.role == fRol.role_VillaVilla : texteMaire  = fDis.Emo_Maire

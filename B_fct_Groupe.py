@@ -29,7 +29,7 @@ class GroupeParDefaut :
 
     numero      = 0    
 
-    cheminBrut  = ""
+    cheminBrut  =  ""
     chemin      = [""]
     rang        = 0
     nom         = "ZZZZZZZZZZ"
@@ -325,7 +325,7 @@ async def groupe_avec (info, type_dinfo, creation_si_existe_pas = False):
                 return g
             
     
-    return None
+    return GroupeParDefaut()
 
 
 

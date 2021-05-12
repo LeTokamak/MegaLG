@@ -80,7 +80,8 @@ async def nuit_TousLesVillages():
     for vlg in fVlg.TousLesVillages :
         asyncio.Task(vlg.gestion_nuit())
 
-
+    while v.maintenant() < v.nuit_hFin :
+        await asyncio.sleep(1)
 
 #### Application de la nuit
 
@@ -96,7 +97,7 @@ async def debJournee_TousLesVillages():
     
     v.nbTours += 1
     await fDis.channelHistorique.edit(topic = f"Tour n°{v.nbTours}")
-    await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.adj)}\n\n⬢⬢⬢\n```")
+    await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
 
 #### Début de la Journée - Partie 1
     
@@ -123,7 +124,7 @@ async def debJournee_TousLesVillages():
     nbColonnes = 10
     nbLignes   = len(fHab.TousLesHabitants) + 1
     
-    feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.adj)[:10]}", nbLignes, nbColonnes)
+    feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.ajd)[:10]}", nbLignes, nbColonnes)
     feuilleDuJour.insert_rows( fGoo.page1_InfoJoueurs.get() )
 
 

@@ -333,7 +333,7 @@ class Village :
             if hab.role == fRol.role_VillaVilla : texteVilVil = fRol.role_VillaVilla[fRol.clefEmoji]
             else                                : texteVilVil = ":black_circle:"
             
-            if hab.role == fRol.role_VillaVilla : texteMaire  = fDis.Emo_Maire
+            if hab.estMaire                     : texteMaire  = fDis.Emo_Maire
             else                                : texteMaire  = ":black_circle:"
             
             listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢ {texteVilVil} {texteMaire}   {hab.user.mention} - {hab.prenom} {hab.nom}")
@@ -1749,6 +1749,14 @@ async def fctNoct_Villageois (villageois, village):
     pass
 
 
+async def fctNoct_Juge (juge, village):
+    pass
+
+
+async def fctNoct_VillaVilla (villavilla, village):
+    pass
+
+
 
 
 
@@ -2457,6 +2465,9 @@ fRol.role_Corbeau   [fRol.clefFctsNoct] = fctNoct_Corbeau
 fRol.role_Hirondelle[fRol.clefFctsNoct] = fctNoct_Hirondelle
       
 fRol.role_FamilleNb [fRol.clefFctsNoct] = fctNoct_FamilleNombreuse
+
+fRol.role_Juge      [fRol.clefFctsNoct] = fctNoct_Juge
+fRol.role_VillaVilla[fRol.clefFctsNoct] = fctNoct_VillaVilla
 
 fRol.role_LG        [fRol.clefFctsNoct] = fctNoct_LG
 fRol.role_LGNoir    [fRol.clefFctsNoct] = fctNoct_LGNoir

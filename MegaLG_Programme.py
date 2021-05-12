@@ -196,10 +196,10 @@ async def message_voteVillage():
         verifPhase = verifSalon = verifUser = False
         
         if verifServeur(message) :
-            verifUser = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+            verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+            verifPhase = v.phaseEnCours == v.phase3
             
-            if verifUser :
-                verifPhase = v.phaseEnCours == v.phase3
+            if verifUser and verifPhase :
                 verifSalon = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
         
         return verifUser  and  verifPhase and verifSalon
@@ -218,10 +218,10 @@ async def message_voteLoupGarou():
         verifPhase = verifSalon = verifUser = False
         
         if verifServeur(message) :
-            verifUser = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
-        
-            if verifUser :
-                verifPhase = v.phaseEnCours == v.phase3
+            verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+            verifPhase = v.phaseEnCours == v.phase3
+            
+            if verifUser and verifPhase :
                 verifSalon = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
         
         return verifUser  and  verifPhase and verifSalon
@@ -452,9 +452,12 @@ async def TachesEnCours (ctx):
     
     Taches = asyncio.all_tasks()
     
+    print("\n\n################# Tâches en cours #################\n")
+    
     for t in Taches :
         print(t.get_name(), t, t.done())
 
+    print("\n###################################################\n")
 
 
 @fDis.bot.command()

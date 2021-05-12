@@ -348,10 +348,10 @@ Emo_BabyBrown   = "<:among_us_baby_brown:790291918110064650>"
 Emo_BabyBlue    = "<:among_us_baby_blue:790291918630027264>"
 Emo_BabyBlack   = "<:among_us_baby_black:790291917439107082>"
 
-Emos_Babys      = [Emo_BabyYellow, Emo_BabyWhite, Emo_BabyRed   ,
-                   Emo_BabyPurple, Emo_BabyPink , Emo_BabyOrange,
-                   Emo_BabyLime  , Emo_BabyGreen, Emo_BabyCyan  ,
-                   Emo_BabyBrown , Emo_BabyBlue , Emo_BabyBlack ]
+Emos_Babys      = [ Emo_BabyYellow, Emo_BabyWhite, Emo_BabyRed   ,
+                    Emo_BabyPurple, Emo_BabyPink , Emo_BabyOrange,
+                    Emo_BabyLime  , Emo_BabyGreen, Emo_BabyCyan  ,
+                    Emo_BabyBrown , Emo_BabyBlue , Emo_BabyBlack  ]
 
 
 

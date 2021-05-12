@@ -126,23 +126,32 @@ class Village :
         
         async def cloneSalon(debutTopic, salon_aCloner) :
             salonRetourne = await salon_aCloner.clone( name = salon_aCloner.name )
-            await salonRetourne.edit(position = salon_aCloner.position + 1, topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}")
+            await salonRetourne.edit           ( position = salon_aCloner.position + 1, 
+                                                 topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}"          )
             return salonRetourne
         
         
 ### Clonage d'un des salons de référence, pour créer les salons du village
         
-        self.salonRapport   = await cloneSalon("Rapport Municipal", fDis.channelRapport)
-        self.salonBucher    = await cloneSalon("Salon de Vote"    , fDis.channelBucher )
-        self.salonDebat     = await cloneSalon("Salon de Débat"   , fDis.channelDebat  )
-        self.vocalDebat     = await cloneSalon("Débats Vocaux"    , fDis.vocalDebat    )
+        self.salonRapport   = await cloneSalon( "Rapport Municipal"                , fDis.channelRapport    )
+        self.salonBucher    = await cloneSalon( "Salon de Vote"                    , fDis.channelBucher     )
+        self.salonDebat     = await cloneSalon( "Salon de Débat"                   , fDis.channelDebat      )
+        self.vocalDebat     = await cloneSalon( "Débats Vocaux"                    , fDis.vocalDebat        )
         
-        self.salonVoteLG    = await cloneSalon("Salon de Vote des Loups-Garous"   , fDis.channelVotesLG)
-        self.salonConseilLG = await cloneSalon("Débats entre les Loups-Garous"    , fDis.channelBucher )
-        self.vocalConseilLG = await cloneSalon("Discussion entre les Loups-Garous", fDis.vocalConseilLG)
+        self.salonVoteLG    = await cloneSalon( "Salon de Vote des Loups-Garous"   , fDis.channelVotesLG    )
+        self.salonConseilLG = await cloneSalon( "Débats entre les Loups-Garous"    , fDis.channelBucher     )
+        self.vocalConseilLG = await cloneSalon( "Discussion entre les Loups-Garous", fDis.vocalLoupsGarous  )
         
-        self.salonFamilleNb = await cloneSalon("Maison familiale" , fDis.channelFamilleNom)
-        self.vocalFamilleNb = await cloneSalon("Réunion familiale", fDis.vocalFamilleNom  )
+        self.salonFamilleNb = await cloneSalon( "Maison familiale"                 , fDis.channelFamilleNom )
+        self.vocalFamilleNb = await cloneSalon( "Réunion familiale"                , fDis.vocalFamilleNom   )
+
+
+### Gestion des permissions des salons du village
+
+        await self.salonRapport.set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonBucher .set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonDebat  .set_permissions( self.roleDiscord , read_messages = True  , send_messages = True  )
+        await self.vocalDebat  .set_permissions( self.roleDiscord , read_messages = True                          )
         
         
         
@@ -151,11 +160,11 @@ class Village :
 # =============================================================================
         
         self.ecriture_GoogleSheet()
-            
-        
-        
-        
-        
+    
+    
+    
+    
+    
     async def changementNom (self, nouveauNom):
         
         self.nom = nouveauNom
@@ -178,17 +187,17 @@ class Village :
         
         
         
-        await editTopic("Rapport Municipal", self.salonRapport)
-        await editTopic("Salon de Vote"    , self.salonBucher)
-        await editTopic("Salon de Débat"   , self.salonDebat)
-        await editTopic("Débats Vocaux"    , self.vocalDebat)
+        await editTopic( "Rapport Municipal"                , self.salonRapport   )
+        await editTopic( "Salon de Vote"                    , self.salonBucher    )
+        await editTopic( "Salon de Débat"                   , self.salonDebat     )
+        await editTopic( "Débats Vocaux"                    , self.vocalDebat     )
         
-        await editTopic("Salon de Vote des Loups-Garous"   , self.salonVoteLG)
-        await editTopic("Débats entre les Loups-Garous"    , self.salonConseilLG)
-        await editTopic("Discussion entre les Loups-Garous", self.vocalConseilLG)
+        await editTopic( "Salon de Vote des Loups-Garous"   , self.salonVoteLG    )
+        await editTopic( "Débats entre les Loups-Garous"    , self.salonConseilLG )
+        await editTopic( "Discussion entre les Loups-Garous", self.vocalConseilLG )
         
-        await editTopic("Maison familiale" , self.salonFamilleNb)
-        await editTopic("Réunion familiale", self.vocalFamilleNb)
+        await editTopic( "Maison familiale"                 , self.salonFamilleNb )
+        await editTopic( "Réunion familiale"                , self.vocalFamilleNb )
         
         
         

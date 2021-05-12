@@ -434,7 +434,11 @@ async def Bug (ctx, *descriptionBug):
         if "Bug n°" in message.content :
             messagesBug.append(message)
     
-    numero = int( messagesBug[-1].content.split() [1] [2:] ) + 1
+    try :
+        numero = int( messagesBug[-1].content.split() [1] [2:] ) + 1
+        
+    except :
+        numero = 0
     
     await fDis.channelBugs.send(f"Bug n°{numero} : \n>>> { ' '.join(descriptionBug) }")
     await fDis.channelBugs.send( rd.choice(messagesGif).content )
@@ -635,7 +639,7 @@ async def on_ready():
 #### Redéfinition Groupes et Villages
     
     await fGrp.redef_groupesExistants()
-    await fVlg.redef_villagesExistants()
+    fVlg.redef_villagesExistants()
     
     
 #### Lancement des events 

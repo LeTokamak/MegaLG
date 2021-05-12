@@ -139,7 +139,7 @@ class Village :
         self.vocalDebat     = await cloneSalon( "Débats Vocaux"                    , fDis.vocalDebat        )
         
         self.salonVoteLG    = await cloneSalon( "Salon de Vote des Loups-Garous"   , fDis.channelVotesLG    )
-        self.salonConseilLG = await cloneSalon( "Débats entre les Loups-Garous"    , fDis.channelBucher     )
+        self.salonConseilLG = await cloneSalon( "Débats entre les Loups-Garous"    , fDis.channelLoupsGarous)
         self.vocalConseilLG = await cloneSalon( "Discussion entre les Loups-Garous", fDis.vocalLoupsGarous  )
         
         self.salonFamilleNb = await cloneSalon( "Maison familiale"                 , fDis.channelFamilleNom )
@@ -222,7 +222,7 @@ class Village :
         ligneVillage = {fGoo.clefVlg_numVillage : self.numero,
                         fGoo.clefVlg_Nom        : self.nom    }
 
-        if v.phaseEnCours in (v.phase2,v.phase3) :
+        if v.phaseEnCours in (v.phase2, v.phase3) :
             ligneVillage[fGoo.clefVlg_idRoleDiscord         ] = self.roleDiscord   .id
             
             ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
@@ -241,10 +241,10 @@ class Village :
 # =============================================================================
 #### Recherche du numéro de ligne et remplacement de celle-ci
 # =============================================================================
-
-        ligne, numeroLigne = fGoo.ligne_avec(self.numero,
-                                             fGoo.clefVlg_numVillage,
-                                             fGoo.donneeGoogleSheet(fGoo.page_Villages))
+        
+        igne, numeroLigne = fGoo.ligne_avec(self.numero,
+                                            fGoo.clefVlg_numVillage,
+                                            fGoo.donneeGoogleSheet(fGoo.page_Villages))
         
         fGoo.remplacerLigne(ligneVillage, numeroLigne, fGoo.page_Villages)
     
@@ -1375,14 +1375,19 @@ async def creationVillage (numNouvVillage = 0, nom = None, ajout_A_TousLesVillag
 # =============================================================================
     
     nouvVillage = Village(numNouvVillage, nom)
-    
     nouvVillage.redef_habitants()
+    
+    nvlLigne = {fGoo.clefVlg_numVillage : numNouvVillage}
+    
+    fGoo.ajoutLigne(nvlLigne, fGoo.page_Villages, numero_nvlLigne = "fin")
     
     if v.phaseEnCours in (v.phase2, v.phase3) :
         await nouvVillage.creation_roleEtSalons()
     
     else :
         nouvVillage.ecriture_GoogleSheet()
+    
+    await asyncio.sleep(0.5)
     
     
     

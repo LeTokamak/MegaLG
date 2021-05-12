@@ -193,7 +193,7 @@ def ajoutLigne(nvlLigne, page_fichier, numero_nvlLigne = 2) :
     nvlLigne doit être un dictionnaire, les clefs doivent être celles du fichier
     
     Si des colonnes ne sont pas spécifiés, elles sont comblé par rien ("") 
-    Si numero_nvlLigne == "Fin", alors la ligne est ajouté à la fin de page_fichier
+    Si numero_nvlLigne == "fin", alors la ligne est ajouté à la fin de page_fichier
     """
     
     clefs          = page_fichier.get()[0]
@@ -351,19 +351,3 @@ def ligne_avec(info, clefColonne, donnee) :
     return None, None
 
 
-
-"""def ligne_avec(info, clefColonne, donnee) :
-    "
-    Cette Fonction renvoie : 
-        - le dictionnaire de la ligne du fichierGoogleSheet correspondant à l'info donnée en argument 
-        - le numéro de la ligne dans fichierGoogleSheet
-        
-    Si aucune ligne ne correspond, elle renvoie None, None.
-    "
-        
-    for i in range(len(donnee)) :
-       
-        if donnee[i][clefColonne] == info :
-            return donnee[i], i+2
-
-    return None, None"""

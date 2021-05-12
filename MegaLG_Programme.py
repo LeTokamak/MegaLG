@@ -885,13 +885,13 @@ async def repartionGroupes_Villages() :
     
 #### --- Variables ---
     
-    listeGroupes = list(fGrp.TousLesGroupes)
-
+    listeGroupes   = list(fGrp.TousLesGroupes)
+    
     margeHabitants = 0.00 #0.05
-
+    
     TousLesMembres = fDis.serveurMegaLG.members
     TousLesJoueurs = [ member   for member in TousLesMembres   if fDis.roleJoueurs in member.roles ]
-
+    
     nbHabitants_parVillage_Souhaite = 5
     
     nbVillages_Reel                 = 0
@@ -909,8 +909,8 @@ async def repartionGroupes_Villages() :
             ecartMin                    = ecart
     
     
-    nbHab_parVlg_Min = int(nbHabitants_parVillage_Reel * (1 - margeHabitants) - 1)
-    nbHab_parVlg_Max = int(nbHabitants_parVillage_Reel * (1 + margeHabitants) + 1)
+    nbHab_parVlg_Min = int( nbHabitants_parVillage_Reel * (1 - margeHabitants) - 1 )
+    nbHab_parVlg_Max = int( nbHabitants_parVillage_Reel * (1 + margeHabitants) + 1 )
     
     listeVillages_Valides = []
     
@@ -1103,13 +1103,13 @@ async def repartionGroupes_Villages() :
                 for grp in vlg :
                     message += f"{grp} ({grp.nbPersonne})   ,   "
                 message += ")"
-                
+            
             await fDis.userCamp.send(message)
             reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
             
             for j in reponse.content.split():
                 listeVillages_Valides.append(liste_VlgPossibles[j])
-                
+            
             del(liste_VlgPossibles)
     
     

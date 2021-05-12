@@ -200,7 +200,7 @@ def def_channelsMegaLG ():
     
     channelRapport        = bot.get_channel        (780161660362293249)
     channelCimetiere      = bot.get_channel        (771492797886103552)
-    channelBucher         = bot.get_channel        (769998111120293897)
+    channelBucher         = bot.get_channel        (842037427937738822)
     channelDebat          = bot.get_channel        (770000300349980722)
     vocalDebat            = bot.get_channel        (769495045308940292)
 
@@ -210,10 +210,10 @@ def def_channelsMegaLG ():
 
     global channelVotesLG, channelLoupsGarous, vocalLoupsGarous, channelFamilleNom, vocalFamilleNom
 
-
     channelVotesLG        = bot.get_channel        (784072098612117555)
     channelLoupsGarous    = bot.get_channel        (770013706523770880)
     vocalLoupsGarous      = bot.get_channel        (770014246129893386)
+    
     channelFamilleNom     = bot.get_channel        (774762395318747168)
     vocalFamilleNom       = bot.get_channel        (774763711856508928)
 

@@ -108,11 +108,12 @@ class Village :
 #### Création du Role du Village
 # =============================================================================
         
-        self.roleDiscord = await fDis.serveurMegaLG.create_role(name   = self.nom, 
-                                                                colour = fDis.discord.Color.random(),
-                                                                hoist  = True,
-                                                                mentionable = True,
-                                                                reason = f"Role discord du Village {self.nom} - n°{self.numero}")
+        self.roleDiscord = await fDis.serveurMegaLG.create_role( name        = self.nom,
+                                                                 permissions = fDis.roleJoueurs.permissions,
+                                                                 colour      = fDis.roleJoueurs.colour,
+                                                                 hoist       = True,
+                                                                 mentionable = True,
+                                                                 reason      = f"Role discord du Village {self.nom} - n°{self.numero}" )
         
         for hab in fHab.TousLesHabitants :
             if hab.numVlg == self.numero :
@@ -133,17 +134,17 @@ class Village :
         
 ### Clonage d'un des salons de référence, pour créer les salons du village
         
-        self.salonRapport   = await cloneSalon( "Rapport Municipal"                , fDis.channelRapport    )
-        self.salonBucher    = await cloneSalon( "Salon de Vote"                    , fDis.channelBucher     )
-        self.salonDebat     = await cloneSalon( "Salon de Débat"                   , fDis.channelDebat      )
-        self.vocalDebat     = await cloneSalon( "Débats Vocaux"                    , fDis.vocalDebat        )
+        self.salonRapport   = await cloneSalon( "Rapport Municipal"                , fDis.channelRapport     )
+        self.salonBucher    = await cloneSalon( "Salon de Vote"                    , fDis.channelBucher      )
+        self.salonDebat     = await cloneSalon( "Salon de Débat"                   , fDis.channelDebat       )
+        self.vocalDebat     = await cloneSalon( "Débats Vocaux"                    , fDis.vocalDebat         )
         
-        self.salonVoteLG    = await cloneSalon( "Salon de Vote des Loups-Garous"   , fDis.channelVotesLG    )
-        self.salonConseilLG = await cloneSalon( "Débats entre les Loups-Garous"    , fDis.channelLoupsGarous)
-        self.vocalConseilLG = await cloneSalon( "Discussion entre les Loups-Garous", fDis.vocalLoupsGarous  )
+        self.salonVoteLG    = await cloneSalon( "Salon de Vote des Loups-Garous"   , fDis.channelVotesLG     )
+        self.salonConseilLG = await cloneSalon( "Débats entre les Loups-Garous"    , fDis.channelLoupsGarous )
+        self.vocalConseilLG = await cloneSalon( "Discussion entre les Loups-Garous", fDis.vocalLoupsGarous   )
         
-        self.salonFamilleNb = await cloneSalon( "Maison familiale"                 , fDis.channelFamilleNom )
-        self.vocalFamilleNb = await cloneSalon( "Réunion familiale"                , fDis.vocalFamilleNom   )
+        self.salonFamilleNb = await cloneSalon( "Maison familiale"                 , fDis.channelFamilleNom  )
+        self.vocalFamilleNb = await cloneSalon( "Réunion familiale"                , fDis.vocalFamilleNom    )
 
 
 ### Gestion des permissions des salons du village

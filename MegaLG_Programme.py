@@ -446,6 +446,32 @@ async def Bug (ctx, *descriptionBug):
 
 
 
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def SupprTousVlg (ctx):
+    
+    for vlg in fVlg.TousLesVillages :
+        
+        await vlg.salonRapport  .delete()
+        await vlg.salonBucher   .delete()
+        await vlg.salonDebat    .delete()
+        await vlg.vocalDebat    .delete()
+        
+        await vlg.salonVoteLG   .delete()
+        await vlg.salonConseilLG.delete()
+        await vlg.vocalConseilLG.delete()
+        
+        await vlg.salonFamilleNb.delete()
+        await vlg.vocalFamilleNb.delete()
+    
+        await vlg.roleDiscord   .delete()
+
+
+
+
+
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def TachesEnCours (ctx):
@@ -458,6 +484,9 @@ async def TachesEnCours (ctx):
         print(t.get_name(), t, t.done())
 
     print("\n###################################################\n")
+
+
+
 
 
 @fDis.bot.command()
@@ -480,10 +509,10 @@ async def ResetRolesDiscord (ctx):
         
         await membPar.remove_roles(fDis.roleJoueurs, fDis.roleMorts)
         await membPar.   add_roles(fDis.roleSpectateurs)
-        
-        
-        
-        
+
+
+
+
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
@@ -889,8 +918,7 @@ async def repartionGroupes_Villages() :
     
     margeHabitants = 0.00 #0.05
     
-    TousLesMembres = fDis.serveurMegaLG.members
-    TousLesJoueurs = [ member   for member in TousLesMembres   if fDis.roleJoueurs in member.roles ]
+    TousLesJoueurs = fDis.roleJoueurs.members
     
     nbHabitants_parVillage_Souhaite = 5
     
@@ -1185,6 +1213,8 @@ async def repartionGroupes_Villages() :
     
     donneeJoueur = fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs)
 
+#### Association des habitants à leur village
+
     for i in range(len(liste_VlgValides_Habs)) :
         
         vlg = liste_VlgValides_Habs[i]
@@ -1192,10 +1222,18 @@ async def repartionGroupes_Villages() :
         for hab in vlg :
             ligne, numLigne = fGoo.ligne_avec( hab.id, fGoo.clef_idDiscord, donneeJoueur )
             fGoo.remplacerVal_ligne( i+1 , fGoo.clef_numVillage, numLigne, fGoo.page1_InfoJoueurs )
+        
+        await asyncio.sleep(1)
+    
+    await fHab.redef_TousLesHabitants()
+    
+#### Association des habitants à leur village
+        
+    for i in range(len(liste_VlgValides_Habs)) :
     
         await fVlg.creationVillage( numNouvVillage = i+1 )
         
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.5)
 
 
 

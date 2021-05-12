@@ -415,7 +415,7 @@ async def renommage(ctx, *tupleNom):
 # %%%% Toujours Utilisables
 
 @fDis.bot.command()
-@fDis.commands.has_any_role(fDis.roleMaitre.id, fDis.roleArtisans.id)
+@fDis.commands.has_any_role(fDis.id_roleMaitre, fDis.id_roleArtisans)
 async def Bug (ctx, *descriptionBug):
     """
     N'a qu'un seul niveau de bug ==> Vilebrequin

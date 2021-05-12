@@ -10,7 +10,6 @@
 """
 
 
-from   datetime    import datetime
 import discord
 from   discord.ext import commands
 
@@ -239,19 +238,24 @@ def def_channelsMegaLG ():
 
 # %%% Roles du Serveur
 
-roleEveryone    = None
-roleMaitre      = None
-roleBot         = None
+roleEveryone, roleMaitre     , roleBot = (None,None,None)
+roleMdJ     , roleAssistant            = (None, None)
+roleArtisans, roleSpectateurs          = (None, None)
+roleJoueurs , roleMorts                = (None, None)
 
-roleMdJ         = None
-roleAssistant   = None
 
-roleArtisans    = None
-roleSpectateurs = None
+id_roleEveryone    = 769495045308940288
+id_roleMaitre      = 782627464530755604
+id_roleBot         = 783283411833978901
 
-roleJoueurs     = None
-roleMorts       = None
+id_roleMdJ         = 769496917797109771
+id_roleAssistant   = 783281237481619467
 
+id_roleArtisans    = 769985455470018620
+id_roleSpectateurs = 795550455224205312
+
+id_roleJoueurs     = 782625030123159562
+id_roleMorts       = 790158481634099250
 
 
 def def_rolesMegaLG ():
@@ -263,24 +267,24 @@ def def_rolesMegaLG ():
     
     global roleEveryone, roleMaitre, roleBot
     
-    roleEveryone          = serveurMegaLG.get_role (769495045308940288)
-    roleMaitre            = serveurMegaLG.get_role (782627464530755604)  
-    roleBot               = serveurMegaLG.get_role (783283411833978901)
+    roleEveryone          = serveurMegaLG.get_role (id_roleEveryone)
+    roleMaitre            = serveurMegaLG.get_role (id_roleMaitre)  
+    roleBot               = serveurMegaLG.get_role (id_roleBot)
     
     
     global roleMdJ, roleAssistant
     
-    roleMdJ               = serveurMegaLG.get_role (769496917797109771)
-    roleAssistant         = serveurMegaLG.get_role (783281237481619467)
+    roleMdJ               = serveurMegaLG.get_role (id_roleMdJ)
+    roleAssistant         = serveurMegaLG.get_role (id_roleAssistant)
     
     
     global roleArtisans, roleSpectateurs, roleJoueurs, roleMorts
     
-    roleArtisans          = serveurMegaLG.get_role (769985455470018620)
-    roleSpectateurs       = serveurMegaLG.get_role (795550455224205312)
+    roleArtisans          = serveurMegaLG.get_role (id_roleArtisans)
+    roleSpectateurs       = serveurMegaLG.get_role (id_roleSpectateurs)
     
-    roleJoueurs           = serveurMegaLG.get_role (782625030123159562)
-    roleMorts             = serveurMegaLG.get_role (790158481634099250)
+    roleJoueurs           = serveurMegaLG.get_role (id_roleJoueurs)
+    roleMorts             = serveurMegaLG.get_role (id_roleMorts)
 
 
 

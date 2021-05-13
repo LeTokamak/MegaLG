@@ -371,11 +371,11 @@ class Village :
         msgNbRole = "_ _\n_ _\nRôles restants :"
         
         Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_VillaVilla [fRol.clefEmoji], fRol.role_Cupidon [fRol.clefEmoji], fRol.role_Ancien[fRol.clefEmoji] ],
-                     [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fDis.Emo_Voyante  [fRol.clefEmoji]                                   ],
+                     [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji]                                   ],
                      [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji]                                   ],
                  list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                                                              ),
                      [                                                                                                                                                   ],
-                     [fRol.role_LoupGarou  [fRol.clefEmoji], fRol.roleo_LGNoir    [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
+                     [fRol.role_LoupGarou  [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
                      [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfSauv    [fRol.clefEmoji]                                                                       ] ]
         
         

@@ -376,7 +376,7 @@ class Village :
                  list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                                                              ),
                      [                                                                                                                                                   ],
                      [fRol.role_LG         [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
-                     [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfSauv    [fRol.clefEmoji]                                                                       ] ]
+                     [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfantSauv [fRol.clefEmoji]                                                                       ] ]
         
         
         for ligneRole in Emo_Roles :
@@ -507,7 +507,7 @@ class Village :
 #### --- Habitants protégés par les Salvateurs ---
 # =============================================================================
     
-        matriculeHab_proteges = list(self.matriculeHab_protegeSalva)
+        matriculeHab_proteges = list(self.matriculeHab_protegeSalvat)
         
         msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Les {fDis.Emo_Salvateur} ont protégé : {matriculeHab_proteges}.")
 

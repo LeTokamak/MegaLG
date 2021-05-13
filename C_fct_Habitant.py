@@ -568,7 +568,7 @@ class Habitant :
 ##  Calcul du temps d'attente
                 
                 m = v.maintenant()
-                tempsAttenteVerif_Maximal = v.timedelta(0, 0, 0, 0, nbMinutesAttente_Max)
+                tempsAttenteVerif_Maximal = v.timedelta(minutes = nbMinutesAttente_Max)
                 
                 if  tempsAttenteVerif_Maximal  + m >= heureFinAttente :
                     tempsAttenteVerif_Effectif      = heureFinAttente - m

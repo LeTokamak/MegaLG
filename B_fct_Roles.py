@@ -280,7 +280,7 @@ role_Hirondelle[clefDescription] =  "Chaque nuit, elle choisit un joueur, sa voi
 role_FamilleNb [clefDescription] =  "Les membres de la famille nombreuse se connaissent tous et passent toutes leurs soirées ensemble, ils sont unis et rien ne les divisera ! (sauf peut-être les loups...)"
 
 role_VillaVilla[clefDescription] =  "Comme le Villageois, il n'a aucun pouvoir particulier... Néanmoins, tous le village sait qu'il est innocent !"
-role_Juge      [clefDescription] = f"A la fin du vote, il peut décider d'**exiler** l'habitant désigné par le village. Il a le doit à **{v.Juge_nbExil}** exil{s_juge}."
+role_Juge      [clefDescription] = f"Avant la fin du vote, il peut décider d'**exiler** l'habitant désigné par le village. Il a le doit à **{v.Juge_nbExil}** exil{s_juge}."
 
 role_LG        [clefDescription] =  "La pilosité exceptionnelle de cette bête lui permet de prendre part au débat nocturne, avec ses compères Loups-Garous, pour décider d'une victime à dévorer..."
 role_LGNoir    [clefDescription] = f"Il peut transformer la victime des loups en loup-garou, et il le peut **{v.LGNoir_nbInfect}** fois !\nUne infection qui peut se révéler cruciale, car l'infecté garde ses pouvoirs d'innocent !"
@@ -310,7 +310,7 @@ role_Hirondelle[clefDetails] =  "*Les hirondelles sont appelées individuellemen
 role_FamilleNb [clefDetails] =  "*Pendant toute la nuit, deux salons (un textuel et un vocal) leur sont ouverts.\nIls peuvent y faire ce qu'ils veulent, il n'y a aucune modération !*"
 
 role_VillaVilla[clefDetails] =  None
-role_Juge      [clefDetails] =  """*Le juge ne recevra **pas** de message à la fin du vote, pour exiler la victime du village, il devrat taper la commande "!exil" pour utiliser son pouvoir !*"""
+role_Juge      [clefDetails] =  """*Le juge ne recevra **pas** de message à la fin du vote, pour exiler la victime du village, il devra taper la commande "**!exil**" pour utiliser son pouvoir !*"""
 
 role_LG        [clefDetails] =  "*Le système de vote du conseil des loups-garous est le même que celui du village, les résultats du vote sont envoyés après chaque vote.\nEn cas d'égalité ou si personne n'a voté, personne ne sera dévoré.*"
 role_LGNoir    [clefDetails] =  "*Seul l'infecté sera averti du choix du Loup-Garou Noir, le village ne le saura pas (contrairement à Wolfy).*"
@@ -350,7 +350,7 @@ AutresRoles = [role_Villageois, role_Cupidon    , role_Ancien    ,
                role_Salvateur , role_Sorciere   , role_Voyante   ,
                role_Chasseur  , role_Corbeau    , role_Hirondelle,
                role_LG        , role_LGNoir     , role_LGBleu    ,
-               role_LGBlanc   , role_EnfantSauv                   ]
+               role_LGBlanc   , role_EnfantSauv , role_Juge, role_VillaVilla                 ]
 
 for role in AutresRoles :
     

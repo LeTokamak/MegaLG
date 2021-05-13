@@ -2023,65 +2023,67 @@ async def fctNoct_Sorciere (sorciere, village):
         emojisEtReturns.append(["🔴", choixTuer])
         
     emojisEtReturns.append(["⚫", choixRien])
-        
-        
-        
-
-        
+    
+    
+    
+    
+    
 # =============================================================================
 #### === Attente de la Réponse de la Sorcière ===
 # =============================================================================       
-
+    
     msgAtt = await fDis.channelAttente.send( contenuMsgSorci_Attente )
-        
-    choixSorciere = await fDis.attente_Reaction(msgQuestion, sorciere.user, emojisEtReturns, timeout = v.nuit_hFin - v.maintenant())
+    
+    tempsRestant = v.nuit_hFin - v.maintenant()
+    
+    choixSorciere = await fDis.attente_Reaction(msgQuestion, sorciere.user, emojisEtReturns, timeout = tempsRestant.seconds)
     
 #### --- Cas 1 : La sorcière ne réponds pas où elle répond "rR" ---
     
     if   choixSorciere in (choixRien, None) :
-            
+        
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + "\n   La sorcière n'a rien fait cette nuit.")
-        
-        
-        
+    
+    
+    
 #### --- Cas 2 : La sorcière sauve la victime des LG ---
-        
+    
     elif choixSorciere == choixSauv :
-            
+        
         village.matriculeSorciere_sauveuse.append( sorciere.matri )
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + "\n   La sorcière a sauvé la victime des Loups-Garous !")
-        
-        
+    
+    
 #### --- Cas 3 : La sorcière veut tuer quelqu'un d'autre ---
     
     elif choixSorciere == choixTuer :
-            
+    
 #### Message
         contenuMsgPoison_Question = "Sorcière, vous avez décidé d'utiliser une de vos potions de mort. Qui voulez-vous empoisonner ?"
         contenuMsgPoison_Detail   = "\n```\nPour choisir votre victime, envoyez ici son matricule.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n```"
-            
+        
         await sorciere.user.send(contenuMsgPoison_Question + contenuMsgPoison_Detail)
-    
+        
 #### Attente de Réponse
         msgAtt2 = await fDis.channelAttente.send(contenuMsgSorci_Attente + "   ##### Choix de la personne à empoisonner #####")
         victimeSorciere, aRepondu = await sorciere.attenteMatri_Habitant(v.nuit_hFin)
-    
+        
         if aRepondu :
             village.matriculeSorciere_tueuses.append(        sorciere.matri )
             village.matriculeHab_tuesSorciere.append( victimeSorciere.matri )
             village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + f"\n   La sorcière a tué {victimeSorciere.user.mention} {victimeSorciere.prenom} {victimeSorciere.nom} !")
-        
+            
         else :
             village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgSorci_HistoDeb + "\n   La sorcière n'a tué personne.")
-
-    
+        
+        
 ### Fin de l'attente (Empoisonnement)
         await msgAtt2.delete()
-                    
-
+    
+    
 ###############################################################################
-
-
+    
+    
 ### Fin de l'attente                
     await msgAtt.delete()
 
@@ -2100,29 +2102,31 @@ async def fctNoct_Voyante (voyante, village):
     
 #### Message
     await voyante.user.send(contenuMsgVoyante_Question + contenuMsgVoyante_Detail)
-            
+    
 #### Attente du Matricule d'habitant
     msgAtt = await fDis.channelAttente.send(contenuMsgVoyante_Attente)
     pers, aRepondu = await voyante.attenteMatri_Habitant(v.nuit_hFin)
-            
-
-
+    
+    
+    
     if aRepondu :
-                
+        
 #   Cas où pers est un Loup Bleu
-        if pers.role == "Loup-Garou Bleu":
-            Role = rd.choice( ["Villageois", "Cupidon", "Sorcière", "Voyante", "Salvateur", "Corbeau", "Hirondelle", "Ancien", "Membre de la Famille Nombreuse"] )
+        if pers.role == fRol.role_LGBleu :
+            Role = rd.choice( [ role[fRol.clefNom]   for role in fRol.TousLesRoles   if role[fRol.clefCamp] == fRol.campVillage ] )
+        
         else :
-            Role = pers.role
-
+            Role = pers.role[fRol.clefNom]
+        
 #### Réponse de la boule de cristal
-        await voyante.user.send(f"Vous voyez dans votre boule que {fMeP.AjoutZerosAvant(pers.matri,3)}  |  **{pers.prenom} {pers.nom}** {pers.groupe} est **{Role}**.")
+        reponseBoule = f"{fMeP.AjoutZerosAvant(pers.matri,3)}  |  **{pers.prenom} {pers.nom}** {pers.groupe} est **{Role}**"
 
-        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgVoyante_HistoDeb + f"\n     Elle a vu dans sa boule que {pers.prenom} {pers.nom} ({pers.user.mention}) est **{Role}**.")
-
+        await voyante.user.send(f"Vous voyez dans votre boule que {reponseBoule}.")
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgVoyante_HistoDeb + f"\n     Elle a vu dans sa boule que {reponseBoule}.")
+    
     else :
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgVoyante_HistoDeb +  "\n     Elle n'a pas regardé sa boule.")
-
+    
 ### Fin de l'attente
     await msgAtt.delete()
 
@@ -2389,7 +2393,7 @@ async def fctNoct_Maire (maire, village):
     msgAtt_Debut      = await fDis.channelAttente.send("{fDis.Emo_Maire}   - {maire.user.mention}  |  {maire.prenom} {maire.nom}  |  {village.nom} - *Attente de début de la fonction nocturne*")
     messageLancement  = await maire.user.send(contenuMsgLancmt_Question + contenuMsgLancmt_Precision)
     
-    lancementAutorise = await fDis.attente_Reaction(messageLancement, maire.user, [["🟢", True]], timeout = v.nuit_duree, reponseParDefaut = False)
+    lancementAutorise = await fDis.attente_Reaction(messageLancement, maire.user, [["🟢", True]], timeout = v.nuit_duree.seconds, reponseParDefaut = False)
     
     await messageLancement.delete()
     await msgAtt_Debut.delete()

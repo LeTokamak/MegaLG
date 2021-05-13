@@ -39,7 +39,7 @@ class GroupeParDefaut :
     
     
     def __str__(self):
-        return self.nom
+        return "*Aucun Groupe*"
 
 
 

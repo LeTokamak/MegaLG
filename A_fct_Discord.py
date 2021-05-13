@@ -480,7 +480,6 @@ async def attente_Reaction(message_surLequelReagir, reacteur, emojisEtReturns, t
     """
     
     listeEmoji  = []
-    reactionMdJ = []
     
     for element in emojisEtReturns :
         emj = element[0]
@@ -497,15 +496,15 @@ async def attente_Reaction(message_surLequelReagir, reacteur, emojisEtReturns, t
         reaction, user = await bot.wait_for("reaction_add", check = verifEmoji, timeout = timeout)
         
     except :
-        for r in reactionMdJ :
-            await r.clear()
+        for emoji in listeEmoji :
+            await message_surLequelReagir.remove_reaction(emoji, userMdJ)
             
         return reponseParDefaut
     
     
     
-    for r in reactionMdJ :
-        await r.clear()
+    for emoji in listeEmoji :
+        await message_surLequelReagir.remove_reaction(emoji, userMdJ)
     
     return emojisEtReturns[listeEmoji.index(str(reaction.emoji))] [1]
 
@@ -525,9 +524,9 @@ async def attente_Confirmation(message_aConfirmer, confirmateur, timeout = None,
     Emo_validation  = "✅"
     Emo_infirmation = "❌"
     
-    return await attente_Reaction( message_aConfirmer     , confirmateur                     , 
-                                   [[Emo_validation, True], [Emo_infirmation, False]]        ,
-                                   timeout = timeout      , reponseParDefaut=reponseParDefaut )
+    return await attente_Reaction( message_aConfirmer     , confirmateur                       , 
+                                   [[Emo_validation, True], [Emo_infirmation, False]]          ,
+                                   timeout = timeout      , reponseParDefaut = reponseParDefaut )
 
 
 

@@ -133,10 +133,11 @@ async def reaction_Groupe():
     def verifGroupe(payload):
         salon        = fDis.serveurMegaLG.get_channel(payload.channel_id)
         
-        verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
-        
-        verifPhase   = v.phaseEnCours == v.phase1
-        verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
+        if salon != None :
+            verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
+            
+            verifPhase   = v.phaseEnCours == v.phase1
+            verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
         
         return verifUser  and  verifPhase and verifCategCh
     
@@ -249,8 +250,7 @@ async def event_messages():
 
 # %%%% Bug
 
-@fDis.bot.command()
-async def Bug (ctx, *descriptionBug):
+async def declarationBug (descriptionBug):
     """
     N'a qu'un seul niveau de bug ==> Vilebrequin
     """
@@ -260,16 +260,11 @@ async def Bug (ctx, *descriptionBug):
     async for message in fDis.channelGifVilebrequin.history():
         messagesGif.append(message)
     
-    print("########### Fct Bug ############")
-    
     messagesBug = []
     
     async for message in fDis.channelBugs.history():
-        print("Contenu message", message.content)
         if "Bug n°" == message.content[:6] :
             messagesBug.append(message)
-    
-    print(messagesBug)
 
     
     try :
@@ -277,16 +272,87 @@ async def Bug (ctx, *descriptionBug):
         
     except :
         numero = 0
-        
-    print(numero)
     
-    await fDis.channelBugs.send(f"Bug n°{numero} : \n>>> { ' '.join(descriptionBug) }")
+    strDescriptionBug = ' '.join(descriptionBug)
+    
+    await fDis.channelBugs.send(f"Bug n°{numero} :\n>>> " + strDescriptionBug )
     await fDis.channelBugs.send( rd.choice(messagesGif).content )
     await fDis.channelBugs.send( "_ _\n\n\n_ _")
     
     
+
+@fDis.bot.command()
+async def Bug (ctx, *descriptionBug):
+    await declarationBug (descriptionBug)
+
+@fDis.bot.command()
+async def bug (ctx, *descriptionBug):
+    await declarationBug (descriptionBug)
+
+
+
+
+
+async def miseAJourBug (numeroBug, descriptionMaJ):
+    
+    msgBug = None
+    listeMessage = []
+    async for message in fDis.channelBugs.history(oldest_first = True):
+        listeMessage.append(message)
+        
+        if f"n°{numeroBug}" == message.content.split(" ") [1] :
+            msgBug = message
     
     
+    if msgBug != None :
+        
+        strDescriptionMaJ = ' '.join(descriptionMaJ)
+        
+        await msgBug.reply(content = f"Mise à Jour du Bug n°{numeroBug} :\n>>> " + strDescriptionMaJ)
+
+
+
+@fDis.bot.command()
+async def majBug (ctx, numeroBug, *descriptionMaJ):
+    await miseAJourBug (numeroBug, descriptionMaJ)
+
+
+
+
+
+async def suppressionBug (numeroBug):
+    
+    msgBug = None
+    listeMessage = []
+    async for message in fDis.channelBugs.history(oldest_first = True):
+        listeMessage.append(message)
+        
+        if f"n°{numeroBug}" == message.content.split(" ") [1] :
+            msgBug = message
+    
+    
+    if msgBug != None :
+        
+        indexMsgBug = listeMessage.index(msgBug)
+        msgsASuppr = listeMessage[ indexMsgBug : indexMsgBug + 3 ]
+        
+        for msg in listeMessage :
+            if msg.reference.message_id == msgBug.id :
+                msgsASuppr.apppend(msg)
+        
+        for msg in msgsASuppr :
+            await msg.delete()
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def supprBug (ctx, numeroBug):
+    await suppressionBug (numeroBug)
+
+
+
+
 
 # %%%% Nettoyage
 

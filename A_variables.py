@@ -99,7 +99,7 @@ dem       = ajd + timedelta(days = 1)
 
 #### Heure de début de nuit
 
-nuit_hDeb_Theo = datetime( ajd.year, ajd.month, ajd.day,  16, 42, tzinfo = HParis ) # datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis )
+nuit_hDeb_Theo = datetime( ajd.year, ajd.month, ajd.day,  16, 44, tzinfo = HParis ) # datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis )
 nuit_hDeb      = nuit_hDeb_Theo
 
 if hInit > nuit_hDeb_Theo :

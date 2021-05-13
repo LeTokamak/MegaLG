@@ -47,7 +47,7 @@ async def Tour():
     
 #### Gestion de la nuit
     
-    coroutinesNocturnes = ()
+    coroutinesNocturnes = []
 
     for vlg in fVlg.TousLesVillages :
         coroutinesNocturnes.append( vlg.gestion_nuit() )
@@ -104,7 +104,7 @@ async def Tour():
     
 # %%% Vote (Elimination / Election Maire)
     
-    coroutinesVotes = ()
+    coroutinesVotes = []
     
     for vlg in fVlg.TousLesVillages :
         if vlg.maire == None :

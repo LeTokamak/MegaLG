@@ -300,8 +300,12 @@ async def miseAJourBug (numeroBug, descriptionMaJ):
     async for message in fDis.channelBugs.history(oldest_first = True):
         listeMessage.append(message)
         
-        if f"n°{numeroBug}" == message.content.split(" ") [1] :
-            msgBug = message
+        try : 
+            if f"n°{numeroBug}" == message.content.split(" ") [1] :
+                msgBug = message
+                
+        except :
+            pass
     
     
     if msgBug != None :
@@ -327,8 +331,12 @@ async def suppressionBug (numeroBug):
     async for message in fDis.channelBugs.history(oldest_first = True):
         listeMessage.append(message)
         
-        if f"n°{numeroBug}" == message.content.split(" ") [1] :
-            msgBug = message
+        try : 
+            if f"n°{numeroBug}" == message.content.split(" ") [1] :
+                msgBug = message
+                
+        except :
+            pass
     
     
     if msgBug != None :

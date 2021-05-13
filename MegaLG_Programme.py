@@ -342,11 +342,16 @@ async def suppressionBug (numeroBug):
     if msgBug != None :
         
         indexMsgBug = listeMessage.index(msgBug)
-        msgsASuppr = listeMessage[ indexMsgBug : indexMsgBug + 3 ]
+        msgsASuppr  = listeMessage[ indexMsgBug : indexMsgBug + 3 ]
         
         for msg in listeMessage :
-            if msg.reference.message_id == msgBug.id :
-                msgsASuppr.apppend(msg)
+            
+            try : 
+                if msg.reference.message_id == msgBug.id :
+                    msgsASuppr.apppend(msg)
+                    
+            except :
+                pass
         
         for msg in msgsASuppr :
             await msg.delete()

@@ -37,6 +37,7 @@ asyncio = fHab.asyncio
 async def Tour():
     
     await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()
     
 #### Déroulement de la Journée
 
@@ -80,8 +81,6 @@ async def nuit_TousLesVillages():
     for vlg in fVlg.TousLesVillages :
         asyncio.Task(vlg.gestion_nuit())
 
-    while v.maintenant() < v.nuit_hFin :
-        await asyncio.sleep(1)
 
 #### Application de la nuit
 

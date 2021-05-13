@@ -247,6 +247,47 @@ async def event_messages():
 
 # %%% Commandes Générales
 
+# %%%% Bug
+
+@fDis.bot.command()
+async def Bug (ctx, *descriptionBug):
+    """
+    N'a qu'un seul niveau de bug ==> Vilebrequin
+    """
+    
+    messagesGif = []
+    
+    async for message in fDis.channelGifVilebrequin.history():
+        messagesGif.append(message)
+    
+    print("########### Fct Bug ############")
+    
+    messagesBug = []
+    
+    async for message in fDis.channelBugs.history():
+        print("Contenu message", message.content)
+        if "Bug n°" == message.content[:6] :
+            messagesBug.append(message)
+    
+    print(messagesBug)
+
+    
+    try :
+        numero = int( messagesBug[-1].content.split() [1] [2:] ) + 1
+        
+    except :
+        numero = 0
+        
+    print(numero)
+    
+    await fDis.channelBugs.send(f"Bug n°{numero} : \n>>> { ' '.join(descriptionBug) }")
+    await fDis.channelBugs.send( rd.choice(messagesGif).content )
+    await fDis.channelBugs.send( "_ _\n\n\n_ _")
+    
+    
+    
+    
+
 # %%%% Nettoyage
 
 async def com_Nettoyage (ctx, nbMessages):
@@ -413,38 +454,6 @@ async def renommage(ctx, *tupleNom):
 # %%% Commandes des Admins
 
 # %%%% Toujours Utilisables
-
-@fDis.bot.command()
-@fDis.commands.has_any_role(fDis.id_roleMaitre, fDis.id_roleArtisans)
-async def Bug (ctx, *descriptionBug):
-    """
-    N'a qu'un seul niveau de bug ==> Vilebrequin
-    """
-    
-    messagesGif = []
-    
-    async for message in fDis.channelGifVilebrequin.history():
-        messagesGif.append(message)
-    
-    
-    
-    messagesBug = []
-    
-    async for message in fDis.channelBugs.history():
-        if "Bug n°" in message.content :
-            messagesBug.append(message)
-    
-    try :
-        numero = int( messagesBug[-1].content.split() [1] [2:] ) + 1
-        
-    except :
-        numero = 0
-    
-    await fDis.channelBugs.send(f"Bug n°{numero} : \n>>> { ' '.join(descriptionBug) }")
-    await fDis.channelBugs.send( rd.choice(messagesGif).content )
-    await fDis.channelBugs.send( "_ _\n\n\n_ _")
-
-
 
 
 
@@ -668,10 +677,9 @@ async def on_ready():
     await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours[3:-3]})  - ⬢```\n{v.maintenant()}")
     
     
-#### Redéfinition Groupes et Villages
+#### Redéfinition Groupes, Habitants et Villages
     
     await fGrp.redef_groupesExistants()
-    fVlg.redef_villagesExistants()
     
     
 #### Lancement des events 
@@ -682,7 +690,7 @@ async def on_ready():
     
 #### Lancement des attendes d'épitaphe
     
-    async for message in fDis.channelAttente.history(limit = 10**9):
+    async for message in fDis.channelAttente.history():
         
         if fDis.Emo_Red == message.content.split()[0] :
             asyncio.Task( fHab.cimetiere(message = message, rappelDeFonction = True) )
@@ -699,8 +707,7 @@ async def on_ready():
     
     
 #### Phase 3 - Lancement du Tour
-    
-    if v.phaseEnCours == v.phase3 :
+        
         await attente_lancementTour()
 
 

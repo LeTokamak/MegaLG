@@ -103,7 +103,7 @@ def def_userAdmins ():
  """
 
 CategoryChannel_GestionGrp = None
-
+Categorie_Village0 = None
 
 def def_categoryChannelsMegaLG ():
     """
@@ -112,9 +112,11 @@ def def_categoryChannelsMegaLG ():
     Elle doit être appelé lors du on_ready() pour définir les categoryChannels du serveur, une fois que le bot est connecté 
     """
     
-    global CategoryChannel_GestionGrp
+    global CategoryChannel_GestionGrp, Categorie_Village0
     
     CategoryChannel_GestionGrp = bot.get_channel        (818582430100750376)
+    
+    Categorie_Village0         = bot.get_channel        (769996371246710804)
 
 
 

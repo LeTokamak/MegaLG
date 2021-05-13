@@ -119,6 +119,13 @@ class Village :
             if hab.numVlg == self.numero :
                 await hab.member.add_roles( self.roleDiscord )
         
+
+# =============================================================================
+#### Création de la Catégorie du Village
+# =============================================================================
+
+        self.categorie = await fDis.Categorie_Village0.clone( name = f"⬢ - {self.nom} - ⬢"                   )
+        await self.categorie                          .edit ( position = fDis.Categorie_Village0.position + 1 )
         
         
 # =============================================================================
@@ -127,14 +134,16 @@ class Village :
         
         async def cloneSalon(debutTopic, salon_aCloner) :
             salonRetourne = await salon_aCloner.clone( name = salon_aCloner.name )
-            await salonRetourne.edit           ( position = salon_aCloner.position + 1, 
-                                                 topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}"          )
+            await salonRetourne.move( category = self.categorie                                  )
+            await salonRetourne.edit(    topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}" )
+            
             return salonRetourne
         
         
 ### Clonage d'un des salons de référence, pour créer les salons du village
         
         self.salonRapport   = await cloneSalon( "Rapport Municipal"                , fDis.channelRapport     )
+        self.salonCimetiere = await cloneSalon( "Cimetière"                        , fDis.channelCimetiere   )
         self.salonBucher    = await cloneSalon( "Salon de Vote"                    , fDis.channelBucher      )
         self.salonDebat     = await cloneSalon( "Salon de Débat"                   , fDis.channelDebat       )
         self.vocalDebat     = await cloneSalon( "Débats Vocaux"                    , fDis.vocalDebat         )
@@ -149,10 +158,11 @@ class Village :
 
 ### Gestion des permissions des salons du village
 
-        await self.salonRapport.set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
-        await self.salonBucher .set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
-        await self.salonDebat  .set_permissions( self.roleDiscord , read_messages = True  , send_messages = True  )
-        await self.vocalDebat  .set_permissions( self.roleDiscord , read_messages = True                          )
+        await self.salonRapport  .set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonBucher   .set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonCimetiere.set_permissions( self.roleDiscord , read_messages = True  , send_messages = False )
+        await self.salonDebat    .set_permissions( self.roleDiscord , read_messages = True  , send_messages = True  )
+        await self.vocalDebat    .set_permissions( self.roleDiscord , read_messages = True                          )
         
         
         
@@ -178,6 +188,12 @@ class Village :
                                      reason = f"Changement de nom du Village n°{self.numero}, qui devient **{self.nom}**" )
         
         
+# =============================================================================
+#### Modification du nom de la Catégorie du Village
+# =============================================================================
+
+        await self.categorie.edit ( name = f"⬢ - {self.nom} - ⬢" )
+        
         
 # =============================================================================
 #### Modification des topics des Salons du Village
@@ -189,6 +205,7 @@ class Village :
         
         
         await editTopic( "Rapport Municipal"                , self.salonRapport   )
+        await editTopic( "Cimetière"                        , self.salonCimetiere )
         await editTopic( "Salon de Vote"                    , self.salonBucher    )
         await editTopic( "Salon de Débat"                   , self.salonDebat     )
         await editTopic( "Débats Vocaux"                    , self.vocalDebat     )
@@ -354,13 +371,13 @@ class Village :
         
         msgNbRole = "_ _\n_ _\nRôles restants :"
         
-        Emo_Roles = [[fDis.Emo_Villageois, fDis.Emo_Cupidon   , fDis.Emo_Ancien  ],
-                     [fDis.Emo_Salvateur , fDis.Emo_Sorciere  , fDis.Emo_Voyante ],
-                     [fDis.Emo_Corbeau   , fDis.Emo_Hirondelle, fDis.Emo_Chasseur],
-                     [fDis.Emo_FNFrere   , fDis.Emo_FNSoeur                      ],
-                     [                                                           ],
-                     [fDis.Emo_LoupGarou , fDis.Emo_LGNoir    , fDis.Emo_LGBleu  ],
-                     [fDis.Emo_LGBlanc   , fDis.Emo_EnfSauv                      ] ]
+        Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_VillaVilla [fRol.clefEmoji], fRol.role_Cupidon [fRol.clefEmoji], fRol.role_Ancien[fRol.clefEmoji] ],
+                     [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fDis.Emo_Voyante  [fRol.clefEmoji]                                   ],
+                     [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji]                                   ],
+                 list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                                                              ),
+                     [                                                                                                                                                   ],
+                     [fRol.role_LoupGarou  [fRol.clefEmoji], fRol.roleo_LGNoir    [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
+                     [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfSauv    [fRol.clefEmoji]                                                                       ] ]
         
         
         for ligneRole in Emo_Roles :
@@ -433,7 +450,7 @@ class Village :
         
 # Historique
         
-        self.msgHistoNuit = await fDis.channelHistorique .send(f"```Début de la Nuit {v.nbTours} - **{self.numero} : {self.nom}** - {fMeP.strDate(v.ajd)}```")
+        self.msgHistoNuit = await fDis.channelHistorique .send(f"```Début de la Nuit {v.nbTours} - Village n°{self.numero} : {self.nom} - {fMeP.strDate(v.ajd)}```")
         
         
 # Channel des Loups-Garous
@@ -1442,6 +1459,8 @@ def redef_villagesExistants():
             
             nouvVillage.salonFamilleNb = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_FamilleNomb   ])
             nouvVillage.vocalFamilleNb = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocFamilleNomb])
+            
+            nouvVillage.categorie      = nouvVillage.salonRapport.category
         
         TousLesVillages.append(nouvVillage)
 

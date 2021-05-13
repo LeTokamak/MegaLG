@@ -39,13 +39,88 @@ async def Tour():
     x = await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()
     
-#### Déroulement de la Journée
+    
+    
+    
+    
+# %% Nuit
+    
+#### Gestion de la nuit
+    
+    coroutinesNocturnes = ()
 
-    x = await nuit_TousLesVillages()         # Nuit
-    x = await debJournee_TousLesVillages()   # Début de la Journée
-    x = await vote_TousLesVillages()         # Vote (Elimination / Election Maire)
+    for vlg in fVlg.TousLesVillages :
+        coroutinesNocturnes.append( vlg.gestion_nuit() )
+        
+    await asyncio.gather(coroutinesNocturnes)
+
+
+
+#### Application de la nuit
+
+    if v.nbTours != 0 :
+        for vlg in fVlg.TousLesVillages :
+            await vlg.application_nuit()
+
+
+
+
+
+# %% Journée
+
+    v.nbTours += 1
+    await fDis.channelHistorique.edit(topic = f"Tour n°{v.nbTours}")
+    await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
+
+#### Début de la Journée - Partie 1
+    
+    for vlg in fVlg.TousLesVillages :
+        await vlg.debutJournee_Partie1()
     
     
+    
+#### Re-déffinition de ToutesLesPersonnes (pour les Hirondelles)
+    
+    await fHab.redef_TousLesHabitants()
+    
+    
+    
+#### Début de la Journée - Partie 2
+    
+    for vlg in fVlg.TousLesVillages :
+        await vlg.debutJournee_Partie2()
+    
+    
+    
+#### Sauvegarde de Infos Joueurs
+    
+    nbColonnes = 10
+    nbLignes   = len(fHab.TousLesHabitants) + 1
+    
+    feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.ajd)[:10]}", nbLignes, nbColonnes)
+    feuilleDuJour.insert_rows( fGoo.page1_InfoJoueurs.get() )
+    
+    
+    
+# %%% Vote (Elimination / Election Maire)
+    
+    coroutinesVotes = ()
+    
+    for vlg in fVlg.TousLesVillages :
+        if vlg.maire == None :
+            coroutinesVotes.append( vlg.gestion_voteEliminatoire() )
+            
+        else :
+            coroutinesVotes.append( vlg.gestion_electionMaire()    )      
+            
+    await asyncio.gather(coroutinesNocturnes)
+
+
+
+
+
+# %% Fin de Journée
+
 #### Rapports municipaux Vespéraux
     
     x = await fHab.redef_TousLesHabitants()
@@ -67,75 +142,3 @@ async def Tour():
     
     while True : 
         erreur.append(erreur)
-
-
-
-
-
-# %% Sous-Fonctions de Tour
-
-async def nuit_TousLesVillages():
-
-#### Gestion de la nuit
-    
-    for vlg in fVlg.TousLesVillages :
-        asyncio.Task(vlg.gestion_nuit())
-
-
-#### Application de la nuit
-
-    if v.nbTours != 0 :
-        for vlg in fVlg.TousLesVillages :
-            await vlg.application_nuit()
-
-
-
-
-
-async def debJournee_TousLesVillages():
-    
-    v.nbTours += 1
-    await fDis.channelHistorique.edit(topic = f"Tour n°{v.nbTours}")
-    await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
-
-#### Début de la Journée - Partie 1
-    
-    for vlg in fVlg.TousLesVillages :
-        await vlg.debutJournee_Partie1()
-    
-    
-    
-#### Redeffinition de ToutesLesPersonnes (pour les Hirondelles)
-    
-    await fHab.redef_TousLesHabitants()
-    
-    
-    
-#### Début de la Journée - Partie 2
-    
-    for vlg in fVlg.TousLesVillages :
-        await vlg.debutJournee_Partie2()
-    
-    
-    
-#### Sauvegarde de Infos Joueurs
-    
-    nbColonnes = 10
-    nbLignes   = len(fHab.TousLesHabitants) + 1
-    
-    feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.ajd)[:10]}", nbLignes, nbColonnes)
-    feuilleDuJour.insert_rows( fGoo.page1_InfoJoueurs.get() )
-
-
-
-
-
-async def vote_TousLesVillages():
-    
-    for vlg in fVlg.TousLesVillages :
-        if vlg.maire == None :
-            asyncio.Task( vlg.gestion_voteEliminatoire() )
-            
-        else :
-            asyncio.Task( vlg.gestion_electionMaire()    )
-    

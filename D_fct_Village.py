@@ -370,13 +370,13 @@ class Village :
         
         msgNbRole = "_ _\n_ _\nRôles restants :"
         
-        Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_VillaVilla [fRol.clefEmoji], fRol.role_Cupidon [fRol.clefEmoji], fRol.role_Ancien[fRol.clefEmoji] ],
-                     [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji]                                   ],
-                     [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji]                                   ],
-                 list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                                                              ),
-                     [                                                                                                                                                   ],
-                     [fRol.role_LG         [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
-                     [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfantSauv [fRol.clefEmoji]                                                                       ] ]
+        Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_Cupidon    [fRol.clefEmoji], fRol.role_Ancien  [fRol.clefEmoji] ],
+                     [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji] ],
+                     [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji] ],
+                 list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                            ),
+                     [                                                                                                                 ],
+                     [fRol.role_LG         [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji] ],
+                     [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfantSauv [fRol.clefEmoji]                                     ] ]
         
         
         for ligneRole in Emo_Roles :
@@ -467,9 +467,9 @@ class Village :
         
         for hab in self.habitants :
             asyncio.Task( hab.role[fRol.clefFctsNoct](hab, self) )
-
+            
 #### Accès au Conseil des Loups-Garous
-
+            
             verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG
             verifLG_Infe =  hab.estInf
             verif_LGBlan =  hab.role == fRol.role_LGBlanc

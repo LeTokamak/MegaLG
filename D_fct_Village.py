@@ -134,8 +134,7 @@ class Village :
         
         async def cloneSalon(debutTopic, salon_aCloner) :
             salonRetourne = await salon_aCloner.clone( name = salon_aCloner.name )
-            await salonRetourne.move( category = self.categorie                                  )
-            await salonRetourne.edit(    topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}" )
+            await salonRetourne.edit( topic = f"{debutTopic} {fMeP.de_dApostrophe(self.nom)}", category = self.categorie )
             
             return salonRetourne
         

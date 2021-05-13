@@ -375,7 +375,7 @@ class Village :
                      [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji]                                   ],
                  list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                                                              ),
                      [                                                                                                                                                   ],
-                     [fRol.role_LoupGarou  [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
+                     [fRol.role_LG         [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji]                                   ],
                      [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfSauv    [fRol.clefEmoji]                                                                       ] ]
         
         

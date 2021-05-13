@@ -52,7 +52,7 @@ async def Tour():
     for vlg in fVlg.TousLesVillages :
         coroutinesNocturnes.append( vlg.gestion_nuit() )
         
-    await asyncio.gather(coroutinesNocturnes)
+    await asyncio.gather(aws = tuple(coroutinesNocturnes))
 
 
 
@@ -113,7 +113,7 @@ async def Tour():
         else :
             coroutinesVotes.append( vlg.gestion_electionMaire()    )      
             
-    await asyncio.gather(coroutinesNocturnes)
+    await asyncio.gather(aws = tuple(coroutinesNocturnes))
 
 
 

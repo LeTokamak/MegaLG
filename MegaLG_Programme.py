@@ -273,7 +273,7 @@ async def Bug (ctx, *descriptionBug):
 
     
     try :
-        numero = int( messagesBug[-1].content.split() [1] [2:] ) + 1
+        numero = int( messagesBug[0].content.split() [1] [2:] ) + 1
         
     except :
         numero = 0

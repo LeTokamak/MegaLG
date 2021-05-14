@@ -68,6 +68,7 @@ class Village :
         
 #### Variables Nocturnes
         
+        self.voteLG_EnCours                = False
         self.matriculeHab_choixConseilLG   = 0
         self.votesConseilLG                = []
         self.LG_ayant_votes                = []
@@ -288,7 +289,7 @@ class Village :
         
         m = v.maintenant()
         
-        listeMsgJoueurs = [f"__**Rapport municipal**__\nRecencement de {fMeP.AjoutZerosAvant(m.hour,2)} : {fMeP.AjoutZerosAvant(m.minute,2)}\n"]
+        listeMsgJoueurs = [f"__**Rapport municipal**__\nRecencement de {fMeP.AjoutZerosAvant(m.hour,2)} : {fMeP.AjoutZerosAvant(m.minute,2)} :\n"]
         RolesRestants   = []
         
 # =============================================================================
@@ -311,7 +312,7 @@ class Village :
             
             if hab.groupe.rang >= 2   and   grpPrec_rang2 != hab.groupe.chemin[1] :
                 
-                if grpPrec_rang2 == None : prefixe = ""
+                if grpPrec_rang2 == None : prefixe = "\n"
                 else                     : prefixe = "\n"
                 
                 listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, prefixe + f"\n> **⬢⬢⬢ -   {hab.groupe.chemin[1]}   - ⬢⬢⬢**")
@@ -322,7 +323,7 @@ class Village :
             
             if hab.groupe.rang >= 3   and   grpPrec_rang3 != hab.groupe.chemin[2] :
                 
-                if grpPrec_rang3 == None : prefixe = ""
+                if grpPrec_rang3 == None : prefixe = "\n> "
                 else                     : prefixe = "\n> "
                 
                 listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, prefixe + f"\n> --- {hab.groupe.chemin[2]} ---")
@@ -352,7 +353,7 @@ class Village :
             if hab.estMaire                     : texteMaire  = fDis.Emo_Maire
             else                                : texteMaire  = ":black_circle:"
             
-            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢ {texteVilVil} {texteMaire}   {hab.user.mention} - {hab.prenom} {hab.nom}")
+            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢  {texteVilVil}  {texteMaire}  {hab.user.mention} - {hab.prenom} {hab.nom}")
             
 #### Role
             
@@ -368,7 +369,7 @@ class Village :
 #### --- Roles Restants ---
 # =============================================================================
         
-        msgNbRole = "_ _\n_ _\nRôles restants :"
+        msgNbRole = "__ __\n__**Rôles restants :**__"
         
         Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_Cupidon    [fRol.clefEmoji], fRol.role_Ancien  [fRol.clefEmoji] ],
                      [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji] ],
@@ -394,12 +395,15 @@ class Village :
                         
                     if somme_RolesRestants_finLigne != 0 : 
                         msgNbRole += 10 * " "
-                        
+        
+        msgNbRole += "__ __"
+        
         await self.salonRapport.send( msgNbRole )
-
-
     
-
+    
+    
+    
+    
     async def dissolution(self) :
         
 #### Choix du village d'arrivé au hasard
@@ -423,11 +427,11 @@ class Village :
         contenuMsg_AnnonceExil = f"**{self.nom}** a été détruit... {len(self.habitants)} habitants viennent d'arriver à {nouvVillage.nom} !"
         
         await nouvVillage.salonDebat.send(contenuMsg_AnnonceExil)
-            
-            
-            
-            
-
+    
+    
+    
+    
+    
 # %% Nuit
 
     async def gestion_nuit(self) :
@@ -1767,14 +1771,6 @@ async def fctNoct_Villageois (villageois, village):
     pass
 
 
-async def fctNoct_Juge (juge, village):
-    pass
-
-
-async def fctNoct_VillaVilla (villavilla, village):
-    pass
-
-
 
 
 
@@ -2206,6 +2202,13 @@ async def fctNoct_Hirondelle (hirondelle, village):
 
 
 
+async def fctNoct_Juge (juge, village):
+    pass
+
+
+
+
+
 async def fctNoct_FamilleNombreuse (membreFN, village):
     
     contenuMsgFamiNom_Attente = f"{fDis.Emo_FNFrere} en tant que {fRol.emojiRole(membreFN.role, membreFN.estUnHomme)}   - {membreFN.user.mention}  |  {membreFN.prenom} {membreFN.nom}"
@@ -2334,7 +2337,7 @@ async def fctNoct_EnfantSauvage (enfSauvage, village):
     contenuMsgEnfSauv_Question =  "Bonsoir Enfant Sauvage, quel sera votre modèle ?"
     contenuMsgEnfSauv_Detail   =  "\n```\nPour le choisir, envoyez ici son matricule.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, votre modele vous sera attribué au hasard.\n```"
     
-    contenuMsgEnfSauv_HistoDeb = f"\n{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
+    contenuMsgEnfSauv_HistoDeb = f"{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
     
     contenuMsgEnfSauv_Attente  = f"{fDis.Emo_EnfSauv} en tant que {contenuMsgEnfSauv_HistoDeb}"
     
@@ -2489,7 +2492,7 @@ fRol.role_Hirondelle[fRol.clefFctsNoct] = fctNoct_Hirondelle
 fRol.role_FamilleNb [fRol.clefFctsNoct] = fctNoct_FamilleNombreuse
 
 fRol.role_Juge      [fRol.clefFctsNoct] = fctNoct_Juge
-fRol.role_VillaVilla[fRol.clefFctsNoct] = fctNoct_VillaVilla
+fRol.role_VillaVilla[fRol.clefFctsNoct] = fctNoct_Villageois
 
 fRol.role_LG        [fRol.clefFctsNoct] = fctNoct_LG
 fRol.role_LGNoir    [fRol.clefFctsNoct] = fctNoct_LGNoir
@@ -2509,18 +2512,26 @@ async def Conseil_LG (LoupGarou, village):
     contenuMsg_Attente = f"{fDis.Emo_LoupGarou} en tant que {fRol.emojiRole(LoupGarou.role, LoupGarou.estUnHomme)}   - {LoupGarou.user.mention}  |  {LoupGarou.prenom} {LoupGarou.nom}"
     
     msgAtt = await fDis.channelAttente.send( contenuMsg_Attente )
+
+#### Début du Conseil
+
+    village.voteLG_EnCours = True
             
     await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
     await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
     await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = True                          )
     
     
+#### Attente de la Fin du Conseil
+    
     while v.maintenant() < v.conseilLG_hFin :
         await asyncio.sleep(1)
     
     
-### Fin du conseil
+#### Fin du conseil
     
+    village.voteLG_EnCours = False
+
     await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = False , send_messages = False )
     await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = False )
     await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = False                         )
@@ -2535,8 +2546,8 @@ async def Conseil_LG (LoupGarou, village):
 
 async def evt_voteLG(memberLG, contenuMsg):
     
-    habLG   = fHab.habitant_avec(memberLG.id)
-    village = village_avec( habLG.numVlg, "numero" )
+    habLG   = fHab.habitant_avec( memberLG.id            )
+    village =       village_avec( habLG.numVlg, "numero" )
     
 #### Essaye de int le msg
     try :    
@@ -2547,7 +2558,7 @@ async def evt_voteLG(memberLG, contenuMsg):
     
     
 #### Si le matricule correspond à quelqu'un en vie
-    if fHab.habitant_avec(matricule) != None :
+    if village.voteLG_EnCours  and  fHab.habitant_avec(matricule) != None :
         
 #   Si ce LG a déjà voté, remplacement du vote
         
@@ -2617,22 +2628,21 @@ async def cmd_changementNomVillage(memberVlg, tupleNom):
     
     
     
-async def cmd_voteVlg(memberVlg, matricule):
-    await evt_voteVlg(memberVlg, matricule)
+async def cmd_vote(memberVlg, matricule):
     
+    habVlg  = fHab.habitant_avec( memberVlg.id            )
+    village =       village_avec( habVlg.numVlg, "numero" )
     
-    
-async def cmd_voteLG (memberLG, matricule):
-    
-    hab = fHab.habitant_avec(memberLG.id)
-    
-    verifLG_Camp = hab.role[fRol.clefCamp] == fRol.campLG
-    verifLG_Infe = hab.estInf
-    verif_LGBlan = hab.role == fRol.role_LGBlanc
-    verif_EnfSau = hab.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(hab.pereProtecteur) == None
+    verifLG_Camp = habVlg.role[fRol.clefCamp] == fRol.campLG
+    verifLG_Infe = habVlg.estInf
+    verif_LGBlan = habVlg.role == fRol.role_LGBlanc
+    verif_EnfSau = habVlg.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(habVlg.pereProtecteur) == None
             
-    if verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau :
-        await evt_voteLG(memberLG, matricule)
+    if village.voteLG_EnCours  and  (verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau) :
+        await evt_voteLG(memberVlg, matricule)
+        
+    else :
+        await evt_voteVlg(memberVlg, matricule)
     
     
 

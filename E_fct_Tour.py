@@ -36,7 +36,7 @@ asyncio = fHab.asyncio
 
 async def Tour():
     
-    x = await fHab.redef_TousLesHabitants()
+    await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()
     
     
@@ -113,20 +113,20 @@ async def Tour():
         else :
             coroutinesVotes.append( vlg.gestion_electionMaire()    )      
             
-    await asyncio.gather(*coroutinesNocturnes)
+    await asyncio.gather(*coroutinesVotes)
 
 
 
 
 
-# %% Fin de Journée
+# %%% Fin de Journée
 
 #### Rapports municipaux Vespéraux
     
-    x = await fHab.redef_TousLesHabitants()
+    await fHab.redef_TousLesHabitants()
     
     for vlg in fVlg.TousLesVillages :
-        x = await vlg.rapportMunicipal()
+        await vlg.rapportMunicipal()
     
     
 #### Plantage Final
@@ -138,7 +138,7 @@ async def Tour():
     
 # L'objectif est de saturer la ram (512 Mo) du serveur, pour qu'il plante, et redémarre automatiquement le programme  
 
-    erreur = [x]
+    erreur = []
     
     while True : 
         erreur.append(erreur)

@@ -172,15 +172,14 @@ def verifServeur (message):
 async def message_Inscription():
     
     def verifInscription(message):
-        verifPhase = verifSalon = verifUser = False
+        verifSalon, verifUser = (False, False)
+        
+        verifPhase = v.phaseEnCours  == v.phase1
+        verifSalon = message.channel == fDis.channelAccueil
         
         if verifServeur(message) :
-            verifUser = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
+            verifUser = fDis.roleSpectateurs in message.author.roles
             
-            if verifUser :
-                verifPhase = v.phaseEnCours  == v.phase1
-                verifSalon = message.channel == fDis.channelAccueil
-        
         return verifUser  and  verifPhase and verifSalon
     
     
@@ -194,14 +193,15 @@ async def message_Inscription():
 async def message_voteVillage():
     
     def verifVoteVillage(message):
-        verifPhase = verifSalon = verifUser = False
+        verifSalon, verifUser = (False, False)
+        
+        verifPhase = v.phaseEnCours == v.phase3
         
         if verifServeur(message) :
-            verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
-            verifPhase = v.phaseEnCours == v.phase3
+            verifUser  = fDis.roleJoueurs in message.author.roles
             
             if verifUser and verifPhase :
-                verifSalon = fVlg.village_avec(message.channel, 'idSalon_Bucher') != None
+                verifSalon = fVlg.village_avec(message.channel.id, 'idSalon_Bucher') != None
         
         return verifUser  and  verifPhase and verifSalon
 
@@ -216,14 +216,15 @@ async def message_voteVillage():
 async def message_voteLoupGarou():
     
     def verifVoteLG(message):
-        verifPhase = verifSalon = verifUser = False
+        verifSalon, verifUser = (False, False)
+        
+        verifPhase = v.phaseEnCours == v.phase3
         
         if verifServeur(message) :
-            verifUser  = message.author.id not in (fDis.userMdJ.id, fDis.userAss.id)  and  fDis.roleMaitre not in message.author.roles
-            verifPhase = v.phaseEnCours == v.phase3
+            verifUser  = fDis.roleJoueurs in message.author.roles
             
             if verifUser and verifPhase :
-                verifSalon = fVlg.village_avec(message.channel, 'idSalon_VoteLG') != None
+                verifSalon = fVlg.village_avec(message.channel.id, 'idSalon_VoteLG') != None
         
         return verifUser  and  verifPhase and verifSalon
 
@@ -462,22 +463,8 @@ async def Vote(ctx, matricule):
 async def vote(ctx, matricule):
     await fVlg.cmd_voteVlg(ctx.author, matricule)
 
-
-
-# %%%%% VoteLG
-
-@fDis.bot.command()
-async def VoteLG(ctx, matricule):
-    await fVlg.cmd_voteLG(ctx.author, matricule)
-
-@fDis.bot.command()
-async def voteLG(ctx, matricule):
-    await fVlg.cmd_voteLG(ctx.author, matricule)
     
-@fDis.bot.command()
-async def votelg(ctx, matricule):
-    await fVlg.cmd_voteLG(ctx.author, matricule)
-    
+
     
 
 # %%%%% Exil (reservée aux Juges et au Maire)
@@ -489,9 +476,9 @@ async def Exil(ctx):
 @fDis.bot.command()
 async def exil(ctx):
     await fVlg.cmd_demandeExilVote(ctx.author)
-    
 
-    
+
+
 
 
 # %%%% Commandes de Maires 
@@ -525,16 +512,14 @@ async def Renommage(ctx, *tupleNom):
 @fDis.bot.command()
 async def renommage(ctx, *tupleNom):
     await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
-    
-    
-    
-    
+
+
+
+
 
 # %%% Commandes des Admins
 
 # %%%% Toujours Utilisables
-
-
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)

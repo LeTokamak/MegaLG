@@ -240,10 +240,10 @@ def def_channelsMegaLG ():
 
 # %%% Roles du Serveur
 
-roleEveryone, roleMaitre     , roleBot = (None,None,None)
-roleMdJ     , roleAssistant            = (None, None)
-roleArtisans, roleSpectateurs          = (None, None)
-roleJoueurs , roleMorts                = (None, None)
+roleEveryone, roleMaitre     , roleBot = (None, None, None)
+roleMdJ     , roleAssistant            = (None, None      )
+roleArtisans, roleSpectateurs          = (None, None      )
+roleJoueurs , roleMorts                = (None, None      )
 
 
 id_roleEveryone    = 769495045308940288

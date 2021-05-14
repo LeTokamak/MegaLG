@@ -505,63 +505,62 @@ class Habitant :
         estCertain      = False
         matricule       = ""
         
-        while not estCertain  or  habitant_avec(matricule) == None  or  (matricule == self.matri  and  not autorisation_AutoDesignation)  or  (habitant_avec(matricule).numVlg != self.numVlg  and  not autorisation_AutreVillage):
-                    
-
+        while  not estCertain  or  habitant_avec(matricule) == None  or  (matricule == self.matri  and  not autorisation_AutoDesignation)  or  (habitant_avec(matricule).numVlg != self.numVlg  and  not autorisation_AutreVillage):
+        
 #### Attente d'un entier
-
+            
             while type(matricule) != int :
                 
                 messageReponse, aRepondu = await self.attenteMessage(heureFinAttente, verif)
-
+                
 ##  Si aucune réponse n'a été reçu avant heureFinAttente
-
+                
                 if not aRepondu :
                     for m in messagesEnvoyes :
                         await m.delete()
-                        
+                    
                     return None, aRepondu
-
+                
 ##  Essaye de int le matricule
-
+                
                 try :
                     matricule = int(messageReponse.content)
+                
                 except :
                     messagesEnvoyes.append( await self.user.send("**Votre message n'était pas un entier.**\nVous pouvez envoyer un nouveau matricule !") )
                     matricule = ""
-
-
-
+                
+                
+                
             persChoisie = habitant_avec(matricule)
-
-
-
-
+            
+            
+            
+            
 #### Vérifie si le matricule correspond à quelqu'un qui existe
-
+            
             if   persChoisie == None :
                 messagesEnvoyes.append( await self.user.send("**Ce matricule ne correspond à personne.**\nVous pouvez envoyer un nouveau matricule !") )
                 matricule = ""
-
-
-
-
+            
+            
+            
 #### Vérifie si le matricule correspond à celui de self
             
             elif persChoisie == self  and  not autorisation_AutoDesignation :
                 messagesEnvoyes.append( await self.user.send("**Vous ne pouvez pas vous choisir vous-même.**\nVous pouvez envoyer un nouveau matricule !") )
                 matricule = ""
-                
-                
-                
-                
+            
+            
+            
 #### Vérifie si le matricule correspond à celui de quelqu'un d'un autre village
             
             elif habitant_avec(matricule).numVlg != self.numVlg  and  not autorisation_AutreVillage :
                 messagesEnvoyes.append( await self.user.send("**Vous devez choisir un habitant de votre village.**\nVous pouvez envoyer un nouveau matricule !") )
                 matricule = ""
-                
-                
+            
+            
+            
 #### Etes-vous certain de ce choix ?
             
             elif verification_MaticuleChoisi :
@@ -587,25 +586,24 @@ class Habitant :
 ##  Attente d'une réaction
                 
                 estCertain = await fDis.attente_Confirmation(msgVerif, self.user, timeout = tempsAttenteVerif_Effectif.seconds)
-                
+            
             else :
                 estCertain = True
-                
-                
-                
-
+        
+        
+        
 #### Conclusion
         
         for msg in messagesEnvoyes :
             await msg.delete()
-
+        
         if   persChoisie.estUnHomme : e = ""
         else                        : e = "e"
         
         await self.user.send(f"**{persChoisie.prenom} {persChoisie.nom}** a bien été choisi{e} !")        
         
         return habitant_avec(matricule), aRepondu
-      
+
 
 
 

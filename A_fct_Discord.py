@@ -524,9 +524,11 @@ async def attente_Confirmation(message_aConfirmer, confirmateur, timeout = None,
     Emo_validation  = "✅"
     Emo_infirmation = "❌"
     
-    return await attente_Reaction( message_aConfirmer     , confirmateur                       , 
-                                   [[Emo_validation, True], [Emo_infirmation, False]]          ,
-                                   timeout = timeout      , reponseParDefaut = reponseParDefaut )
+    decision = await attente_Reaction( message_aConfirmer     , confirmateur                       , 
+                                       [[Emo_validation, True], [Emo_infirmation, False]]          ,
+                                       timeout = timeout      , reponseParDefaut = reponseParDefaut )
+    
+    return decision
 
 
 

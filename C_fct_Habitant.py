@@ -575,11 +575,14 @@ class Habitant :
                 
                 else :
                     tempsAttenteVerif_Effectif      = tempsAttenteVerif_Maximal
-                    
-                    
+                
+                
 ##  Attente d'une réaction
-
+                
                 estCertain = await fDis.attente_Confirmation(msgVerif, self.user, timeout = tempsAttenteVerif_Effectif.seconds)
+                
+            else :
+                estCertain = True
                 
                 
                 

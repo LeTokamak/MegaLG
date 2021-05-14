@@ -2365,7 +2365,7 @@ async def fctNoct_EnfantSauvage (enfSauvage, village):
 ### Ajout du matricule du modele dans Infos Joueurs
         
         fGoo.remplacerVal_ligne_avec( modele.matri     , fGoo.clef_caractRoles , 
-                                      enfSauvage.matri , fGoo.clef_idDiscord   ,
+                                      enfSauvage.matri , fGoo.clef_Matricule   ,
                                       fGoo.page1_InfoJoueurs                    )
         
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgEnfSauv_HistoDeb}\n     A choisi {modele.mention}  |  {modele.prenom} {modele.nom} comme modele\n")

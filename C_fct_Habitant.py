@@ -527,7 +527,7 @@ class Habitant :
                 try :
                     matricule = int(messageReponse.content)
                 except :
-                    messagesEnvoyes.append( await self.user.send("Votre message n'était pas un entier...\nVous pouvez envoyer un nouveau matricule !") )
+                    messagesEnvoyes.append( await self.user.send("**Votre message n'était pas un entier.**\nVous pouvez envoyer un nouveau matricule !") )
                     matricule = ""
 
 
@@ -540,19 +540,26 @@ class Habitant :
 #### Vérifie si le matricule correspond à quelqu'un qui existe
 
             if   persChoisie == None :
-                messagesEnvoyes.append( await self.user.send("Le matricule ne correspond à personne...\nVous pouvez envoyer un nouveau matricule !") )
+                messagesEnvoyes.append( await self.user.send("**Ce matricule ne correspond à personne.**\nVous pouvez envoyer un nouveau matricule !") )
                 matricule = ""
 
 
 
 
-####     Vérifie si le matricule correspond à celui de self
+#### Vérifie si le matricule correspond à celui de self
             
             elif persChoisie == self  and  not autorisation_AutoDesignation :
-                messagesEnvoyes.append( await self.user.send("Vous ne pouvez pas vous choisir vous-même.\nVous pouvez envoyer un nouveau matricule !") )
+                messagesEnvoyes.append( await self.user.send("**Vous ne pouvez pas vous choisir vous-même.**\nVous pouvez envoyer un nouveau matricule !") )
                 matricule = ""
                 
                 
+                
+                
+#### Vérifie si le matricule correspond à celui de quelqu'un d'un autre village
+            
+            elif habitant_avec(matricule).numVlg != self.numVlg  and  not autorisation_AutreVillage :
+                messagesEnvoyes.append( await self.user.send("**Vous devez choisir un habitant de votre village.**\nVous pouvez envoyer un nouveau matricule !") )
+                matricule = ""
                 
                 
 #### Etes-vous certain de ce choix ?

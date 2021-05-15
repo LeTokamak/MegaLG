@@ -463,12 +463,12 @@ async def csg(ctx, *tupleNom):
 
 @fDis.bot.command()
 async def Vote(ctx, matricule):
-    await fVlg.cmd_voteVlg(ctx.author, matricule)
+    await fVlg.cmd_vote(ctx.author, matricule)
     
     
 @fDis.bot.command()
 async def vote(ctx, matricule):
-    await fVlg.cmd_voteVlg(ctx.author, matricule)
+    await fVlg.cmd_vote(ctx.author, matricule)
 
     
 

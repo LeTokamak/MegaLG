@@ -90,26 +90,34 @@ def maintenant(fuseauHoraire = HParis):
     return datetime.now(tz = fuseauHoraire)
 
 
-hInit     = maintenant()
+hInit  = maintenant()
         
-ajd       = datetime( hInit.year, hInit.month, hInit.day       , tzinfo = HParis )
-dem       = ajd + timedelta(days = 1)
+ajd    = datetime( hInit.year, hInit.month, hInit.day       , tzinfo = HParis )
+dem    = ajd + timedelta(days = 1)
 
 
 
 #### Heure de début de nuit
 
-nuit_hDeb_Theo = datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis ) # datetime( ajd.year, ajd.month, ajd.day,  16, 48, tzinfo = HParis ) #
+nuit_hDeb_Theo = datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis )
 nuit_hDeb      = nuit_hDeb_Theo
 
 if hInit > nuit_hDeb_Theo :
-    nuit_hDeb = hInit
+    
+    if hInit - nuit_hDeb_Theo < timedelta(hours = 3):
+        nuit_hDeb = hInit
+        
+    else :
+        ajd       = dem
+        dem       = ajd + timedelta(days = 1)
+
+        nuit_hDeb = datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis )
 
 
 
 #### Autres moments important de la nuit
 
-conseilLG_hFin = datetime( ajd.year, ajd.month, ajd.day, 14, 00, tzinfo = HParis ) # datetime( ajd.year, ajd.month, ajd.day, 17, 30, tzinfo = HParis ) # 
+conseilLG_hFin = datetime( ajd.year, ajd.month, ajd.day, 14, 00, tzinfo = HParis )
 part3_hDeb     = conseilLG_hFin + timedelta(seconds = 30)
 nuit_hFin      = datetime( ajd.year, ajd.month, ajd.day, 18, 00, tzinfo = HParis )
 

@@ -122,6 +122,7 @@ async def reaction_reInscription():
         
         return verifUser  and  verifPhase and verifMessage and verifEmoji
     
+#### Boucle infini
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifReInscription)
         await fIns.evt_ReInscription(payload.member)
@@ -132,15 +133,21 @@ async def reaction_Groupe():
     
     def verifGroupe(payload):
         salon        = fDis.serveurMegaLG.get_channel(payload.channel_id)
-        
-        if salon != None :
+
+#### Si la réaction n'a pas été faite dans un salon du serveur
+        if salon == None :
+            return False
+
+#### Sinon la réaction a été faite dans un salon du serveur
+        else :
             verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
             
             verifPhase   = v.phaseEnCours == v.phase1
             verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
         
-        return verifUser  and  verifPhase and verifCategCh
+            return verifUser  and  verifPhase and verifCategCh
     
+#### Boucle infini
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifGroupe)
         await fGrp.evt_ChangementGroupe(payload.member, payload.message_id, str(payload.emoji))
@@ -148,9 +155,9 @@ async def reaction_Groupe():
 
 
 async def event_reactions():
-    asyncio.Task( ajout_roleArtisans()     )
-    asyncio.Task( reaction_reInscription() )
-    asyncio.Task( reaction_Groupe()        )
+    asyncio.create_task( ajout_roleArtisans()    , name = "Tâche d'ajout du rôle d'Artisant" )
+    asyncio.create_task( reaction_reInscription(), name = "Tâche de Ré-Inscription"          )
+    asyncio.create_task( reaction_Groupe()       , name = "Tâche de changement de Groupe"    )
 
 
 
@@ -237,9 +244,9 @@ async def message_voteLoupGarou():
     
     
 async def event_messages():
-    asyncio.Task( message_Inscription()   )
-    asyncio.Task( message_voteVillage()   )
-    asyncio.Task( message_voteLoupGarou() )
+    asyncio.create_task( message_Inscription()   , name = "Tâche d'Inscription"            )
+    asyncio.create_task( message_voteVillage()   , name = "Tâche du vote du village"       )
+    asyncio.create_task( message_voteLoupGarou() , name = "Tâche du vote des Loups-Garous" )
     
     
     
@@ -748,8 +755,8 @@ async def on_ready():
     
 #### Lancement des events 
     
-    asyncio.Task( event_reactions() )
-    asyncio.Task( event_messages () )
+    asyncio.create_task( event_reactions() )
+    asyncio.create_task( event_messages () )
     
     
 #### Lancement des attendes d'épitaphe
@@ -757,7 +764,7 @@ async def on_ready():
     async for message in fDis.channelAttente.history():
         
         if fDis.Emo_Red == message.content.split()[0] :
-            asyncio.Task( fHab.cimetiere(message = message, rappelDeFonction = True) )
+            asyncio.create_task( fHab.cimetiere(message = message, rappelDeFonction = True), name = f"Tâche de Cimetière de {message.content}")
     
     await fDis.channelHistorique.send(f"```⬢ -  Fin du 'on_ready'  - ⬢```\n{v.maintenant()}")
     

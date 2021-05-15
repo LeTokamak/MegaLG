@@ -108,19 +108,19 @@ async def Tour():
     
     for vlg in fVlg.TousLesVillages :
         if vlg.maire == None :
-            coroutinesVotes.append( vlg.gestion_voteEliminatoire() )
-            
+            coroutinesVotes.append( vlg.gestion_electionMaire()    )
+        
         else :
-            coroutinesVotes.append( vlg.gestion_electionMaire()    )      
-            
+            coroutinesVotes.append( vlg.gestion_voteEliminatoire() )
+        
     await asyncio.gather(*coroutinesVotes)
-
-
-
-
-
+    
+    
+    
+    
+    
 # %%% Fin de Journée
-
+    
 #### Rapports municipaux Vespéraux
     
     await fHab.redef_TousLesHabitants()
@@ -132,7 +132,7 @@ async def Tour():
 #### Plantage Final
     
     await asyncio.sleep( 5*60 )
-
+    
     await fDis.channelHistorique.send(f"{fDis.roleMaitre.mention}\nLe soleil ne va plus tardé à se coucher !\n> Il est {v.maintenant()}.")
     
     

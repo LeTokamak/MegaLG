@@ -289,7 +289,7 @@ class Village :
         
         m = v.maintenant()
         
-        listeMsgJoueurs = [f"__**Rapport municipal**__\nRecencement de {fMeP.AjoutZerosAvant(m.hour,2)} : {fMeP.AjoutZerosAvant(m.minute,2)} :\n"]
+        listeMsgJoueurs = [f"__**Rapport municipal**__\nRecencement de {fMeP.AjoutZerosAvant(m.hour,2)} : {fMeP.AjoutZerosAvant(m.minute,2)} :"]
         RolesRestants   = []
         
 # =============================================================================
@@ -304,7 +304,7 @@ class Village :
     
             if hab.groupe.rang >= 1   and   grpPrec_rang1 != hab.groupe.chemin[0] :
                 
-                listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n\n\n__**⬢⬢⬢⬢⬢   {hab.groupe.chemin[0]}   ⬢⬢⬢⬢⬢**__")
+                listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n\n__**⬢⬢⬢⬢⬢   {hab.groupe.chemin[0]}   ⬢⬢⬢⬢⬢**__")
                 grpPrec_rang2, grpPrec_rang3, grpPrec_rang4        = (None, None, None)
             
             
@@ -353,7 +353,7 @@ class Village :
             if hab.estMaire                     : texteMaire  = fDis.Emo_Maire
             else                                : texteMaire  = ":black_circle:"
             
-            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢  {texteVilVil}  {texteMaire}  {hab.user.mention} - {hab.prenom} {hab.nom}")
+            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢  {texteVilVil} {texteMaire}  {hab.user.mention} - {hab.prenom} {hab.nom}")
             
 #### Role
             
@@ -369,7 +369,7 @@ class Village :
 #### --- Roles Restants ---
 # =============================================================================
         
-        msgNbRole = "__ __\n__**Rôles restants :**__"
+        msgNbRole = "_ _\n__**Rôles restants :**__"
         
         Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_Cupidon    [fRol.clefEmoji], fRol.role_Ancien  [fRol.clefEmoji] ],
                      [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji] ],
@@ -396,7 +396,7 @@ class Village :
                     if somme_RolesRestants_finLigne != 0 : 
                         msgNbRole += 10 * " "
         
-        msgNbRole += "__ __"
+        msgNbRole += "_ _"
         
         await self.salonRapport.send( msgNbRole )
     
@@ -948,18 +948,25 @@ class Village :
     
 # %%% Votes 
     
-    async def recolteBulletins(self):
+    def recolteBulletins(self):
         """
         Recolte tous les votes des habitant du village
         """
-        votes = list(self.votesEnPlus)
+        
+        if self.typeScrutin == scrutin_ElectionMaire :
+            votes = []
+            
+        else :
+            votes = list(self.votesEnPlus)
+        
         
         for hab in self.habitants :
-            for i in range(hab.nbVote) :
-                votes.append(hab.choixVote)
+            votes.extend( hab.nbVote * [hab.choixVote] )
         
-        
-        
+        return votes
+    
+    
+    
 # %%%% Election du Maire
     
     async def gestion_electionMaire(self):
@@ -1641,7 +1648,7 @@ def depouillement (village, typeDeSuffrage = None):
 #### Rassemblement de tout les votes
     
     if typeDeSuffrage == "LG" :
-        votes = list(village.votesConseilLG)
+        votes = list( village.votesConseilLG )
     else : 
         votes = village.recolteBulletins()
     
@@ -1652,15 +1659,14 @@ def depouillement (village, typeDeSuffrage = None):
 # --- votes = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
     
     
-#### Nettoyages des votes (exclusion des 0 et des personnes non accusées)
+#### Nettoyages des votes (exclusion des 0, des personnes n'étant pas dans le village et des personnes non accusées)
     
-    while 0 in votes :
-        votes.remove(0)
+    votes     = [ v   for v in votes   if v != 0                                         ]
+    votes     = [ v   for v in votes   if fHab.habitant_avec(v).numVlg == village.numero ]
     
     if typeDeSuffrage == scrutin_En2Tour_2emT :
-        for v in votes :
-            if fHab.habitant_avec(v) not in village.accuses :
-                votes.remove(v)
+        votes = [ v   for v in votes   if fHab.habitant_avec(v) in village.accuses       ]
+
     
     
     
@@ -1739,8 +1745,8 @@ def depouillement (village, typeDeSuffrage = None):
                 village.matriculeHab_choixConseilLG =  resultatsTries[0][0]
                 persChoisie                         =  fHab.habitant_avec(village.matriculeHab_choixConseilLG)
                 debutMsgResultat                    = f"**{persChoisie.prenom} {persChoisie.nom}** ({persChoisie.groupe}) est la victime designée par le conseil !\n" 
-            
-            
+        
+        
 ### Message de présentation des résultats
 
         msgResultat = debutMsgResultat + "```py\n"
@@ -2371,7 +2377,7 @@ async def fctNoct_EnfantSauvage (enfSauvage, village):
                                       enfSauvage.matri , fGoo.clef_Matricule   ,
                                       fGoo.page1_InfoJoueurs                    )
         
-        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgEnfSauv_HistoDeb}\n     A choisi {modele.mention}  |  {modele.prenom} {modele.nom} comme modele\n")
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgEnfSauv_HistoDeb}\n     A choisi {modele.member.mention}  |  {modele.prenom} {modele.nom} comme modele\n")
         
         
 ### Fin de l'attente
@@ -2469,7 +2475,7 @@ async def fctNoct_Maire (maire, village):
     
     await maire.user.send(f"Vos gardes sont :\n>       {fMeP.AjoutZerosAvant(garde1.matri ,3)}  |  **{garde1.prenom} {garde1.nom}** en {garde1.groupe}\n>       {fMeP.AjoutZerosAvant(garde2.matri ,3)}  |  **{garde2.prenom} {garde2.nom}** en {garde2.groupe}.")
     
-    village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgMaire_HistoDeb}\n     A choisi {garde1.mention} et {garde2.mention} comme gardes du corps.\n")
+    village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgMaire_HistoDeb}\n     A choisi {garde1.member.mention} et {garde2.member.mention} comme gardes du corps.\n")
 
 
 

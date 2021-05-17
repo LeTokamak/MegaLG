@@ -82,6 +82,7 @@ async def Tour():
 #### Re-déffinition de ToutesLesPersonnes (pour les Hirondelles)
     
     await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()
     
     
     

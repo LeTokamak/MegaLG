@@ -1782,8 +1782,8 @@ async def fctNoct_Villageois (villageois, village):
 
 async def fctNoct_Cupidon (cupidon, village):
     
-    contenuMsgCupi_Question = "Bonsoir Cupidon, vous allez pouvoir choisir les deux personnes que vous souhaitez réunir !\nPour cela envoyez ici leurs matricules, un par un."
-    contenuMsgCupi_Detail   = "\n```\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, le couple sera créé au hasard.\n```"
+    contenuMsgCupi_Question =  "Bonsoir Cupidon, vous allez pouvoir choisir les deux personnes que vous souhaitez réunir !\nPour cela envoyez ici leurs matricules, un par un."
+    contenuMsgCupi_Detail   =  "\n```\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, le couple sera créé au hasard.\n```"
     
     contenuMsgCupi_Attente  = f"{fDis.Emo_Cupidon} en tant que {fRol.emojiRole(cupidon.role, cupidon.estUnHomme)}   - {cupidon.user.mention}  |  {cupidon.prenom} {cupidon.nom}"
     
@@ -1795,7 +1795,7 @@ async def fctNoct_Cupidon (cupidon, village):
 #### --- Demande des amoureux ---
 # =============================================================================
 
-    if v.ajd.weekday() == 6 :
+    if True : # v.ajd.weekday() == 6 :
 
 ### Message
 
@@ -1815,31 +1815,32 @@ async def fctNoct_Cupidon (cupidon, village):
             await cupidon.user.send("Et qui sera le second ?")
             amour2, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autoDesignation = True)
                     
-            if   amour1 == amour2  and  aRepondu :
+            if amour1 == amour2  and  aRepondu :
                 await cupidon.user.send("Vous devez choisir deux amoureux différents.\nVous allez pouvoir en choisir de nouveaux !")
-                    
+            
 #### Cupidon n'a pas répondu, choix du couple au harsard
     
         if not aRepondu :
-
-            amour1 = amour2 = rd.choice(fHab.TousLesHabitants)
-                        
+            
+            amour1 = amour2 = rd.choice(village.habitants)
+            
             while amour2 == amour1 :
-                amour2 = rd.choice(fHab.TousLesHabitants)
-                            
-                await cupidon.user.send(f"Vous n'avez pas répondu, votre couple vous a donc été attribué au hasard, c'est :\n       {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}  et  {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}.")
-  
-    
+                amour2 = rd.choice(village.habitants)
+                
+            await cupidon.user.send(f"Vous n'avez pas répondu, votre couple vous a donc été attribué au hasard, c'est :\n       {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}  et  {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}.")
+        
+        
 #### Annonce du couple aux amoureux
-
+        
         if amour1.estUnHomme : e1 = "" 
         else                 : e1 = "e"
+        
         if amour2.estUnHomme : e2 = ""
         else                 : e2 = "e"
-                
+        
         await amour1.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e1} :heart: :heart: :heart:\n     Mais depuis, vous êtes attiré{e1} par {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}, quelle étrange coïncidence...")
         await amour2.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e2} :heart: :heart: :heart:\n     Mais depuis, vous êtes attiré{e2} par {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}, quelle étrange coïncidence...")
-
+        
 #### Modif de Infos Joueurs pour l'ajout des matricules du couple
         
         fGoo.remplacerVal_ligne_avec(f"{amour1.matri} {amour2.matri}", fGoo.clef_caractRoles , 
@@ -1856,12 +1857,12 @@ async def fctNoct_Cupidon (cupidon, village):
         
     
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgCupi_HistoDeb + f"\n     A choisi {amour1.user.mention}  |  **{amour1.prenom} {amour1.nom}**  et  {amour2.user.mention}  |  **{amour2.prenom} {amour2.nom}**")
-    
+        
 ### Fin de l'attente
-    
+        
         await msgAtt.delete()
-        
-        
+
+
         """
 # =============================================================================
 # Message Dominicale
@@ -2195,7 +2196,7 @@ async def fctNoct_Hirondelle (hirondelle, village):
 
 
     if aRepondu :
-        v.choixHirondelles.append(pers.matri)
+        village.choixHirondelles.append(pers.matri)
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgHirond_HistoDeb + f"\n     Cette hirondelle a choisi {pers.user.mention}.")
             
     else :
@@ -2605,7 +2606,7 @@ async def evt_voteVlg (memberVlg, contenuMsg):
         
         
 #### Si le matricule correspond à quelqu'un en vie
-        if fHab.habitant_avec(matriculeHab_Choisi) != None :
+        if fHab.habitant_avec( matriculeHab_Choisi ) != None :
             
             habVlg.choixVote = matriculeHab_Choisi
             

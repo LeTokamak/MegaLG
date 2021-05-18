@@ -110,7 +110,7 @@ if hInit > nuit_hDeb_Theo :
     else :
         ajd       = dem
         dem       = ajd + timedelta(days = 1)
-
+        
         nuit_hDeb = datetime( ajd.year, ajd.month, ajd.day,  8, 00, tzinfo = HParis )
 
 

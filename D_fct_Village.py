@@ -1810,10 +1810,10 @@ async def fctNoct_Cupidon (cupidon, village):
                 
         while amour1 == amour2  and  aRepondu :
             await cupidon.user.send("Qui sera le premier amoureux ?")
-            amour1, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autoDesignation = True)
+            amour1, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autorisation_AutoDesignation = True)
                     
             await cupidon.user.send("Et qui sera le second ?")
-            amour2, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autoDesignation = True)
+            amour2, aRepondu = await cupidon.attenteMatri_Habitant(v.nuit_hFin, autorisation_AutoDesignation = True)
                     
             if amour1 == amour2  and  aRepondu :
                 await cupidon.user.send("Vous devez choisir deux amoureux différents.\nVous allez pouvoir en choisir de nouveaux !")

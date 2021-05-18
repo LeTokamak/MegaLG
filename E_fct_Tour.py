@@ -136,9 +136,15 @@ async def Tour():
     
     await fDis.channelHistorique.send(f"{fDis.roleMaitre.mention}\nLe soleil ne va plus tardé à se coucher !\n> Il est {v.maintenant()}.")
     
-    
-# L'objectif est de saturer la ram (512 Mo) du serveur, pour qu'il plante, et redémarre automatiquement le programme  
+    plantage()
 
+
+        
+def plantage():
+    """
+    L'objectif est de saturer la ram (512 Mo) du serveur heroku, pour qu'il plante, et redémarre automatiquement le programme  
+    """
+    
     erreur = []
     
     while True : 

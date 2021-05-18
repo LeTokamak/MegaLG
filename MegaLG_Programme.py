@@ -1460,7 +1460,7 @@ async def attente_lancementTour() :
     if tempsAtt > v.nuit_hDeb - (v.tour2Vote_hFin - v.timedelta(days = 1)) :
         tempsAtt_Plantage = tempsAtt - v.timedelta(minutes = 25)
         
-        await fDis.channelHistorique.send(f"Attente de {tempsAtt} avant le plantage")
+        await fDis.channelHistorique.send(f"Attente de {tempsAtt_Plantage} avant le plantage")
         await asyncio.sleep(tempsAtt_Plantage.seconds)
         
         fTou.plantage()

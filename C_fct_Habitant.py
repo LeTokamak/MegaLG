@@ -328,7 +328,7 @@ class Habitant :
                 descripEmbed = descripEmbed.replace( "#aPRENOM#" , premAmoureuxTue.prenom                                          )
                 descripEmbed = descripEmbed.replace( "#aNOM#"    , premAmoureuxTue.nom                                             )
                 descripEmbed = descripEmbed.replace( "#aGROUPE#" , str(premAmoureuxTue.groupe)                                     )
-                descripEmbed = descripEmbed.replace( "#aROLE#"   , premAmoureuxTue.role                                            )
+                descripEmbed = descripEmbed.replace( "#aROLE#"   , premAmoureuxTue.role[fRol.clefNom]                              )
                 descripEmbed = descripEmbed.replace( "#aEMOJI#"  , fRol.emojiRole(premAmoureuxTue.role,premAmoureuxTue.estUnHomme) )
                 descripEmbed = descripEmbed.replace( "#aMENTION#", str(premAmoureuxTue.user.mention)                               )
             
@@ -347,7 +347,7 @@ class Habitant :
             descripEmbed = descripEmbed.replace( "#PRENOM#" , self.prenom                               )
             descripEmbed = descripEmbed.replace( "#NOM#"    , self.nom                                  )
             descripEmbed = descripEmbed.replace( "#GROUPE#" , str(self.groupe)                          )
-            descripEmbed = descripEmbed.replace( "#ROLE#"   , self.role                                 )
+            descripEmbed = descripEmbed.replace( "#ROLE#"   , self.role[fRol.clefNom]                   )
             descripEmbed = descripEmbed.replace( "#EMOJI#"  , fRol.emojiRole(self.role,self.estUnHomme) )
             descripEmbed = descripEmbed.replace( "#MENTION#", str(self.user.mention)                    )
         

@@ -2344,7 +2344,7 @@ async def fctNoct_EnfantSauvage (enfSauvage, village):
     contenuMsgEnfSauv_Question =  "Bonsoir Enfant Sauvage, quel sera votre modèle ?"
     contenuMsgEnfSauv_Detail   =  "\n```\nPour le choisir, envoyez ici son matricule.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, votre modele vous sera attribué au hasard.\n```"
     
-    contenuMsgEnfSauv_HistoDeb = f"{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
+    contenuMsgEnfSauv_HistoDeb = f"\n{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
     
     contenuMsgEnfSauv_Attente  = f"{fDis.Emo_EnfSauv} en tant que {contenuMsgEnfSauv_HistoDeb}"
     
@@ -2374,11 +2374,11 @@ async def fctNoct_EnfantSauvage (enfSauvage, village):
         
 ### Ajout du matricule du modele dans Infos Joueurs
         
-        fGoo.remplacerVal_ligne_avec( modele.matri     , fGoo.clef_caractRoles , 
+        fGoo.remplacerVal_ligne_avec(     modele.matri , fGoo.clef_caractRoles , 
                                       enfSauvage.matri , fGoo.clef_Matricule   ,
                                       fGoo.page1_InfoJoueurs                    )
         
-        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgEnfSauv_HistoDeb}\n     A choisi {modele.member.mention}  |  {modele.prenom} {modele.nom} comme modele\n")
+        village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgEnfSauv_HistoDeb + f"\n     A choisi {modele.member.mention}  |  {modele.prenom} {modele.nom} comme modele\n")
         
         
 ### Fin de l'attente
@@ -2476,7 +2476,7 @@ async def fctNoct_Maire (maire, village):
     
     await maire.user.send(f"Vos gardes sont :\n>       {fMeP.AjoutZerosAvant(garde1.matri ,3)}  |  **{garde1.prenom} {garde1.nom}** en {garde1.groupe}\n>       {fMeP.AjoutZerosAvant(garde2.matri ,3)}  |  **{garde2.prenom} {garde2.nom}** en {garde2.groupe}.")
     
-    village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, f"{contenuMsgMaire_HistoDeb}\n     A choisi {garde1.member.mention} et {garde2.member.mention} comme gardes du corps.\n")
+    village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgMaire_HistoDeb + f"\n     A choisi {garde1.member.mention} et {garde2.member.mention} comme gardes du corps.\n")
 
 
 

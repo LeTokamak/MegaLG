@@ -344,33 +344,33 @@ class Habitant :
                 if descripEmbed == inv : descripEmbed = Phrases[0]
             
             
-            descripEmbed = descripEmbed.replace( "#PRENOM#" , self.prenom                               )
-            descripEmbed = descripEmbed.replace( "#NOM#"    , self.nom                                  )
-            descripEmbed = descripEmbed.replace( "#GROUPE#" , str(self.groupe)                          )
-            descripEmbed = descripEmbed.replace( "#ROLE#"   , self.role[fRol.clefNom]                   )
-            descripEmbed = descripEmbed.replace( "#EMOJI#"  , fRol.emojiRole(self.role,self.estUnHomme) )
-            descripEmbed = descripEmbed.replace( "#MENTION#", str(self.user.mention)                    )
+            descripEmbed = descripEmbed.replace    (  "#PRENOM#" , self.prenom                                                     )
+            descripEmbed = descripEmbed.replace    (  "#NOM#"    , self.nom                                                        )
+            descripEmbed = descripEmbed.replace    (  "#GROUPE#" , str(self.groupe)                                                )
+            descripEmbed = descripEmbed.replace    (  "#ROLE#"   , self.role[fRol.clefNom]                                         )
+            descripEmbed = descripEmbed.replace    (  "#EMOJI#"  , fRol.emojiRole(self.role,self.estUnHomme)                       )
+            descripEmbed = descripEmbed.replace    (  "#MENTION#", str(self.user.mention)                                          )
         
         
         
 ### Réalisation de l'embed    
-
+        
         AnnonceMort = fDis.discord.Embed(title = titreEmbed, description = descripEmbed, color = couleurEmbed)
         AnnonceMort.set_thumbnail(url = urlImageRole)
-            
+        
         if Details != "" :
             AnnonceMort.set_footer(text = Details)
-    
+        
 #   Envoie de AnnonceMort
-
+        
         await fDis.channelBucher.send(embed = AnnonceMort)
-
-
-
+        
+        
+        
 # ---------------------------------------------------------
 # ---  Gestions des roles, des amoureux et de la tombe  ---
 # ---------------------------------------------------------
-
+        
         if not departServeur :
             
 ##  Changement des Roles
@@ -387,10 +387,10 @@ class Habitant :
                 for matri in self.amants :
                     if not habitant_avec(matri, autorisationMort = True).estMorte :
                         await habitant_avec(matri).Tuer(suicideAmoureux = True, premAmoureuxTue = self)
-
+            
 ##  Lancement de la fonction Cimetiere
             
-            asyncio.Task( cimetiere(habitant = self) )
+            asyncio.create_task( cimetiere(habitant = self), name = f"Lancement cimetière de {self.prenom} {self.nom}." )
 
     
 
@@ -399,12 +399,14 @@ class Habitant :
 # %%% Vote
     
     def vote (self, vote):
-        """Essaye de int contenuBulletin
+        """
+        Essaye de int contenuBulletin
         
-             Si l'opération fonctionne, la fonction vérifie que le matricule correspond à quelqu'un
-                Si c'est le cas la voix est comptée et la fonction retourne True
+        Si l'opération fonctionne, la fonction vérifie que le matricule correspond à quelqu'un
+            Si c'est le cas la voix est comptée et la fonction retourne True
 
-             Sinon la fonction retourne False """
+        Sinon la fonction retourne False
+        """
         
 
         self.choixVote = vote

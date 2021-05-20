@@ -48,16 +48,16 @@ async def Tour():
 #### Gestion de la nuit
     
     coroutinesNocturnes = []
-
+    
     for vlg in fVlg.TousLesVillages :
         coroutinesNocturnes.append( vlg.gestion_nuit() )
-        
+    
     await asyncio.gather(*coroutinesNocturnes)
-
-
-
+    
+    
+    
 #### Application de la nuit
-
+    
     if v.nbTours != 0 :
         for vlg in fVlg.TousLesVillages :
             await vlg.application_nuit()
@@ -69,7 +69,7 @@ async def Tour():
 # %% Journée
 
     v.nbTours += 1
-    await fDis.channelHistorique.edit(topic = f"Tour n°{v.nbTours}")
+    await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
     await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
 
 #### Début de la Journée - Partie 1

@@ -11,11 +11,11 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ3                                12/05/2021
+Version Delta                             δ4                                12/05/2021
 
 """
 
-version = "δ3"
+version = "δ4"
 
 
 # Niveau E
@@ -735,17 +735,9 @@ async def on_ready():
     
 #### Recherche de la phase en cours
     
-    v.phaseEnCours = v.phase0
+    v.phaseEnCours = fDis.channelHistorique.topic [ : len(v.phase0)]
     
-    phaseTrouvee = False
-    
-    async for message in fDis.channelHistorique.history():
-        
-        if "```Phase " in message.content  and  not phaseTrouvee :
-            v.phaseEnCours = message.content
-            phaseTrouvee = True
-    
-    await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours[3:-3]})  - ⬢```\n{v.maintenant()}")
+    await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours})  - ⬢```\n{v.maintenant()}")
     
     
 #### Redéfinition Groupes, Habitants et Villages
@@ -764,22 +756,20 @@ async def on_ready():
     async for message in fDis.channelAttente.history():
         
         if fDis.Emo_Red == message.content.split()[0] :
-            asyncio.create_task( fHab.cimetiere(message = message, rappelDeFonction = True), name = f"Tâche de Cimetière de {message.content}")
+            asyncio.create_task( fHab.cimetiere(message = message, rappelDeFonction = True), name = f"Re-Lancement de Cimetière de {message.content}.")
     
     await fDis.channelHistorique.send(f"```⬢ -  Fin du 'on_ready'  - ⬢```\n{v.maintenant()}")
     
     
-#### Phase 3 - Récupération du numéro de Tour
+#### Phase 3 - Récupération du numéro de Tour et Lancement du Tour
     
     if v.phaseEnCours == v.phase3 :
-        # Le topic de channelHistorique est de la forme "Tour n°45"
+        # Le topic de channelHistorique est de la forme "Phase 3 - Tour n°45"
         
-        v.nbTours = int(fDis.channelHistorique.topic[7: ])
-    
-    
-#### Phase 3 - Lancement du Tour
+        v.nbTours = int( fDis.channelHistorique.topic.split() [-1] [2:] )
         
         await attente_lancementTour()
+
 
 
 
@@ -796,8 +786,7 @@ async def Inscription (ctx):
 
 async def lancementInscription():
 
-    v.phaseEnCours = v.phase1
-    await fDis.channelHistorique.send(v.phaseEnCours)
+    await fDis.channelHistorique.edit(topic = v.phase1)
     
 #### Gestions des permissions
     
@@ -824,16 +813,15 @@ async def lancementInscription():
 @fDis.commands.has_permissions(ban_members = True)
 async def DebutPartie (ctx):
     
-    v.phaseEnCours = v.phase2
-    await fDis.channelHistorique.send(v.phaseEnCours)
-    
+    await fDis.channelHistorique.edit(topic = v.phase2)
+        
     await finInscription()
     await numerotationHabitants()
     await repartionGroupes_Villages()
     
 
     #for vlg in fVlg.TousLesVillages :
-        #await distributionRole(vlg)
+    #    await distributionRole(vlg)
 
     
     await fHab.redef_TousLesHabitants()
@@ -843,12 +831,9 @@ async def DebutPartie (ctx):
     
     for vlg in fVlg.TousLesVillages :
         await vlg.rapportMunicipal()
-        
-    v.phaseEnCours = v.phase3
-    await fDis.channelHistorique.send(v.phaseEnCours)
     
     v.nbTours = 0
-    await fDis.channelHistorique.edit(topic = f"Tour n°{v.nbTours}")
+    await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
     
     await attente_lancementTour()
 

@@ -65,12 +65,12 @@ partiePdt_Weekend                = True
 
 # %% Variables de la Partie
 
-phase0       = "```Phase 0 - Entre Partie```"
+phase0       = "Phase 0" # Entre Partie
 
-phase1       = "```Phase 1 - Inscription```"
-phase2       = "```Phase 2 - Début de Partie```"
-phase3       = "```Phase 3 - Partie```"
-phase4       = "```Phase 4 - Fin de Partie```"
+phase1       = "Phase 1" # Inscription
+phase2       = "Phase 2" # Début de Partie
+phase3       = "Phase 3" # Partie
+phase4       = "Phase 4" # Fin de Partie
 
 phaseEnCours = None
 

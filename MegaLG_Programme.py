@@ -11,7 +11,7 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ4                                12/05/2021
+Version Delta                             δ4                                20/05/2021
 
 """
 
@@ -155,9 +155,9 @@ async def reaction_Groupe():
 
 
 async def event_reactions():
-    asyncio.create_task( ajout_roleArtisans()    , name = "Tâche d'ajout du rôle d'Artisant" )
-    asyncio.create_task( reaction_reInscription(), name = "Tâche de Ré-Inscription"          )
-    asyncio.create_task( reaction_Groupe()       , name = "Tâche de changement de Groupe"    )
+    asyncio.create_task( ajout_roleArtisans()    , name = "Ajout du rôle d'Artisant" )
+    asyncio.create_task( reaction_reInscription(), name = "Ré-Inscription"           )
+    asyncio.create_task( reaction_Groupe()       , name = "Changement de Groupe"     )
 
 
 
@@ -244,9 +244,9 @@ async def message_voteLoupGarou():
     
     
 async def event_messages():
-    asyncio.create_task( message_Inscription()   , name = "Tâche d'Inscription"            )
-    asyncio.create_task( message_voteVillage()   , name = "Tâche du vote du village"       )
-    asyncio.create_task( message_voteLoupGarou() , name = "Tâche du vote des Loups-Garous" )
+    asyncio.create_task( message_Inscription()   , name = "Inscription"           )
+    asyncio.create_task( message_voteVillage()   , name = "Vote du village"       )
+    asyncio.create_task( message_voteLoupGarou() , name = "Vote des Loups-Garous" )
     
     
     
@@ -758,7 +758,7 @@ async def on_ready():
         if fDis.Emo_Red == message.content.split()[0] :
             asyncio.create_task( fHab.cimetiere(message = message, rappelDeFonction = True), name = f"Re-Lancement de Cimetière de {message.content}.")
     
-    await fDis.channelHistorique.send(f"```⬢ -  Fin du 'on_ready'  - ⬢```\n{v.maintenant()}")
+    await fDis.channelHistorique.send(f"Fin du 'on_ready' - {v.maintenant()}")
     
     
 #### Phase 3 - Récupération du numéro de Tour et Lancement du Tour
@@ -1436,24 +1436,37 @@ async def attente_lancementTour() :
         await fDis.channelHistorique.send("Nous somme Vendredi ou Samedi, la fonction Lancement à été stoppée dans son élan !")
         return None
     
-#### Attente qu'il soit 18h pour lancer la fontion Tour    
-
-    tempsAtt = v.nuit_hDeb - m
-                
-    await fDis.channelHistorique.send(f"Attente de {tempsAtt} avant de lancer la nuit n°{v.nbTours}")
     
-    if tempsAtt > v.nuit_hDeb - (v.tour2Vote_hFin - v.timedelta(days = 1)) :
-        tempsAtt_Plantage = tempsAtt - v.timedelta(minutes = 25)
+    
+#### Attente du début de la nuit pour lancer la fontion Tour 
+
+    tempsAtt            = v.nuit_hDeb  -  m
+    intervalMaintenance = v.nuit_hDeb  -  (v.tour2Vote_hFin - v.timedelta(days = 1))   # 30 mins
+    
+    
+    
+    # Plantage si le temps d'Attente est suppérieur à 30 minutes
+    
+    if tempsAtt >= intervalMaintenance :
+        
+        tempsAtt_Plantage = tempsAtt - (intervalMaintenance - v.timedelta(minutes = 5))
         
         await fDis.channelHistorique.send(f"Attente de {tempsAtt_Plantage} avant le plantage")
         await asyncio.sleep(tempsAtt_Plantage.seconds)
         
         fTou.plantage()
     
-    if tempsAtt > v.timedelta(0) :
-        await asyncio.sleep(tempsAtt.seconds)
     
-    await fTou.Tour()
+    
+    # Sinon attente avant de lancer la fonction Tour
+    
+    else :
+        await fDis.channelHistorique.send(f"Attente de {tempsAtt} avant de lancer la nuit n°{v.nbTours}")
+        
+        if tempsAtt > v.timedelta(0) :
+            await asyncio.sleep(tempsAtt.seconds)
+        
+        await fTou.Tour()
 
 
 

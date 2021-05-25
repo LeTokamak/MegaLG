@@ -872,7 +872,7 @@ class Village :
         else :
             for matri in self.matriculeHab_vraimentTues :
                 habTue = fHab.habitant_avec(matri)
-                await habTue.Tuer()
+                await habTue.Tuer(village = self)
            
                 
 #### Cas où le maire est mort ==> Dissolution du village
@@ -1125,7 +1125,7 @@ class Village :
                 
                 
             else :
-                await persTue.Tuer(meurtreNocturne = False)
+                await persTue.Tuer(village = self, meurtreNocturne = False)
                 
                 if persTue.estMaire : 
                     await self.dissolution()
@@ -1172,7 +1172,7 @@ class Village :
                     await self.exilVote(persTue)
                     
                 else :
-                    await persTue.Tuer(meurtreNocturne = False)
+                    await persTue.Tuer(village = self, meurtreNocturne = False)
                     
                     if persTue.estMaire : 
                         await self.dissolution()
@@ -1847,9 +1847,9 @@ async def fctNoct_Cupidon (cupidon, village):
         
 #### Modif de Infos Joueurs pour l'ajout des matricules du couple
         
-        fGoo.remplacerVal_ligne_avec(f"{amour1.matri} {amour2.matri}", fGoo.clef_caractRoles , 
-                                     cupidon.matri                   , fGoo.clef_Matricule   ,
-                                     fGoo.page1_InfoJoueurs                                   )
+        fGoo.remplacerVal_ligne_avec(f"{amour1.matri}  {amour2.matri}", fGoo.clef_caractRoles , 
+                                     cupidon.matri                    , fGoo.clef_Matricule   ,
+                                     fGoo.page1_InfoJoueurs                                    )
 
         fGoo.ajoutVal_cellule_avec( f"A{amour2.matri} ", fGoo.clef_caractJoueur ,
                                     amour1.matri       , fGoo.clef_Matricule    ,
@@ -2398,16 +2398,20 @@ async def fctNoct_Maire (maire, village):
     else                : monsieur, le_seul = "Madame"  , "la seule"
 
 #### Attente de Lancement
+    
+    strEmo_Lancmt               =  "🟢"
 
     contenuMsgLancmt_Question   = f"Bonsoir {monsieur} le Maire, vous allez pouvoir choisir vos gardes du corps."
-    contenuMsgLancmt_Precision  =  "\n> Pour lancer la nomination, réagissez à ce message avec 🟢 !"
+    contenuMsgLancmt_Precision  = f"\n> Pour lancer la nomination, réagissez à ce message avec {strEmo_Lancmt} !"
     contenuMsgLancmt_Precision +=  "\n> Vous devez absolument réagir __**après**__ avoir terminé vos activités nocturnes, pour ne pas vous emmêler les pinceaux lors des désignations des matricules !"
     contenuMsgLancmt_Precision +=  "\n> Si vous ne réagissez pas à ce message, vos gardes vous seront atribués au hasard."
     
-    msgAtt_Debut      = await fDis.channelAttente.send("{fDis.Emo_Maire}   - {maire.user.mention}  |  {maire.prenom} {maire.nom}  |  {village.nom} - *Attente de début de la fonction nocturne*")
+    contenuMsgMaire_AttenteDeb  = f"{fDis.Emo_Maire}   - {maire.user.mention}  |  {maire.prenom} {maire.nom}  |  {village.nom} - *Attente du début de la fonction nocturne*"
+    
+    msgAtt_Debut      = await fDis.channelAttente.send(contenuMsgMaire_AttenteDeb)
     messageLancement  = await maire.user.send(contenuMsgLancmt_Question + contenuMsgLancmt_Precision)
     
-    lancementAutorise = await fDis.attente_Reaction(messageLancement, maire.user, [["🟢", True]], timeout = v.nuit_duree.seconds, reponseParDefaut = False)
+    lancementAutorise = await fDis.attente_Reaction(messageLancement, maire.user, [[strEmo_Lancmt, True]], timeout = v.nuit_duree.seconds, reponseParDefaut = False)
     
     await messageLancement.delete()
     await msgAtt_Debut.delete()
@@ -2632,7 +2636,7 @@ async def cmd_changementNomVillage(memberVlg, tupleNom):
     
     if habitant != None  and  habitant.estMaire :
         village = village_avec(habitant.numVlg, "numero")
-        village.changementNom(nouveauNom)
+        await village.changementNom(nouveauNom)
     
     else :
         await memberVlg.send("**ERREUR** - Seul un maire peut changer le nom de son village !")

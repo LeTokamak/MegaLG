@@ -232,7 +232,7 @@ class Habitant :
 
 # %%% Meurtre
     
-    async def Tuer (self, meurtreNocturne = True, suicideAmoureux = False, premAmoureuxTue = None, departServeur = False):
+    async def Tuer (self, village, meurtreNocturne = True, suicideAmoureux = False, premAmoureuxTue = None, departServeur = False):
 
         self.estMorte = True
         await fDis.channelHistorique.send(f"Tentative de meurtre de {self.matri} {self.prenom} {self.nom} {self.groupe}  |  {self.user.mention} {self.user}")
@@ -363,7 +363,7 @@ class Habitant :
         
 #   Envoie de AnnonceMort
         
-        await fDis.channelBucher.send(embed = AnnonceMort)
+        await village.salonBucher.send(embed = AnnonceMort)
         
         
         
@@ -375,8 +375,8 @@ class Habitant :
             
 ##  Changement des Roles
             
-            await self.member.remove_roles( fDis.roleJoueurs )
-            await self.member.   add_roles( fDis.roleMorts   )
+            await self.member.remove_roles( fDis.roleJoueurs, village.roleDiscord )
+            await self.member.   add_roles( fDis.roleMorts   ) # village.roleDiscord**Mort**
             
             await self.member.edit(nick = self.member.nick[6:])
             
@@ -386,11 +386,11 @@ class Habitant :
                 
                 for matri in self.amants :
                     if not habitant_avec(matri, autorisationMort = True).estMorte :
-                        await habitant_avec(matri).Tuer(suicideAmoureux = True, premAmoureuxTue = self)
+                        await habitant_avec(matri).Tuer(village, suicideAmoureux = True, premAmoureuxTue = self)
             
 ##  Lancement de la fonction Cimetiere
             
-            asyncio.create_task( cimetiere(habitant = self), name = f"Lancement cimetière de {self.prenom} {self.nom}." )
+            asyncio.create_task( cimetiere(village = village, habitant = self), name = f"Lancement cimetière de {self.prenom} {self.nom}." )
 
     
 
@@ -588,6 +588,9 @@ class Habitant :
 ##  Attente d'une réaction
                 
                 estCertain = await fDis.attente_Confirmation(msgVerif, self.user, timeout = tempsAttenteVerif_Effectif.seconds)
+                
+                if not estCertain :
+                    matricule = ""
             
             else :
                 estCertain = True
@@ -703,7 +706,7 @@ def habitant_avec(info, autorisationMort = False) :
 
 # %% Fonction Cimetière
 
-async def cimetiere (habitant = None, message = None, rappelDeFonction = False):
+async def cimetiere (village = None, habitant = None, message = None, rappelDeFonction = False):
     """
     La fonction cimetiere gère la dernière demeure d'un Habitant, sa Tombe...
     
@@ -724,16 +727,17 @@ async def cimetiere (habitant = None, message = None, rappelDeFonction = False):
 
     if not rappelDeFonction :
         HDeces = v.maintenant()
-        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}     <| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {habitant.groupe.replace(' ','_')} {habitant.role.replace(' ','_')} {habitant.idDis} {int(False)} |>")
+        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}     <| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} {int(False)} |>")
 
 ## Définition des variables utilisées ensuite
 
         EstUnHomme = habitant.estUnHomme
         Prenom     = habitant.prenom
         Nom        = habitant.nom
-        Groupe     = habitant.groupe
-        Role       = habitant.role
+        Groupe     = str(habitant.groupe)
+        Role       = habitant.role[fRol.clefNom]
         User       = habitant.user
+        SalonCimet = village.salonCimetiere
         EpiRecue   = False
     
 ##  Annonce (si c'est la première fois que j'attend une réponse)
@@ -764,8 +768,9 @@ async def cimetiere (habitant = None, message = None, rappelDeFonction = False):
         Nom        = infos[7].replace('_',' ')
         Groupe     = infos[8].replace('_',' ')
         Role       = infos[9].replace('_',' ')
-        User       = fDis.bot.get_user(int(infos[10]))
-        EpiRecue   = bool(int(infos[11]))
+        User       = fDis.bot.get_user   (int(infos[10]))
+        SalonCimet = fDis.bot.get_channel(int(infos[11]))
+        EpiRecue   = bool(int(infos[12]))
 
 
 
@@ -878,7 +883,7 @@ async def cimetiere (habitant = None, message = None, rappelDeFonction = False):
     Tombe.set_footer(text = f"{Il} était en {Groupe} et {Il.lower()} est {Decede} le {HDeces.day} {fMeP.mois(HDeces.month)} {HDeces.year} à {fMeP.AjoutZerosAvant(HDeces.hour,2)} : {fMeP.AjoutZerosAvant(HDeces.minute,2)}")
     Tombe.set_thumbnail(url = urlImageRole)
     
-    await fDis.channelCimetiere.send(embed = Tombe)
+    await SalonCimet.send(embed = Tombe)
     
     await msgAtt.delete()
 

@@ -41,6 +41,13 @@ async def Tour():
     
     
     
+#### Rapports municipaux Crépusculaires
+    
+    await fHab.redef_TousLesHabitants()
+    
+    for vlg in fVlg.TousLesVillages :
+        await vlg.rapportMunicipal()
+    
     
     
 # %% Nuit
@@ -72,26 +79,38 @@ async def Tour():
     await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
     await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
 
-#### Début de la Journée - Partie 1
+#### Début de la Journée
     
     for vlg in fVlg.TousLesVillages :
-        await vlg.debutJournee_Partie1()
+        await vlg.debutJournee()
     
     
     
-#### Re-déffinition de ToutesLesPersonnes (pour les Hirondelles)
+#### Re-définition de ToutesLesPersonnes (pour les Hirondelles)
+    
+    anciensVillages = list(fVlg.TousLesVillages)
     
     await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()
     
     
     
-#### Début de la Journée - Partie 2
+#### Rajout des choix des Corbeaux / Hirondelles
+    
+    for i in range(len(anciensVillages)) :
+        fVlg.TousLesVillages[i].matricule_choixCorbeaux    = anciensVillages[i].matricule_choixCorbeaux
+        fVlg.TousLesVillages[i].matricule_choixHirondelles = anciensVillages[i].matricule_choixHirondelles
+    
+    
+    
+#### Rapports municipaux Matinaux
+    
+    await fHab.redef_TousLesHabitants()
     
     for vlg in fVlg.TousLesVillages :
-        await vlg.debutJournee_Partie2()
-    
-    
+        await vlg.rapportMunicipal()
+
+
     
 #### Sauvegarde de Infos Joueurs
     
@@ -120,15 +139,7 @@ async def Tour():
     
     
     
-# %%% Fin de Journée
-    
-#### Rapports municipaux Vespéraux
-    
-    await fHab.redef_TousLesHabitants()
-    
-    for vlg in fVlg.TousLesVillages :
-        await vlg.rapportMunicipal()
-    
+# %%% Fin de Journée    
     
 #### Plantage Final
     

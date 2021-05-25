@@ -122,6 +122,7 @@ clefs_Villages = page_Villages.get()[0]
   clefVlg_idRoleDiscord          ,
   
   clefVlg_idSalon_Rapport        ,
+  clefVlg_idSalon_Cimetiere      ,
   clefVlg_idSalon_Bucher         ,
   clefVlg_idSalon_Debat          ,
   clefVlg_idSalon_vocDebat       ,

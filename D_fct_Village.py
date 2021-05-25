@@ -53,6 +53,7 @@ class Village :
         self.roleDiscord    = None
         
         self.salonRapport   = None
+        self.salonCimetiere = None
         self.salonBucher    = None
         self.salonDebat     = None
         self.vocalDebat     = None
@@ -427,7 +428,13 @@ class Village :
         contenuMsg_AnnonceExil = f"**{self.nom}** a été détruit... {len(self.habitants)} habitants viennent d'arriver à {nouvVillage.nom} !"
         
         await nouvVillage.salonDebat.send(contenuMsg_AnnonceExil)
-    
+        
+        
+#### Suppresion du Référencement du Village
+        
+        fGoo.suppressionLigne_avec(self.numero, fGoo.clefVlg_numVillage, fGoo.page_Villages)
+        
+        TousLesVillages.remove(self)
     
     
     
@@ -837,14 +844,14 @@ class Village :
     
 # %% Journée
     
-    async def debutJournee_Partie1(self):
+    async def debutJournee(self):
         
         
 #### Début de Journée
         
-        await self.salonRapport    .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```\n_ _")
-        await self.salonBucher     .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```\n_ _")
-        await self.salonDebat      .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {self.nom} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
+        await self.salonRapport    .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```\n_ _")
+        await self.salonBucher     .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```\n_ _")
+        await self.salonDebat      .send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
         
         
         
@@ -852,87 +859,32 @@ class Village :
         
 #### Annonce des morts de la nuit
         
-        for matri in self.matriculeHab_vraimentTues :
-            habTue = fHab.habitant_avec(matri)
-            await habTue.Tuer()
-            
-            if habTue.estMaire :
-                await self.dissolution()
-        
-        
         if len(self.matriculeHab_vraimentTues) == 0 :
-            await self.salonBucher.send("_Personne n'a été tué cette nuit_")
-        
-        
-        await self.salonBucher.send(v.separation)
-    
-    
-    
-    
-    
-    
-    
-    async def debutJournee_Partie2(self):
-        
-#### Application Corbeaux / Hirondelles
-        
-        await fDis.channelHistorique.send(f"**{self.nom}**\n> Corbeaux : {self.matricule_choixCorbeaux}\n> Hirondelles : {self.matricule_choixHirondelles}")
-    
-        msgCorbHiron = ""
-    
-        
-        
-### Annonce des Corbeaux
-        
-        if len(self.matricule_choixCorbeaux) != 0 :
+            contenuMsg = "_Personne n'a été tué cette nuit_"
             
-            msgCorbHiron += "Choix des **Corbeaux** :"
+            if v.nbTours - 1 == 0 :
+                contenuMsg += "  _car c'était la Nuit n°0_"
             
-            for matriCorb in self.matricule_choixCorbeaux :
-                if matriCorb not in self.matriculeHab_vraimentTues :
-                    pers = fHab.habitant_avec(matriCorb)
-                    self.votesEnPlus.append(matriCorb)
-                    self.votesEnPlus.append(matriCorb)
-                    
-                    msgCorbHiron += f"\n> ⬢ {pers.user.mention}  |  {pers.prenom} {pers.nom}  ( {pers.groupe} )"
-                    
-##  Séparation
+            await self.salonBucher.send(contenuMsg)
             
-            if len(self.matricule_choixHirondelles) != 0 : 
-                msgCorbHiron += "\n_ _\n"  
+            
+            
+        else :
+            for matri in self.matriculeHab_vraimentTues :
+                habTue = fHab.habitant_avec(matri)
+                await habTue.Tuer()
+           
+                
+#### Cas où le maire est mort ==> Dissolution du village
+
+        if self.maire != None  and  self.maire.estMorte :
+            await self.dissolution()
         
-    
-### Annonce des Hirondelles
-    
-        if len(self.matricule_choixHirondelles) != 0 :
-    
-            msgCorbHiron += "Choix des **Hirondelles** :"
-            
-            for matriHiron in self.matricule_choixHirondelles :
-                if matriHiron not in self.matriculeHab_vraimentTues :
-                    pers = fHab.habitant_avec(matriHiron)
-                    pers.nbVote  += 2
-                    
-                    msgCorbHiron += f"\n> ⬢ {pers.user.mention}  |  {pers.prenom} {pers.nom}  ( {pers.groupe} )"
-    
-### Envoie et Séparation
-    
-        if len(self.matricule_choixCorbeaux) + len(self.matricule_choixHirondelles) != 0 :
-            await self.salonBucher.send(msgCorbHiron)
+        
+        else :
             await self.salonBucher.send(v.separation)
-    
-    
-    
-    
-    
-#### Rapports municipaux Matinaux
-    
-        await self.rapportMunicipal()
-    
-    
-    
-    
-    
+        
+        
 #### Ré-autorisation d'écriture
         
         await self.salonRapport.set_permissions ( self.roleDiscord, read_messages = True, send_messages = False )
@@ -940,7 +892,7 @@ class Village :
         await self.salonDebat  .set_permissions ( self.roleDiscord, read_messages = True, send_messages = True  )
         await self.vocalDebat  .set_permissions ( self.roleDiscord, read_messages = True                        )
     
-    
+        
     
     
     
@@ -952,12 +904,9 @@ class Village :
         """
         Recolte tous les votes des habitant du village
         """
-        
-        if self.typeScrutin == scrutin_ElectionMaire :
-            votes = []
-            
-        else :
-            votes = list(self.votesEnPlus)
+
+
+        votes = list(self.votesEnPlus)
         
         
         for hab in self.habitants :
@@ -971,8 +920,8 @@ class Village :
     
     async def gestion_electionMaire(self):
         
-        await self.salonBucher.send("Élection d'un nouveau maire")
-        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyBrown} - {self.nom} - Élection d'un nouveau maire\n")
+        await self.salonBucher.send("```⬢⬢⬢     Élection d'un nouveau maire     ⬢⬢⬢```\n_ _")
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyBrown} - {self.nom} - Élection d'un nouveau maire")
         
         
 #### Dépouillement initial
@@ -1056,6 +1005,58 @@ class Village :
 
 
     async def gestion_voteEliminatoire(self):
+        
+#### === Corbeaux et Hirondelles ===
+        
+        await fDis.channelHistorique.send(f"**{self.nom}**\n> {fDis.Emo_Corbeau} : {self.matricule_choixCorbeaux}\n> {fDis.Emo_Hirondelle} : {self.matricule_choixHirondelles}\n_ _")
+    
+        msgCorbHiron = ""
+    
+        
+        
+#### Annonce des Corbeaux
+        
+        if len(self.matricule_choixCorbeaux) != 0 :
+            
+            msgCorbHiron += "Choix des {fDis.Emo_Corbeau} :"
+            
+            for matriCorb in self.matricule_choixCorbeaux :
+                if matriCorb not in self.matriculeHab_vraimentTues :
+                    hab = fHab.habitant_avec(matriCorb)
+                    
+                    msgCorbHiron += f"\n> ⬢ {hab.user.mention}  |  {hab.prenom} {hab.nom}  ( {hab.groupe} )"
+                    self.votesEnPlus.extend(2*[matriCorb])
+            
+            
+##  Séparation
+            
+            if len(self.matricule_choixHirondelles) != 0 : 
+                msgCorbHiron += "\n_ _\n"  
+        
+    
+#### Annonce des Hirondelles
+    
+        if len(self.matricule_choixHirondelles) != 0 :
+    
+            msgCorbHiron += "Choix des {fDis.Emo_Hirondelle} :"
+            
+            for matriHiron in self.matricule_choixHirondelles :
+                if matriHiron not in self.matriculeHab_vraimentTues :
+                    hab = fHab.habitant_avec(matriHiron)
+                    
+                    msgCorbHiron += f"\n> ⬢ {hab.user.mention}  |  {hab.prenom} {hab.nom}  ( {hab.groupe} )"
+                    hab.nbVote += 2
+    
+### Envoie et Séparation
+    
+        if len(self.matricule_choixCorbeaux) + len(self.matricule_choixHirondelles) != 0 :
+            await self.salonBucher.send(msgCorbHiron)
+            await self.salonBucher.send(v.separation)
+            
+            
+            
+#### === Phase de Vote ===
+            
         
 #### Vote en 1 tour s'il y a moins de 10 habitants en vie
         
@@ -1194,8 +1195,8 @@ class Village :
 
     async def vote_en_1tour(self):
         
-        await self.salonBucher.send("Début du vote du village ! (il reste moins de 10 Joueurs, il n'y aura donc qu'un seul tour)")
-        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du vote, composé d'un seul tour\n")
+        await self.salonBucher.send("```⬢⬢⬢     Vote du village     ⬢⬢⬢```\n _Il y a **moins** de 10 Habitants dans le village, il n'y aura donc qu'un seul tour_\n_ _")
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du vote, en 1 tour")
         
         
 #### Dépouillement initial
@@ -1220,12 +1221,14 @@ class Village :
     
     
     async def vote_en_2tours(self):
-    
+        
+        await self.salonBucher.send("```⬢⬢⬢     Vote du village     ⬢⬢⬢```\n _Il y a **plus** de 10 Habitants dans le village, le vote sera composé de 2 tours_\n_ _")
+        
 # =============================================================================
 #### --- 1er Tour ---
 # =============================================================================
         
-        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du 1er Tour\n")
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du 1er Tour")
         
         
 #### Dépouillement initial
@@ -1319,7 +1322,7 @@ class Village :
 #### --- 2nd Tour ---
 # =============================================================================
         
-        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du 2nd Tour\n")
+        self.msgHistorique_votes = await fDis.channelHistorique.send(f"{fDis.Emo_BabyCyan} - {self.nom} - Début du 2nd Tour")
     
 #### Dépouillement initial
         
@@ -1459,6 +1462,7 @@ def redef_villagesExistants():
             nouvVillage.roleDiscord    = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord  ])
             
             nouvVillage.salonRapport   = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Rapport       ])
+            nouvVillage.salonCimetiere = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Cimetiere     ])
             nouvVillage.salonBucher    = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Bucher        ])
             nouvVillage.salonDebat     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Debat         ])
             nouvVillage.vocalDebat     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebat      ])
@@ -1844,15 +1848,15 @@ async def fctNoct_Cupidon (cupidon, village):
 #### Modif de Infos Joueurs pour l'ajout des matricules du couple
         
         fGoo.remplacerVal_ligne_avec(f"{amour1.matri} {amour2.matri}", fGoo.clef_caractRoles , 
-                                     cupidon.matri                   , fGoo.clef_idDiscord   ,
+                                     cupidon.matri                   , fGoo.clef_Matricule   ,
                                      fGoo.page1_InfoJoueurs                                   )
 
         fGoo.ajoutVal_cellule_avec( f"A{amour2.matri} ", fGoo.clef_caractJoueur ,
-                                    amour1.matri       , fGoo.clef_idDiscord    ,
+                                    amour1.matri       , fGoo.clef_Matricule    ,
                                     fGoo.page1_InfoJoueurs                       )
         
         fGoo.ajoutVal_cellule_avec( f"A{amour1.matri} ", fGoo.clef_caractJoueur ,
-                                    amour2.matri       , fGoo.clef_idDiscord    ,
+                                    amour2.matri       , fGoo.clef_Matricule    ,
                                     fGoo.page1_InfoJoueurs                       )
         
     
@@ -2196,7 +2200,7 @@ async def fctNoct_Hirondelle (hirondelle, village):
 
 
     if aRepondu :
-        village.choixHirondelles.append(pers.matri)
+        village.matricule_choixHirondelles.append(pers.matri)
         village.msgHistoNuit = await fDis.ajoutMsg(village.msgHistoNuit, contenuMsgHirond_HistoDeb + f"\n     Cette hirondelle a choisi {pers.user.mention}.")
             
     else :

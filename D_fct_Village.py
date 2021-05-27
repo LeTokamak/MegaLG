@@ -1018,7 +1018,7 @@ class Village :
         
         if len(self.matricule_choixCorbeaux) != 0 :
             
-            msgCorbHiron += "Choix des {fDis.Emo_Corbeau} :"
+            msgCorbHiron += f"Choix des {fDis.Emo_Corbeau} :"
             
             for matriCorb in self.matricule_choixCorbeaux :
                 if matriCorb not in self.matriculeHab_vraimentTues :
@@ -1038,7 +1038,7 @@ class Village :
     
         if len(self.matricule_choixHirondelles) != 0 :
     
-            msgCorbHiron += "Choix des {fDis.Emo_Hirondelle} :"
+            msgCorbHiron += f"Choix des {fDis.Emo_Hirondelle} :"
             
             for matriHiron in self.matricule_choixHirondelles :
                 if matriHiron not in self.matriculeHab_vraimentTues :

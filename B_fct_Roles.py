@@ -60,7 +60,7 @@ role_Hirondelle[clefNom] = "Hirondelle"
       
 role_FamilleNb [clefNom] = "Membre de la Famille Nombreuse"
 
-role_VillaVilla[clefNom] = "Villageois - Villageois"
+role_VillaVilla[clefNom] = "Villageois-Villageois"
 role_Juge      [clefNom] = "Juge"
 
 role_LG        [clefNom] = "Loup-Garou"
@@ -77,6 +77,7 @@ role_EnfantSauv[clefNom] = "Enfant Sauvage"
 clefProp = "proportion"
 
 role_Villageois[clefProp] = v.prop_Villag
+role_VillaVilla[clefProp] = v.prop_VillaVilla
 role_Cupidon   [clefProp] = v.prop_Cupido
 role_Ancien    [clefProp] = v.prop_Ancien
 
@@ -84,14 +85,14 @@ role_Salvateur [clefProp] = v.prop_Salvat
 role_Sorciere  [clefProp] = v.prop_Sorcie
 role_Voyante   [clefProp] = v.prop_Voyant
 
-role_Chasseur  [clefProp] = v.prop_Chasse
 role_Corbeau   [clefProp] = v.prop_Corbea
 role_Hirondelle[clefProp] = v.prop_Hirond
-      
+role_Juge      [clefProp] = v.prop_Juge      
+
+role_Chasseur  [clefProp] = v.prop_Chasse
 role_FamilleNb [clefProp] = v.prop_Famill
 
-role_VillaVilla[clefProp] = v.prop_VillaVilla
-role_Juge      [clefProp] = v.prop_Juge
+
 
 role_LG        [clefProp] = v.prop_LG
 role_LGNoir    [clefProp] = v.prop_LGNoir
@@ -296,28 +297,28 @@ role_EnfantSauv[clefDescription] =  "Ce petit bonhomme abandonné a choisi, lors
 clefDetails = "details"
 
 role_Villageois[clefDetails] =  None
-role_Cupidon   [clefDetails] =  "*Il est appelé lors de la première nuit, pour choisir son couple.*"
-role_Ancien    [clefDetails] =  "*S'il est attaqué pendant la nuit et si personne ne le protège, alors il perdra une résistance nocturne et il sera informé de cette attaque le lendemain matin.*"
+role_Cupidon   [clefDetails] =  "Il est appelé lors de la première nuit, pour choisir son couple."
+role_Ancien    [clefDetails] =  "S'il est attaqué pendant la nuit et si personne ne le protège, alors il perdra une résistance nocturne et il sera informé de cette attaque le lendemain matin."
 
-role_Salvateur [clefDetails] =  "*Les salvateurs sont appelés individuellement pendant la nuit.\nUn salvateur peut protéger plusieurs nuits de suite la même personne, il ne peut pas se protéger lui-même.*"
-role_Sorciere  [clefDetails] =  "*Les sorcières sont appelées individuellement **après** le conseil des Loups-Garous.\nSi plusieurs sorcières font le même choix, seulement une de ces sorcières (choisie aléatoirement) perdra sa potion.*"
-role_Voyante   [clefDetails] =  "*Les voyantes sont appelées individuellement pendant la nuit.*"
+role_Salvateur [clefDetails] =  "Les salvateurs sont appelés individuellement pendant la nuit.\nUn salvateur peut protéger plusieurs nuits de suite la même personne, il ne peut pas se protéger lui-même."
+role_Sorciere  [clefDetails] =  "Les sorcières sont appelées individuellement **après** le conseil des Loups-Garous.\nSi plusieurs sorcières font le même choix, seulement une de ces sorcières (choisie aléatoirement) perdra sa potion."
+role_Voyante   [clefDetails] =  "Les voyantes sont appelées individuellement pendant la nuit."
 
-role_Chasseur  [clefDetails] =  "*Si lors de sa mort, il ne désigne personne, sa balle se logera dans une personne choisie au hasard...*"
-role_Corbeau   [clefDetails] =  "*Les corbeaux sont appelés individuellement pendant la nuit.\nSi x corbeaux choisissent la même personne, cette personne aura 2x voix contre lui d'office !\nLes choix des corbeaux sont rendus publics le lendemain matin.*"
-role_Hirondelle[clefDetails] =  "*Les hirondelles sont appelées individuellement pendant la nuit.\nSi x hirondelles choisissent la même personne, cette personne aura un pouvoir énorme, c'est-à-dire 2x+1 voix !\nLes choix des hirondelles sont rendus publics le lendemain matin.*"
+role_Chasseur  [clefDetails] =  "Si lors de sa mort, il ne désigne personne, sa balle se logera dans une personne choisie au hasard..."
+role_Corbeau   [clefDetails] =  "Les corbeaux sont appelés individuellement pendant la nuit.\nSi x corbeaux choisissent la même personne, cette personne aura 2x voix contre lui d'office !\nLes choix des corbeaux sont rendus publics le lendemain matin."
+role_Hirondelle[clefDetails] =  "Les hirondelles sont appelées individuellement pendant la nuit.\nSi x hirondelles choisissent la même personne, cette personne aura un pouvoir énorme, c'est-à-dire 2x+1 voix !\nLes choix des hirondelles sont rendus publics le lendemain matin."
 
-role_FamilleNb [clefDetails] =  "*Pendant toute la nuit, deux salons (un textuel et un vocal) leur sont ouverts.\nIls peuvent y faire ce qu'ils veulent, il n'y a aucune modération !*"
+role_FamilleNb [clefDetails] =  "Pendant toute la nuit, deux salons (un textuel et un vocal) leur sont ouverts.\nIls peuvent y faire ce qu'ils veulent, il n'y a aucune modération !"
 
 role_VillaVilla[clefDetails] =  None
-role_Juge      [clefDetails] =  """*Le juge ne recevra **pas** de message à la fin du vote, pour exiler la victime du village, il devra taper la commande "**!exil**" pour utiliser son pouvoir !*"""
+role_Juge      [clefDetails] =  """Le juge ne recevra **pas** de message à la fin du vote, pour exiler la victime du village, il devra taper la commande "**!exil**" pour utiliser son pouvoir !"""
 
-role_LG        [clefDetails] =  "*Le système de vote du conseil des loups-garous est le même que celui du village, les résultats du vote sont envoyés après chaque vote.\nEn cas d'égalité ou si personne n'a voté, personne ne sera dévoré.*"
-role_LGNoir    [clefDetails] =  "*Seul l'infecté sera averti du choix du Loup-Garou Noir, le village ne le saura pas (contrairement à Wolfy).*"
-role_LGBleu    [clefDetails] =  "*Si la Voyante tente de le démasquer, elle verra un rôle choisi au hasard parmi les rôles étant du côté du village.*"
+role_LG        [clefDetails] =  "Le système de vote du conseil des loups-garous est le même que celui du village, les résultats du vote sont envoyés après chaque vote.\nEn cas d'égalité ou si personne n'a voté, personne ne sera dévoré."
+role_LGNoir    [clefDetails] =  "Seul l'infecté sera averti du choix du Loup-Garou Noir, le village ne le saura pas (contrairement à Wolfy)."
+role_LGBleu    [clefDetails] =  "Si la Voyante tente de le démasquer, elle verra un rôle choisi au hasard parmi les rôles étant du côté du village."
 
-role_LGBlanc   [clefDetails] =  "*Le joueur choisi (qui peut être un villageois ou un loup-garou), ne peut pas être sauvé par les Sorcières...\nSeuls les Salvateurs peuvent le protéger.*"
-role_EnfantSauv[clefDetails] =  "*Il est appelé lors de la première nuit, pour choisir son modèle.*"
+role_LGBlanc   [clefDetails] =  "Le joueur choisi (qui peut être un villageois ou un loup-garou), ne peut pas être sauvé par les Sorcières...\nSeuls les Salvateurs peuvent le protéger."
+role_EnfantSauv[clefDetails] =  "Il est appelé lors de la première nuit, pour choisir son modèle."
 
 
 
@@ -325,19 +326,18 @@ role_EnfantSauv[clefDetails] =  "*Il est appelé lors de la première nuit, pour
 
 clefEmbed  = "embed"
 
-motCamp    = "Camp"
-
+asterisque = f"✱_Valeur correspondant à un village comptant **{v.tailleVlg_Ideal} habitants** en début de la partie._"
 
 # =============================================================================
 # Création de l'embeds de la Famille Nombreuse
 # =============================================================================
 
-Ebd_Famill =         Embed( title = "**Famille Nombreuse**"             , description = role_FamilleNb[clefDescription] , color = role_FamilleNb[clefCouleur] )
-Ebd_Famill . set_thumbnail(   url = role_FamilleNb[clefImage][0]                                                                                              )
-Ebd_Famill .     add_field(  name = motCamp                             , value = role_FamilleNb[clefCamp]              , inline = True                       )
-Ebd_Famill .     add_field(  name = "Proportion de la Famille Nombreuse", value = f"{role_FamilleNb[clefProp]*100} %"   , inline = True                       )
-Ebd_Famill .     add_field(  name = "__Détails Techniques du Rôle__"    , value = role_FamilleNb[clefDetails]           , inline = False                      )    
-
+Ebd_Famill =         Embed( title = "**Famille Nombreuse**"               , description = role_FamilleNb[clefDescription] , color = role_FamilleNb[clefCouleur] )
+Ebd_Famill . set_thumbnail(   url = role_FamilleNb[clefImage][0]                                                                                                )
+Ebd_Famill .     add_field(  name = "Camp du Rôle"                        , value = role_FamilleNb[clefCamp]              , inline = True                       )
+Ebd_Famill .     add_field(  name = "Taille de la Famille Nombreuse*****" , value = role_FamilleNb[clefProp]              , inline = True                       )
+Ebd_Famill .     add_field(  name = "Détails Techniques du Rôle"          , value = role_FamilleNb[clefDetails]           , inline = False                      )
+Ebd_Famill .    set_footer(  text =  asterisque                                                                                                                 )
 
 role_FamilleNb [clefEmbed] = Ebd_Famill
 
@@ -346,21 +346,25 @@ role_FamilleNb [clefEmbed] = Ebd_Famill
 # Création des embeds des Autres Roles 
 # =============================================================================
 
-AutresRoles = [role_Villageois, role_Cupidon    , role_Ancien    ,
-               role_Salvateur , role_Sorciere   , role_Voyante   ,
-               role_Chasseur  , role_Corbeau    , role_Hirondelle,
-               role_LG        , role_LGNoir     , role_LGBleu    ,
-               role_LGBlanc   , role_EnfantSauv , role_Juge, role_VillaVilla                 ]
+AutresRoles = [role_Villageois, role_VillaVilla , role_Cupidon    , role_Ancien ,
+               role_Salvateur , role_Sorciere   , role_Voyante    ,
+               role_Corbeau   , role_Hirondelle , role_Juge       ,
+               role_Chasseur  ,
+               role_LG        , role_LGNoir     , role_LGBleu     ,
+               role_LGBlanc   , role_EnfantSauv ,                               ]
 
 for role in AutresRoles :
     
-    Ebd_Role =         Embed( title = f"**{role[clefNom]}**"                            , description = role[clefDescription]         , color = role[clefCouleur] )
-    Ebd_Role . set_thumbnail(   url = role[clefImage]                                                                                                             )
-    Ebd_Role .     add_field(  name = motCamp                                           , value = role[clefCamp]                      , inline = True             )
-    Ebd_Role .     add_field(  name = f"Proportion {fMeP.de_dApostrophe(role[clefNom])}", value = f"{role_FamilleNb[clefProp]*100} %" , inline = True             )
+    Ebd_Role =         Embed( title = f"**{role[clefNom]}**"                             , description = role[clefDescription], color = role[clefCouleur] )
+    Ebd_Role . set_thumbnail(   url = role[clefImage]                                                                                                     )
+    Ebd_Role .     add_field(  name = "Camp du Rôle"                                     , value = role[clefCamp]             , inline = True             )
+    Ebd_Role .     add_field(  name = f"Nombre {fMeP.de_dApostrophe(role[clefNom])}*****", value = role[clefProp]             , inline = True             )
     
     if role[clefDetails] != None :
-        Ebd_Role . add_field(  name = "__Détails Techniques du Rôle__"                  , value = role[clefDetails]                   , inline = False            )
+        Ebd_Role . add_field(  name = "Détails Techniques du Rôle"                       , value = role[clefDetails]          , inline = False            )
+    
+    Ebd_Role .    set_footer(  text =  asterisque                                                                                                         )
+
         
     role[clefEmbed] = Ebd_Role
 
@@ -370,7 +374,7 @@ for role in AutresRoles :
 
 clefFctsNoct = "fonction nocturne"
 
-# Elles sont definit dans D_fct_Village
+# Les fonctions nocturnes des rôles sont définit et associées dans D_fct_Village
 
 
 
@@ -447,8 +451,10 @@ def imageRole (info, estUnHomme):
 
 
 
-async def envoie_EmbedsRoles ():
-    """Fonction renvoyant tous les embeds de TousLesRoles"""
+async def envoie_Embeds_TousLesRoles ():
+    """
+    Fonction envoyant les embeds de tous les Rôles dans fDis.channelRoles
+    """
 
     separation = "_ _\n_ _\n_ _"
 

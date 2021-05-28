@@ -20,31 +20,31 @@ separation  = "_ _\n_ _\n_ _"
 
 # %% Compo de la Prochaine Partie 
 
-#### Nombre de rôles
+#### Nombre des rôles (pour une partie à 30)
 
-prop_Villag     = 10
-prop_Cupido     = 0
+prop_Villag     = 0
+prop_VillaVilla = 1
+prop_Cupido     = 1
 prop_Ancien     = 0
 
-prop_Salvat     = 0
-prop_Sorcie     = 5
-prop_Voyant     = 5
+prop_Salvat     = 2
+prop_Sorcie     = 2
+prop_Voyant     = 2
+
+prop_Corbea     = 2
+prop_Hirond     = 2
+prop_Juge       = 2
 
 prop_Chasse     = 0
-prop_Corbea     = 4
-prop_Hirond     = 4
       
-prop_Famill     = 3
-
-prop_VillaVilla = 0.05
-prop_Juge       = 0.05
+prop_Famill     = 5
 
 prop_LG         = 4
-prop_LGNoir     = 3
-prop_LGBleu     = 2
+prop_LGNoir     = 1
+prop_LGBleu     = 1
 
-prop_LGBlan     = 0
-prop_EnSauv     = 0
+prop_LGBlan     = 3
+prop_EnSauv     = 2
 
 
 #### Paramètres de ces rôles
@@ -54,6 +54,7 @@ Sorcie_nbPotVie  = 2
 Sorcie_nbPotMort = 1
 LGNoir_nbInfect  = 1
 Juge_nbExil      = 1
+
 
 #### Paramètre de la Partie
 

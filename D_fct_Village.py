@@ -1799,7 +1799,7 @@ async def fctNoct_Cupidon (cupidon, village):
 #### --- Demande des amoureux ---
 # =============================================================================
 
-    if True : # v.ajd.weekday() == 6 :
+    if v.ajd.weekday() == 6 :
 
 ### Message
 
@@ -1831,7 +1831,7 @@ async def fctNoct_Cupidon (cupidon, village):
             while amour2 == amour1 :
                 amour2 = rd.choice(village.habitants)
                 
-            await cupidon.user.send(f"Vous n'avez pas répondu, votre couple vous a donc été attribué au hasard, c'est :\n       {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}  et  {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}.")
+            await cupidon.user.send(f"Vous n'avez pas répondu, votre couple vous a donc été attribué au hasard, c'est :\n> {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe} et \n> {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}.")
         
         
 #### Annonce du couple aux amoureux
@@ -1842,8 +1842,8 @@ async def fctNoct_Cupidon (cupidon, village):
         if amour2.estUnHomme : e2 = ""
         else                 : e2 = "e"
         
-        await amour1.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e1} :heart: :heart: :heart:\n     Mais depuis, vous êtes attiré{e1} par {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}, quelle étrange coïncidence...")
-        await amour2.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e2} :heart: :heart: :heart:\n     Mais depuis, vous êtes attiré{e2} par {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}, quelle étrange coïncidence...")
+        await amour1.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e1}.\n> Mais depuis, vous êtes attiré{e1} par {fMeP.AjoutZerosAvant(amour2.matri ,3)}  |  **{amour2.prenom} {amour2.nom}** en {amour2.groupe}, quelle étrange coïncidence...")
+        await amour2.user.send(f"Vous venez de recevoir une flèche en plein cœur ! Mais pas d'inquiètude, c'est un mignon petit bébé qui vous a attaqué{e2}.\n> Mais depuis, vous êtes attiré{e2} par {fMeP.AjoutZerosAvant(amour1.matri ,3)}  |  **{amour1.prenom} {amour1.nom}** en {amour1.groupe}, quelle étrange coïncidence...")
         
 #### Modif de Infos Joueurs pour l'ajout des matricules du couple
         

@@ -47,7 +47,7 @@ v    = fHab.v
 rd      = fHab.rd
 asyncio = fHab.asyncio
 
-import pandas            as pd
+from   pandas            import DataFrame
 import itertools
 
 
@@ -377,7 +377,7 @@ async def supprBug (ctx, numeroBug):
 
 # %%%% Nettoyage
 
-async def com_Nettoyage (ctx, nbMessages):
+async def cmd_Nettoyage (ctx, nbMessages):
     """
     Efface tout les messages que le @Maître du Jeu vous a envoyé 
     Vous pouvez y ajouter un paramètre optionnel, le nombre de message
@@ -401,27 +401,27 @@ async def com_Nettoyage (ctx, nbMessages):
 
 @fDis.bot.command()
 async def Nettoyage (ctx, nbMessages = 10**9) :
-    await com_Nettoyage (ctx, nbMessages)
+    await cmd_Nettoyage (ctx, nbMessages)
     
 @fDis.bot.command()
 async def nettoyage (ctx, nbMessages = 10**9) :
-    await com_Nettoyage (ctx, nbMessages)
+    await cmd_Nettoyage (ctx, nbMessages)
 
 @fDis.bot.command()
 async def Net       (ctx, nbMessages = 10**9) :
-    await com_Nettoyage (ctx, nbMessages)
+    await cmd_Nettoyage (ctx, nbMessages)
 
 @fDis.bot.command()
 async def net       (ctx, nbMessages = 10**9) :
-    await com_Nettoyage (ctx, nbMessages)
+    await cmd_Nettoyage (ctx, nbMessages)
 
 @fDis.bot.command()
 async def N         (ctx, nbMessages = 10**9) :
-    await com_Nettoyage (ctx, nbMessages)
+    await cmd_Nettoyage (ctx, nbMessages)
 
 @fDis.bot.command()
 async def n         (ctx, nbMessages = 10**9) :
-    await com_Nettoyage (ctx, nbMessages)
+    await cmd_Nettoyage (ctx, nbMessages)
 
 
 
@@ -527,6 +527,17 @@ async def renommage(ctx, *tupleNom):
 # %%% Commandes des Admins
 
 # %%%% Toujours Utilisables
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def EmbedsRoles (ctx):
+    
+    fDis.effacerMsg(ctx.channel)
+    fDis.effacerMsg(fDis.channelRoles, 10**9)
+    
+    await fRol.envoie_Embeds_TousLesRoles()
+
+
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
@@ -885,7 +896,7 @@ async def numerotationHabitants():
     
     
 
-    dfJoueurs                      = pd.DataFrame(Joueurs)
+    dfJoueurs                      = DataFrame(Joueurs)
     dfJoueurs                      = dfJoueurs.sort_values(by = ["strGroupe", fGoo.clef_Nom, fGoo.clef_Prenom])
     dfJoueurs                      = dfJoueurs.drop(["strGroupe"], axis = 1)
     dfJoueurs[fGoo.clef_Matricule] = range(1, len(Joueurs) + 1)
@@ -1325,7 +1336,7 @@ async def distributionRole(village):
     
 #### Paquet des Rôles
     
-    paquetRoles  =   []
+    paquetRoles  =   [                    ]
     
     paquetRoles += 0*[fRol.role_Villageois]
     paquetRoles += 1*[fRol.role_VillaVilla]
@@ -1397,8 +1408,8 @@ async def distributionRole(village):
         
         await hab.member.send( f"Vous êtes **{habRole[fRol.clefNom]}** :" )
         await hab.member.send( embed = habRole[fRol.clefEmbed]            )
-        
-        
+
+
 
 
 

@@ -619,6 +619,8 @@ TousLesHabitants = []
 
 async def redef_TousLesHabitants():
 
+    print("Redef des Habitants")    
+
     global TousLesHabitants
     TousLesHabitants = []    
 
@@ -727,7 +729,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 
     if not rappelDeFonction :
         HDeces = v.maintenant()
-        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}     <| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} {int(False)} |>")
+        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}\n> `<| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} {int(False)} |>`")
 
 ## Définition des variables utilisées ensuite
 
@@ -758,7 +760,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
     else :
         msgAtt  = message
         contenu = message.content.split()
-        infos   = contenu[ contenu.index("<|")+1 : -1 ]
+        infos   = contenu[ contenu.index("`<|")+1 : -1 ]
 
 ## Définition des variables utilisées ensuite
 

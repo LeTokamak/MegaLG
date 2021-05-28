@@ -22,6 +22,8 @@ separation  = "_ _\n_ _\n_ _"
 
 #### Nombre des rôles (pour une partie à 30)
 
+tailleVlg_Ideal = 30
+
 prop_Villag     = 0
 prop_VillaVilla = 1
 prop_Cupido     = 1

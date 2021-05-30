@@ -353,7 +353,7 @@ async def redef_groupesExistants():
         
         nouvGroupe = Groupe(ligneGrp[fGoo.clefGrp_numGroupe], ligneGrp[fGoo.clefGrp_CheminBrut])
         
-        if v.phaseEnCours == v.phase1  and  type(ligneGrp[fGoo.clefGrp_idSalon]) == int :
+        if type(ligneGrp[fGoo.clefGrp_idSalon]) == int :
             
             nouvGroupe.salon      = fDis.bot.get_channel(ligneGrp[fGoo.clefGrp_idSalon])
             nouvGroupe.MsgSortie  = await nouvGroupe.salon.fetch_message(ligneGrp[fGoo.clefGrp_MsgSortie])   

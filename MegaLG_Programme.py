@@ -422,6 +422,8 @@ async def EmbedsRoles (ctx):
 @fDis.commands.has_permissions(ban_members = True)
 async def SupprTousVlg (ctx):
     
+    await fVlg.redef_villagesExistants()
+    
     for vlg in fVlg.TousLesVillages :
         
         await vlg.salonRapport  .delete()
@@ -493,6 +495,8 @@ async def ResetMatricules (ctx):
 
 ### Efface !ResetMatricules
     await fDis.effacerMsg(ctx)
+    
+    await fHab.redef_TousLesHabitants()
     
 ### Modification des pseudos de tout les joueurs
     Joueurs = fGoo.donneeGoogleSheet( fGoo.page1_InfoJoueurs )

@@ -627,6 +627,8 @@ async def distributionRole(village):
         
         
 #### Caractéristiques des Rôles
+        
+        caractRole = ""
 
         if   habRole == fRol.role_Ancien   : caractRole =    v.Ancien_nbProtec
         elif habRole == fRol.role_Sorciere : caractRole = f"{v.Sorcie_nbPotVie} {v.Sorcie_nbPotMort}"

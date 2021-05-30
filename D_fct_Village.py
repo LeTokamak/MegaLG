@@ -259,6 +259,7 @@ class Village :
             
             ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
             ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonBucher   .id
+            ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonCimetiere.id
             ligneVillage[fGoo.clefVlg_idSalon_Debat         ] = self.salonDebat    .id
             ligneVillage[fGoo.clefVlg_idSalon_vocDebat      ] = self.vocalDebat    .id
             

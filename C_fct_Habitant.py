@@ -721,7 +721,8 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
         Elle va ensuite relancer l'attente de l'épitaphe
     """
 
-
+    emoji_EpiPasRecue = "🔴"
+    emoji_EpiRecue    = "🟢"
 
 # %%%  Partie 1 - Initialisation des Variables
 
@@ -729,8 +730,9 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 
     if not rappelDeFonction :
         HDeces = v.maintenant()
-        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}\n> `<| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} {int(False)} |>`")
-
+        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}\n> `<| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} |>`")
+        await msgAtt.add_reaction(emoji_EpiPasRecue)
+        
 ## Définition des variables utilisées ensuite
 
         EstUnHomme = habitant.estUnHomme
@@ -760,7 +762,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
     else :
         msgAtt  = message
         contenu = message.content.split()
-        infos   = contenu[ contenu.index("`<|")+1 : -1 ]
+        infos   = contenu[ contenu.index("`<|") + 1 : -1 ]
 
 ## Définition des variables utilisées ensuite
 
@@ -772,7 +774,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
         Role       = infos[9].replace('_',' ')
         User       = fDis.bot.get_user   (int(infos[10]))
         SalonCimet = fDis.bot.get_channel(int(infos[11]))
-        EpiRecue   = bool(int(infos[12]))
+        EpiRecue   = str(msgAtt.reactions[0].emoji) == emoji_EpiRecue
 
 
 
@@ -792,8 +794,8 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
                
         msgEpitaphe = await fDis.attente_Message(User, accuseReception = True)
 
-        await msgAtt.edit(content = msgAtt.content[:-4] + "1" + msgAtt.content[-3:])
-
+        await msgAtt.clear_reactions()
+        await msgAtt.add_reaction(emoji_EpiRecue)
 
 
 ##################################

@@ -110,12 +110,18 @@ class Village :
 #### Création du Role du Village
 # =============================================================================
         
-        self.roleDiscord = await fDis.serveurMegaLG.create_role( name        = self.nom,
-                                                                 permissions = fDis.roleJoueurs.permissions,
-                                                                 colour      = fDis.roleJoueurs.colour,
-                                                                 hoist       = True,
-                                                                 mentionable = True,
-                                                                 reason      = f"Role discord du Village {self.nom} - n°{self.numero}" )
+        self.roleDiscord     = await fDis.serveurMegaLG.create_role( name        = self.nom,
+                                                                     permissions = fDis.roleJoueurs.permissions,
+                                                                     colour      = fDis.roleJoueurs.colour,
+                                                                     hoist       = True,
+                                                                     mentionable = True,
+                                                                     reason      = f"Role discord du Village {self.nom} - n°{self.numero}" )
+        
+        self.roleDiscordMort = await fDis.serveurMegaLG.create_role( name        = self.nom,
+                                                                     permissions = fDis.roleMorts.permissions,
+                                                                     colour      = fDis.roleMorts.colour,
+                                                                     mentionable = True,
+                                                                     reason      = f"Role discord du Village {self.nom} - n°{self.numero}" )
         
         for hab in fHab.TousLesHabitants :
             if hab.numVlg == self.numero :
@@ -185,8 +191,11 @@ class Village :
 #### Modification du nom du Role du Village
 # =============================================================================
         
-        await self.roleDiscord.edit( name   = self.nom, 
-                                     reason = f"Changement de nom du Village n°{self.numero}, qui devient **{self.nom}**" )
+        await self.roleDiscord    .edit( name   = self.nom, 
+                                         reason = f"Changement de nom du Village n°{self.numero}, qui devient **{self.nom}**" )
+        
+        await self.roleDiscordMort.edit( name   = self.nom, 
+                                         reason = f"Changement de nom du Village n°{self.numero}, qui devient **{self.nom}**" )
         
         
 # =============================================================================
@@ -242,7 +251,8 @@ class Village :
                         fGoo.clefVlg_Nom        : self.nom    }
 
         if v.phaseEnCours in (v.phase2, v.phase3) :
-            ligneVillage[fGoo.clefVlg_idRoleDiscord         ] = self.roleDiscord   .id
+            ligneVillage[fGoo.clefVlg_idRoleDiscord         ] = self.roleDiscord    .id
+            ligneVillage[fGoo.clefVlg_idRoleDiscord_Mort    ] = self.roleDiscordMort.id
             
             ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
             ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonBucher   .id
@@ -1459,22 +1469,23 @@ def redef_villagesExistants():
         
         if v.phaseEnCours in (v.phase2, v.phase3)  and  type(ligneVlg[fGoo.clefVlg_idRoleDiscord]) == int :
             
-            nouvVillage.roleDiscord    = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord  ])
+            nouvVillage.roleDiscord     = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord     ])
+            nouvVillage.roleDiscordMort = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord_Mort])
             
-            nouvVillage.salonRapport   = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Rapport       ])
-            nouvVillage.salonCimetiere = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Cimetiere     ])
-            nouvVillage.salonBucher    = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Bucher        ])
-            nouvVillage.salonDebat     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Debat         ])
-            nouvVillage.vocalDebat     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebat      ])
+            nouvVillage.salonRapport    = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Rapport          ])
+            nouvVillage.salonCimetiere  = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Cimetiere        ])
+            nouvVillage.salonBucher     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Bucher           ])
+            nouvVillage.salonDebat      = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_Debat            ])
+            nouvVillage.vocalDebat      = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebat         ])
             
-            nouvVillage.salonVoteLG    = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_VoteLG        ])
-            nouvVillage.salonConseilLG = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_DebatLG       ])
-            nouvVillage.vocalConseilLG = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebatLG    ])
+            nouvVillage.salonVoteLG     = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_VoteLG           ])
+            nouvVillage.salonConseilLG  = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_DebatLG          ])
+            nouvVillage.vocalConseilLG  = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocDebatLG       ])
             
-            nouvVillage.salonFamilleNb = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_FamilleNomb   ])
-            nouvVillage.vocalFamilleNb = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocFamilleNomb])
+            nouvVillage.salonFamilleNb  = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_FamilleNomb      ])
+            nouvVillage.vocalFamilleNb  = fDis.bot.get_channel(ligneVlg[fGoo.clefVlg_idSalon_vocFamilleNomb   ])
             
-            nouvVillage.categorie      = nouvVillage.salonRapport.category
+            nouvVillage.categorie       = nouvVillage.salonRapport.category
         
         TousLesVillages.append(nouvVillage)
 
@@ -1847,9 +1858,9 @@ async def fctNoct_Cupidon (cupidon, village):
         
 #### Modif de Infos Joueurs pour l'ajout des matricules du couple
         
-        fGoo.remplacerVal_ligne_avec(f"{amour1.matri}  {amour2.matri}", fGoo.clef_caractRoles , 
-                                     cupidon.matri                    , fGoo.clef_Matricule   ,
-                                     fGoo.page1_InfoJoueurs                                    )
+        fGoo.ajoutVal_cellule_avec( f"{amour1.matri} {amour2.matri} ", fGoo.clef_caractRoles , 
+                                    cupidon.matri                    , fGoo.clef_Matricule   ,
+                                    fGoo.page1_InfoJoueurs                                    )
 
         fGoo.ajoutVal_cellule_avec( f"A{amour2.matri} ", fGoo.clef_caractJoueur ,
                                     amour1.matri       , fGoo.clef_Matricule    ,
@@ -2463,11 +2474,14 @@ async def fctNoct_Maire (maire, village):
     if not lancementAutorise  or  not aRepondu :
         
 ##  Choix des gardes au harsard, de manière à ce qu'il soit différent
-
-        garde1 = garde2 = rd.choice(fHab.TousLesHabitants)
-                        
-        while garde1 == garde2 :
-            garde2 = rd.choice(fHab.TousLesHabitants)
+        
+        garde1 = maire
+        
+        while garde1.estMaire :
+            garde1 = garde2 = rd.choice(village.habitants)
+        
+        while garde2.estMaire  or  garde1 == garde2 :
+            garde2          = rd.choice(village.habitants)
         
         await maire.user.send("Vous n'avez pas répondu, vos gardes vous ont donc été attribués au hasard.")
     
@@ -2493,6 +2507,7 @@ async def fctNoct_Maire (maire, village):
 # %%%% Ajouts des fonctions nocturnes aux dictionnaires des Roles
 
 fRol.role_Villageois[fRol.clefFctsNoct] = fctNoct_Villageois
+fRol.role_VillaVilla[fRol.clefFctsNoct] = fctNoct_Villageois
 fRol.role_Cupidon   [fRol.clefFctsNoct] = fctNoct_Cupidon
 fRol.role_Ancien    [fRol.clefFctsNoct] = fctNoct_Ancien
 
@@ -2500,14 +2515,13 @@ fRol.role_Salvateur [fRol.clefFctsNoct] = fctNoct_Salvateur
 fRol.role_Sorciere  [fRol.clefFctsNoct] = fctNoct_Sorciere
 fRol.role_Voyante   [fRol.clefFctsNoct] = fctNoct_Voyante
 
-fRol.role_Chasseur  [fRol.clefFctsNoct] = fctNoct_Chasseur
 fRol.role_Corbeau   [fRol.clefFctsNoct] = fctNoct_Corbeau
 fRol.role_Hirondelle[fRol.clefFctsNoct] = fctNoct_Hirondelle
-      
-fRol.role_FamilleNb [fRol.clefFctsNoct] = fctNoct_FamilleNombreuse
-
 fRol.role_Juge      [fRol.clefFctsNoct] = fctNoct_Juge
-fRol.role_VillaVilla[fRol.clefFctsNoct] = fctNoct_Villageois
+
+fRol.role_Chasseur  [fRol.clefFctsNoct] = fctNoct_Chasseur
+
+fRol.role_FamilleNb [fRol.clefFctsNoct] = fctNoct_FamilleNombreuse
 
 fRol.role_LG        [fRol.clefFctsNoct] = fctNoct_LG
 fRol.role_LGNoir    [fRol.clefFctsNoct] = fctNoct_LGNoir
@@ -2527,11 +2541,11 @@ async def Conseil_LG (LoupGarou, village):
     contenuMsg_Attente = f"{fDis.Emo_LoupGarou} en tant que {fRol.emojiRole(LoupGarou.role, LoupGarou.estUnHomme)}   - {LoupGarou.user.mention}  |  {LoupGarou.prenom} {LoupGarou.nom}"
     
     msgAtt = await fDis.channelAttente.send( contenuMsg_Attente )
-
+    
 #### Début du Conseil
-
+    
     village.voteLG_EnCours = True
-            
+    
     await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
     await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = True  )
     await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = True                          )
@@ -2546,12 +2560,12 @@ async def Conseil_LG (LoupGarou, village):
 #### Fin du conseil
     
     village.voteLG_EnCours = False
-
+    
     await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = False , send_messages = False )
     await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = False )
     await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = False                         )
-
-
+    
+    
 ### Fin de l'attente
     await msgAtt.delete()
 
@@ -2592,11 +2606,11 @@ async def evt_voteLG(memberLG, contenuMsg):
                                                 
         await fDis.effacerMsg(village.salonVoteLG)
         await village.salonVoteLG.send(msgResultat)
-    
-    
-    
-    
-    
+
+
+
+
+
 # %% Event Vote du Village
 
 async def evt_voteVlg (memberVlg, contenuMsg):
@@ -2640,9 +2654,9 @@ async def cmd_changementNomVillage(memberVlg, tupleNom):
     
     else :
         await memberVlg.send("**ERREUR** - Seul un maire peut changer le nom de son village !")
-    
-    
-    
+
+
+
 async def cmd_vote(memberVlg, matricule):
     
     habVlg  = fHab.habitant_avec( memberVlg.id            )

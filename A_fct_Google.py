@@ -120,6 +120,7 @@ clefs_Villages = page_Villages.get()[0]
   clefVlg_Nom                    ,
   
   clefVlg_idRoleDiscord          ,
+  clefVlg_idRoleDiscord_Mort     ,
   
   clefVlg_idSalon_Rapport        ,
   clefVlg_idSalon_Cimetiere      ,

@@ -281,7 +281,7 @@ role_Hirondelle[clefDescription] =  "Chaque nuit, elle choisit un joueur, sa voi
 role_FamilleNb [clefDescription] =  "Les membres de la famille nombreuse se connaissent tous et passent toutes leurs soirées ensemble, ils sont unis et rien ne les divisera ! (sauf peut-être les loups...)"
 
 role_VillaVilla[clefDescription] =  "Comme le Villageois, il n'a aucun pouvoir particulier... Néanmoins, tous le village sait qu'il est innocent !"
-role_Juge      [clefDescription] = f"Avant la fin du vote, il peut décider d'**exiler** l'habitant désigné par le village. Il a le doit à **{v.Juge_nbExil}** exil{s_juge}."
+role_Juge      [clefDescription] = f"Avant la fin du vote, il peut décider d'**exiler** l'habitant désigné par le village. Il a le droit à **{v.Juge_nbExil}** exil{s_juge}."
 
 role_LG        [clefDescription] =  "La pilosité exceptionnelle de cette bête lui permet de prendre part au débat nocturne, avec ses compères Loups-Garous, pour décider d'une victime à dévorer..."
 role_LGNoir    [clefDescription] = f"Il peut transformer la victime des loups en loup-garou, et il le peut **{v.LGNoir_nbInfect}** fois !\nUne infection qui peut se révéler cruciale, car l'infecté garde ses pouvoirs d'innocent !"
@@ -326,17 +326,17 @@ role_EnfantSauv[clefDetails] =  "Il est appelé lors de la première nuit, pour 
 
 clefEmbed  = "embed"
 
-asterisque = f"✱_Valeur correspondant à un village comptant **{v.tailleVlg_Ideal} habitants** en début de la partie._"
+asterisque = f"✱ Valeur correspondant à un village comptant {v.tailleVlg_Ideal} habitants en début de la partie."
 
 # =============================================================================
 # Création de l'embeds de la Famille Nombreuse
 # =============================================================================
 
-Ebd_Famill =         Embed( title = "**Famille Nombreuse**"               , description = role_FamilleNb[clefDescription] , color = role_FamilleNb[clefCouleur] )
-Ebd_Famill . set_thumbnail(   url = role_FamilleNb[clefImage][0]                                                                                                )
-Ebd_Famill .     add_field(  name = "Camp du Rôle"                        , value = role_FamilleNb[clefCamp]              , inline = True                       )
-Ebd_Famill .     add_field(  name = "Taille de la Famille Nombreuse*****" , value = role_FamilleNb[clefProp]              , inline = True                       )
-Ebd_Famill .     add_field(  name = "Détails Techniques du Rôle"          , value = role_FamilleNb[clefDetails]           , inline = False                      )
+Ebd_Famill =         Embed( title = "**Famille Nombreuse**"           , description = role_FamilleNb[clefDescription] , color = role_FamilleNb[clefCouleur] )
+Ebd_Famill . set_thumbnail(   url = role_FamilleNb[clefImage][0]                                                                                            )
+Ebd_Famill .     add_field(  name = "Camp du Rôle"                    , value = role_FamilleNb[clefCamp]              , inline = True                       )
+Ebd_Famill .     add_field(  name = "Taille de la Famille Nombreuse*" , value = role_FamilleNb[clefProp]              , inline = True                       )
+Ebd_Famill .     add_field(  name = "Détails Techniques du Rôle"      , value = role_FamilleNb[clefDetails]           , inline = False                      )
 Ebd_Famill .    set_footer(  text =  asterisque                                                                                                                 )
 
 role_FamilleNb [clefEmbed] = Ebd_Famill
@@ -385,9 +385,11 @@ clefFctsNoct = "fonction nocturne"
 # %% Fonctions liées aux rôles
 
 def role_avec (info, type_dinfo):
-    """Renvoie le dictionnaire du role correspondant à info
+    """
+    Renvoie le dictionnaire du role correspondant à info
     
-       Voici les types d'information pris en charge : 'nom'"""
+    Voici les types d'information pris en charge : 'nom'
+    """
     
 ### Recherche d'un nom de Role
 
@@ -404,9 +406,11 @@ def role_avec (info, type_dinfo):
 
 
 def emojiRole (info, estUnHomme):
-    """Renvoie l'emoji correspondant à info (en prenant en compte le sexe)
+    """
+    Renvoie l'emoji correspondant à info (en prenant en compte le sexe)
     
-       Info peut être un dictionnaire (cad le role recherché) ou un str (cad le nom du role recherché)"""
+    Info peut être un dictionnaire (cad le role recherché) ou un str (cad le nom du role recherché)
+    """
     
     if   type(info) == dict :
         emoji = info[clefEmoji]
@@ -427,9 +431,11 @@ def emojiRole (info, estUnHomme):
 
 
 def imageRole (info, estUnHomme):
-    """Renvoie l'url correspondant à info (en prenant en compte le sexe)
+    """
+    Renvoie l'url correspondant à info (en prenant en compte le sexe)
     
-       Info peut être un dictionnaire (cad le role recherché) ou un str (cad le nom du role recherché)"""
+    Info peut être un dictionnaire (cad le role recherché) ou un str (cad le nom du role recherché)
+    """
     
     if   type(info) == dict :
         urlImage = info[clefImage]

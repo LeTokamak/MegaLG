@@ -359,6 +359,17 @@ Emos_Babys      = [ Emo_BabyYellow, Emo_BabyWhite, Emo_BabyRed   ,
 
 # %% Fonctions
 
+def verifServeur (message):
+    try :
+        if message.guild == serveurMegaLG :
+            return True
+        else :
+            return False
+    except :
+        return False
+    
+    
+
 def salon_avec(info, type_dinfo) :
     """
     Cette Fonction renvoie le salon correspondant à l'info donnée en argument.

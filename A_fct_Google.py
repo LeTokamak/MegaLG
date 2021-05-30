@@ -237,7 +237,7 @@ def suppressionLigne_avec(info, clefColonne, page_fichier) :
     
 # %%%% Cellules (Valeurs)    
 
-def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier , donnee = None):
+def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier = None, donnee = None):
     
     if donnee == None :
         donnee = donneeGoogleSheet(page_fichier)

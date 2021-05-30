@@ -439,7 +439,7 @@ async def SupprTousVlg (ctx):
         await vlg.salonFamilleNb.delete()
         await vlg.vocalFamilleNb.delete()
         
-        await vlg.categories    .delete()
+        await vlg.categorie     .delete()
         
         await vlg.roleDiscord   .delete()
         # role Mort

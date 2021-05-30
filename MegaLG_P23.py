@@ -232,13 +232,13 @@ async def repartionGroupes_Villages() :
     
     listeGroupes   = list(fGrp.TousLesGroupes)
     
-    margeHabitants = 0.00 #0.05
+    margeHabitants = 0.05
     
     TousLesJoueurs = fDis.roleJoueurs.members
     
-    nbHabitants_parVillage_Souhaite = 5
+    nbHabitants_parVillage_Souhaite = v.tailleVlg_Ideal
     
-    nbVillages_Reel                 = 0
+    #nbVillages_Reel                 = 0
     nbHabitants_parVillage_Reel     = nbHabitants_parVillage_Souhaite
     
     ecartMin                        = len(TousLesJoueurs) + 1
@@ -247,7 +247,7 @@ async def repartionGroupes_Villages() :
         ecart = abs(len(TousLesJoueurs)/n - nbHabitants_parVillage_Souhaite)
         
         if ecart < ecartMin :
-            nbVillages_Reel             = n
+            #nbVillages_Reel             = n
             nbHabitants_parVillage_Reel = len(TousLesJoueurs) // n
             
             ecartMin                    = ecart
@@ -578,31 +578,31 @@ async def distributionRole(village):
     
 #### Paquet des Rôles
     
-    paquetRoles  =   [                    ]
+    paquetRoles  = []
     
-    paquetRoles += 0*[fRol.role_Villageois]
-    paquetRoles += 1*[fRol.role_VillaVilla]
-    paquetRoles += 1*[fRol.role_Cupidon   ]
-    paquetRoles += 0*[fRol.role_Ancien    ]
+    paquetRoles += v.prop_Villag     *[fRol.role_Villageois]
+    paquetRoles += v.prop_VillaVilla *[fRol.role_VillaVilla]
+    paquetRoles += v.prop_Cupido     *[fRol.role_Cupidon   ]
+    paquetRoles += v.prop_Ancien     *[fRol.role_Ancien    ]
     
-    paquetRoles += 2*[fRol.role_Salvateur ]
-    paquetRoles += 2*[fRol.role_Sorciere  ]
-    paquetRoles += 2*[fRol.role_Voyante   ]
+    paquetRoles += v.prop_Salvat     *[fRol.role_Salvateur ]
+    paquetRoles += v.prop_Sorcie     *[fRol.role_Sorciere  ]
+    paquetRoles += v.prop_Voyant     *[fRol.role_Voyante   ]
     
-    paquetRoles += 2*[fRol.role_Corbeau   ]
-    paquetRoles += 2*[fRol.role_Hirondelle]
-    paquetRoles += 2*[fRol.role_Juge      ]
+    paquetRoles += v.prop_Corbea     *[fRol.role_Corbeau   ]
+    paquetRoles += v.prop_Hirond     *[fRol.role_Hirondelle]
+    paquetRoles += v.prop_Juge       *[fRol.role_Juge      ]
     
-    paquetRoles += 5*[fRol.role_FamilleNb ]
+    paquetRoles += v.prop_Famill     *[fRol.role_FamilleNb ]
     
     
     
-    paquetRoles += 4*[fRol.role_LG        ]
-    paquetRoles += 1*[fRol.role_LGNoir    ]
-    paquetRoles += 1*[fRol.role_LGBleu    ]
+    paquetRoles += v.prop_LG         *[fRol.role_LG        ]
+    paquetRoles += v.prop_LGNoir     *[fRol.role_LGNoir    ]
+    paquetRoles += v.prop_LGBleu     *[fRol.role_LGBleu    ]
     
-    paquetRoles += 3*[fRol.role_LGBlanc   ]
-    paquetRoles += 2*[fRol.role_EnfantSauv]
+    paquetRoles += v.prop_LGBlan     *[fRol.role_LGBlanc   ]
+    paquetRoles += v.prop_EnSauv     *[fRol.role_EnfantSauv]
     
     
     

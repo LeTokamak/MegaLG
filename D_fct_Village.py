@@ -51,6 +51,9 @@ class Village :
 #### Constantes Discord
         
         self.roleDiscord    = None
+        self.roleDiscordMort= None
+        
+        self.categorie      = None
         
         self.salonRapport   = None
         self.salonCimetiere = None

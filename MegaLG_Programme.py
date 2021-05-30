@@ -422,11 +422,12 @@ async def EmbedsRoles (ctx):
 @fDis.commands.has_permissions(ban_members = True)
 async def SupprTousVlg (ctx):
     
-    await fVlg.redef_villagesExistants()
+    fVlg.redef_villagesExistants()
     
     for vlg in fVlg.TousLesVillages :
         
         await vlg.salonRapport  .delete()
+        await vlg.salonCimetiere.delete()
         await vlg.salonBucher   .delete()
         await vlg.salonDebat    .delete()
         await vlg.vocalDebat    .delete()
@@ -437,8 +438,11 @@ async def SupprTousVlg (ctx):
         
         await vlg.salonFamilleNb.delete()
         await vlg.vocalFamilleNb.delete()
-    
+        
+        await vlg.categories    .delete()
+        
         await vlg.roleDiscord   .delete()
+        # role Mort
 
 
 

@@ -22,31 +22,31 @@ separation  = "_ _\n_ _\n_ _"
 
 #### Nombre des rôles (pour une partie à 30)
 
-tailleVlg_Ideal = 30
+tailleVlg_Ideal = 13
 
 prop_Villag     = 0
 prop_VillaVilla = 1
 prop_Cupido     = 1
 prop_Ancien     = 0
 
-prop_Salvat     = 2
-prop_Sorcie     = 2
-prop_Voyant     = 2
+prop_Salvat     = 1
+prop_Sorcie     = 1
+prop_Voyant     = 1
 
-prop_Corbea     = 2
-prop_Hirond     = 2
+prop_Corbea     = 1
+prop_Hirond     = 1
 prop_Juge       = 2
 
 prop_Chasse     = 0
       
-prop_Famill     = 5
+prop_Famill     = 0
 
-prop_LG         = 4
+prop_LG         = 1
 prop_LGNoir     = 1
-prop_LGBleu     = 1
+prop_LGBleu     = 0
 
-prop_LGBlan     = 3
-prop_EnSauv     = 2
+prop_LGBlan     = 1
+prop_EnSauv     = 1
 
 
 #### Paramètres de ces rôles

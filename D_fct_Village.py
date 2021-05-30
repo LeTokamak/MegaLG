@@ -1470,7 +1470,7 @@ def redef_villagesExistants():
         
         nouvVillage.redef_habitants()
         
-        if v.phaseEnCours in (v.phase2, v.phase3)  and  type(ligneVlg[fGoo.clefVlg_idRoleDiscord]) == int :
+        if type(ligneVlg[fGoo.clefVlg_idRoleDiscord]) == int :
             
             nouvVillage.roleDiscord     = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord     ])
             nouvVillage.roleDiscordMort = fDis.serveurMegaLG.get_role(ligneVlg[fGoo.clefVlg_idRoleDiscord_Mort])

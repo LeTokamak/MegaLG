@@ -616,6 +616,8 @@ async def distributionRole(village):
 
 #### --- Distribution des Rôles ---
     
+    donnee = fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs)
+
     for hab in village.habitants :
         
         if len(paquetRoles_Restant) != 0 :
@@ -639,10 +641,10 @@ async def distributionRole(village):
         
 #### Enregistrement
         
-        ligne, numLigne = fGoo.ligne_avec( hab.matri, fGoo.clef_Matricule, fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs) )
+        ligne, numLigne = fGoo.ligne_avec( hab.matri, fGoo.clef_Matricule, donnee )
         
-        fGoo.remplacerVal_ligne( habRole[fRol.clefNom], fGoo.clef_Role       , numLigne, fGoo.page1_InfoJoueurs )
-        fGoo.remplacerVal_ligne( caractRole           , fGoo.clef_caractRoles, numLigne, fGoo.page1_InfoJoueurs )
+        fGoo.remplacerVal_ligne( habRole[fRol.clefNom], fGoo.clef_Role       , numLigne, donnee = donnee )
+        fGoo.remplacerVal_ligne( caractRole           , fGoo.clef_caractRoles, numLigne, donnee = donnee )
         
         await asyncio.sleep(0.1)
         

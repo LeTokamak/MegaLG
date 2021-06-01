@@ -259,7 +259,7 @@ class Village :
             
             ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
             ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonBucher   .id
-            ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonCimetiere.id
+            ligneVillage[fGoo.clefVlg_idSalon_Cimetiere     ] = self.salonCimetiere.id
             ligneVillage[fGoo.clefVlg_idSalon_Debat         ] = self.salonDebat    .id
             ligneVillage[fGoo.clefVlg_idSalon_vocDebat      ] = self.vocalDebat    .id
             
@@ -877,7 +877,7 @@ class Village :
             contenuMsg = "_Personne n'a été tué cette nuit_"
             
             if v.nbTours - 1 == 0 :
-                contenuMsg += "  _car c'était la Nuit n°0_"
+                contenuMsg += " **(Nuit n°0)**"
             
             await self.salonBucher.send(contenuMsg)
             
@@ -1270,12 +1270,12 @@ class Village :
 #### --- Accusés ---
 # =============================================================================
         
-        accuses = []
+        self.accuses = []
         
 #### Cas 1 : Si personne n'a voté
         
         if   len(self.resultatVote) == 0 :
-            accuses = self.habitants
+            self.accuses = self.habitants
     
     
     
@@ -1283,7 +1283,7 @@ class Village :
     
         elif len(self.resultatVote) <= 5 :
             for p in self.resultatVote :
-                accuses.append( fHab.habitant_avec(p[0]) )
+                self.accuses.append( fHab.habitant_avec(p[0]) )
         
         
         
@@ -1293,7 +1293,7 @@ class Village :
             
 # Prends les 5 habitants qui ont reçu le plus de voix lors du vote du village
             
-            accuses = [ fHab.habitant_avec(self.resultatVote[0][0]), 
+            self.accuses = [ fHab.habitant_avec(self.resultatVote[0][0]), 
                         fHab.habitant_avec(self.resultatVote[1][0]), 
                         fHab.habitant_avec(self.resultatVote[2][0]), 
                         fHab.habitant_avec(self.resultatVote[3][0]), 
@@ -1304,7 +1304,7 @@ class Village :
             
             while i <= len(self.resultatVote)-1  and  self.resultatVote[i][1] == self.resultatVote[i-1][1] :
                 
-                accuses.append( fHab.habitant_avec(self.resultatVote[i][0]) )
+                self.accuses.append( fHab.habitant_avec(self.resultatVote[i][0]) )
                 i += 1
         
         
@@ -1317,7 +1317,7 @@ class Village :
     
             await self.salonBucher.send("Les accusés désignés lors du 1er tour sont :\n")
                 
-            for a in accuses :
+            for a in self.accuses :
                 msgDefense = await self.salonBucher.send(f"      ⬢ {a.user.mention}  |  {a.prenom} {a.nom}  ( {a.groupe} )")
                 asyncio.Task(a.Defense_1erTour(v.envDefVote_hFin, msgDefense))
                 
@@ -2243,7 +2243,7 @@ async def fctNoct_FamilleNombreuse (membreFN, village):
     await village.salonFamilleNb  .set_permissions ( membreFN.member , read_messages = True , send_messages = True )
     await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = True )
     
-### Attente            
+### Attente
     msgAtt = await fDis.channelAttente.send(contenuMsgFamiNom_Attente)
     await asyncio.sleep(v.nuit_duree.seconds)
             
@@ -2279,7 +2279,7 @@ async def fctNoct_LGNoir (lgNoir, village):
     contenuMsgLGNoir_Question = f"Bonsoir Loup-Garou Noir, est-ce que vous souhaitez infecter la victime du conseil pour qu'il devienne un des votres ?\nVous pouvez encore infecter {lgNoir.nbInfRestantes} joueur{s}."
     contenuMsgLGNoir_Detail   =  "\n```\n - Si plusieurs Loups-Garous Noirs infectent la même personne, le loup qui infectera réellement sera choisi au hasard.\n - Si vous ne repondez pas, vous n'infecterez pas.\n```"
     
-    contenuMsgLGNoir_HistoDeb = f"\n{fRol.emojiRole(lgNoir.role, lgNoir.estUnHomme)}   - {lgNoir.user.mention}  |  {lgNoir.prenom} {lgNoir.nom}"
+    contenuMsgLGNoir_HistoDeb = f"{fRol.emojiRole(lgNoir.role, lgNoir.estUnHomme)}   - {lgNoir.user.mention}  |  {lgNoir.prenom} {lgNoir.nom}"
     
     contenuMsgLGNoir_Attente  = f"{fDis.Emo_LGNoir} en tant que {contenuMsgLGNoir_HistoDeb}"
     
@@ -2363,7 +2363,7 @@ async def fctNoct_EnfantSauvage (enfSauvage, village):
     contenuMsgEnfSauv_Question =  "Bonsoir Enfant Sauvage, quel sera votre modèle ?"
     contenuMsgEnfSauv_Detail   =  "\n```\nPour le choisir, envoyez ici son matricule.\n - Si le matricule ne correspond à personne, vous pourrez le retaper.\n - Si vous ne repondez pas, votre modele vous sera attribué au hasard.\n```"
     
-    contenuMsgEnfSauv_HistoDeb = f"\n{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
+    contenuMsgEnfSauv_HistoDeb = f"{fRol.emojiRole(enfSauvage.role, enfSauvage.estUnHomme)}   - {enfSauvage.user.mention}  |  {enfSauvage.prenom} {enfSauvage.nom}"
     
     contenuMsgEnfSauv_Attente  = f"{fDis.Emo_EnfSauv} en tant que {contenuMsgEnfSauv_HistoDeb}"
     

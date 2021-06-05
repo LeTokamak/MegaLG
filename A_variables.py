@@ -137,8 +137,8 @@ part3_duree =  nuit_hFin - part3_hDeb
 #### Moments important de la journée
 
 tour1Vote_hFin  = datetime( ajd.year, ajd.month, ajd.day, 21, 30, tzinfo = HParis )
-envDefVote_hFin = datetime( dem.year, dem.month, dem.day,  7, 00, tzinfo = HParis )
-tour2Vote_hFin  = datetime( dem.year, dem.month, dem.day,  7, 30, tzinfo = HParis )
+envDefVote_hFin = datetime( ajd.year, ajd.month, ajd.day, 23, 30, tzinfo = HParis )
+tour2Vote_hFin  = datetime( dem.year, dem.month, dem.day,  0,  0, tzinfo = HParis )
 
 
 def dans_premierTour() :

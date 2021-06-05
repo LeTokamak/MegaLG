@@ -11,11 +11,11 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ5                                20/05/2021
+Version Delta                             δ6                                04/06/2021
 
 """
 
-version = "δ5"
+version = "δ6"
 
 
 # Phase
@@ -123,7 +123,7 @@ async def event_reactions():
 # %%% Envoie d'un message
 
 async def event_messages():
-    asyncio.create_task(  fP1.message_Inscription()   , name = "Inscription"           )
+    #asyncio.create_task(  fP1.message_Inscription()   , name = "Inscription"           )
     asyncio.create_task( fP23.message_voteVillage()   , name = "Vote du village"       )
     asyncio.create_task( fP23.message_voteLoupGarou() , name = "Vote des Loups-Garous" )
 
@@ -370,26 +370,6 @@ async def exil(ctx):
 # %%%% Commandes de Maires 
 
 # %%%%% Changement du nom du village 
-
-@fDis.bot.command()
-async def Nouveau_Nom_Village(ctx, *tupleNom):
-    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
-
-@fDis.bot.command()
-async def nouveau_nom_village(ctx, *tupleNom):
-    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
-
-@fDis.bot.command()
-async def NouvNomVlg(ctx, *tupleNom):
-    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
-
-@fDis.bot.command()
-async def RenommageVlg(ctx, *tupleNom):
-    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
-
-@fDis.bot.command()
-async def renommageVlg(ctx, *tupleNom):
-    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
 
 @fDis.bot.command()
 async def Renommage(ctx, *tupleNom):
@@ -676,11 +656,26 @@ async def on_ready():
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
-async def Inscription (ctx):
+async def Debut_Phase1 (ctx):
     
     await fP1.lancementInscription()
 
 
+@fDis.bot.command()
+async def Inscription (ctx) :
+    await fP1.cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def inscription (ctx) :
+    await fP1.cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def I (ctx) :
+    await fP1.cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def i (ctx) :
+    await fP1.cmd_Inscription(ctx.author)
 
 
 

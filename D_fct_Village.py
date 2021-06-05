@@ -609,8 +609,11 @@ class Village :
 #### Personne Infecté
             
             habitantInfecte        = fHab.habitant_avec(self.matriculeHab_choixConseilLG)
-            habitantInfecte.estInf = True
             
+            if habitantInfecte.estMaire :
+                habitantInfecte = rd.choice(habitantInfecte.gardesMaire)
+            
+            habitantInfecte.estInf = True
             
 ##  Messages d'infections
             
@@ -624,9 +627,9 @@ class Village :
                 
 ##  Modification de InfosJoueurs
             
-            fGoo.ajoutVal_cellule_avec( "Infecté "                      , fGoo.clef_caractJoueur,
-                                        self.matriculeHab_choixConseilLG, fGoo.clef_Matricule   ,
-                                        fGoo.page1_InfoJoueurs                                   )
+            fGoo.ajoutVal_cellule_avec( "Infecté "            , fGoo.clef_caractJoueur,
+                                        habitantInfecte.matri , fGoo.clef_Matricule   ,
+                                        fGoo.page1_InfoJoueurs                          )
             
             
 ##  Gestion des Permissions
@@ -636,7 +639,7 @@ class Village :
        
 ### Message Historique de la Nuit
             
-            msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Le {fDis.Emo_LGNoir} {matricule_LGNoir} a infecté : {self.matriculeHab_choixConseilLG} qui a été désigné par les LG.")
+            msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> Le {fDis.Emo_LGNoir} {matricule_LGNoir} a infecté : {habitantInfecte.matri} qui a été désigné par les LG.")
             
             
             
@@ -2653,8 +2656,14 @@ async def cmd_changementNomVillage(memberVlg, tupleNom):
     nouveauNom = " ".join(tupleNom)
     
     if habitant != None  and  habitant.estMaire :
-        village = village_avec(habitant.numVlg, "numero")
-        await village.changementNom(nouveauNom)
+        if len(nouveauNom) <= 64 :
+            await memberVlg.send("Le village va changer de nom !")
+            
+            village = village_avec(habitant.numVlg, "numero")
+            await village.changementNom(nouveauNom)
+        
+        else :
+            await memberVlg.send("**ERREUR** - Ce nom est trop long !")
     
     else :
         await memberVlg.send("**ERREUR** - Seul un maire peut changer le nom de son village !")

@@ -48,8 +48,8 @@ mortPhrases_Matin = [
     ("Il est mort, **cheh** !"   ,
      "Elle est morte, **cheh** !") ,
     
-    ("Rip, #PRENOM# a été assassiné, d'après les infos du Petit Isenien, il serait mort dans le capitole du village, en tentant de protéger le pupitre sacré..."    , 
-     "Rip, #PRENOM# a été assassiné, d'après les infos du Petit Isenien, elle serait morte dans le capitole du village, en tentant de protéger le pupitre sacré..." ) ,
+    ("Rip, #PRENOM# a été assassiné, il serait mort dans le capitole du village, en tentant de protéger le pupitre sacré..."    , 
+     "Rip, #PRENOM# a été assassinée, elle serait morte dans le capitole du village, en tentant de protéger le pupitre sacré..." ) ,
     
     ("Après avoir entendu un bruit inquiétant dans sa grange cette nuit, #PRENOM# est allé voir ce qu'il s'y passait...\nLe lendemain, ce **tocard** fut retrouvé en plusieurs morceaux, éparpillés dans la cour..."      , 
      "Après avoir entendu un bruit inquiétant dans sa grange cette nuit, #PRENOM# est allée voir ce qu'il s'y passait...\nLe lendemain, cette **idiote** fut retrouvée en plusieurs morceaux, éparpillés dans la cour..." ) ,

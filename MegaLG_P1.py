@@ -30,6 +30,15 @@ rd      = fGrp.rd
 asyncio = fGrp.asyncio
 
 
+# %% Commandes
+
+async def cmd_Inscription(membre_voulantSIncrire):
+    
+    if v.phaseEnCours == v.phase1  and  fDis.roleSpectateurs in membre_voulantSIncrire.roles :
+        fIns.nouvelle_Inscription(membre_voulantSIncrire)
+    else :
+        await membre_voulantSIncrire.send("Vous ne pouvez pas utiliser cette commande...")
+
 
 # %% Events
 

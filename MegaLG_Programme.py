@@ -112,7 +112,7 @@ async def ajout_roleArtisans():
 
 
 async def event_reactions():
-    asyncio.create_task(     ajout_roleArtisans()    , name = "Ajout du rôle d'Artisant" )
+    asyncio.create_task(        ajout_roleArtisans() , name = "Ajout du rôle d'Artisant" )
     asyncio.create_task( fP1.reaction_reInscription(), name = "Ré-Inscription"           )
     asyncio.create_task( fP1.reaction_Groupe()       , name = "Changement de Groupe"     )
 
@@ -123,9 +123,8 @@ async def event_reactions():
 # %%% Envoie d'un message
 
 async def event_messages():
-    #asyncio.create_task(  fP1.message_Inscription()   , name = "Inscription"           )
-    asyncio.create_task( fP23.message_voteVillage()   , name = "Vote du village"       )
-    asyncio.create_task( fP23.message_voteLoupGarou() , name = "Vote des Loups-Garous" )
+    asyncio.create_task( fP23.message_voteVillage()  , name = "Vote du village"          )
+    asyncio.create_task( fP23.message_voteLoupGarou(), name = "Vote des Loups-Garous"    )
 
 
 
@@ -657,8 +656,8 @@ async def on_ready():
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def Debut_Phase1 (ctx):
-    
     await fP1.lancementInscription()
+
 
 
 @fDis.bot.command()

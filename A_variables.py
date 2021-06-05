@@ -138,7 +138,7 @@ part3_duree =  nuit_hFin - part3_hDeb
 
 tour1Vote_hFin  = datetime( ajd.year, ajd.month, ajd.day, 21, 30, tzinfo = HParis )
 envDefVote_hFin = datetime( ajd.year, ajd.month, ajd.day, 23, 30, tzinfo = HParis )
-tour2Vote_hFin  = datetime( dem.year, dem.month, dem.day,  0,  0, tzinfo = HParis )
+tour2Vote_hFin  = datetime( dem.year, dem.month, dem.day,  0, 00, tzinfo = HParis )
 
 
 def dans_premierTour() :

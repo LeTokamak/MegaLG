@@ -30,14 +30,36 @@ rd      = fGrp.rd
 asyncio = fGrp.asyncio
 
 
+
+
+
 # %% Commandes
+
+erreurIns_dejaJoueur = "**ERREUR** - Vous êtes **déjà** inscrit !"
+erreurIns_phase1     = "**ERREUR** - Les inscriptions **ne sont pas** ouvertes pour l'instant..."
+messagIns_reInscript = "**Vous avez déjà participer à une ancienne partie.**\nVous avez donc été ré-inscrit !"
 
 async def cmd_Inscription(membre_voulantSIncrire):
     
-    if v.phaseEnCours == v.phase1  and  fDis.roleSpectateurs in membre_voulantSIncrire.roles :
-        fIns.nouvelle_Inscription(membre_voulantSIncrire)
+    if   fDis.roleJoueurs in membre_voulantSIncrire.roles :
+        await membre_voulantSIncrire.send( erreurIns_dejaJoueur )
+    
+    
+    elif v.phaseEnCours != v.phase1 :
+        await membre_voulantSIncrire.send( erreurIns_phase1     )
+    
+    
+    elif membre_voulantSIncrire.id in fIns.listeidDisConnus :
+        await membre_voulantSIncrire.send( messagIns_reInscript )
+        
+        await fIns.ReInscription(membre_voulantSIncrire)
+    
+    
     else :
-        await membre_voulantSIncrire.send("Vous ne pouvez pas utiliser cette commande...")
+        await fIns.Inscription(membre_voulantSIncrire)
+
+
+
 
 
 # %% Events
@@ -59,6 +81,8 @@ async def reaction_reInscription():
     while True :
         payload = await fDis.bot.wait_for('raw_reaction_add', check = verifReInscription)
         await fIns.evt_ReInscription(payload.member)
+
+
 
 
 
@@ -87,40 +111,14 @@ async def reaction_Groupe():
 
 
 
-# %%% Messages 
-
-async def message_Inscription():
-    
-    def verifInscription(message):
-        verifSalon, verifUser = (False, False)
-        
-        verifPhase = v.phaseEnCours  == v.phase1
-        verifSalon = message.channel == fDis.channelAccueil
-        
-        if fDis.verifServeur(message) :
-            verifUser = fDis.roleSpectateurs in message.author.roles
-            
-        return verifUser  and  verifPhase and verifSalon
-    
-    
-    while True :
-        message = await fDis.bot.wait_for('message', check = verifInscription)
-        await fDis.effacerMsg(fDis.channelAccueil)
-        await fIns.evt_Inscription(message.author, message.content)
-
-
-
 
 
 # %% Fonctions 
 
 async def lancementInscription():
-
-    await fDis.channelHistorique.edit(topic = v.phase1)
     
-#### Gestions des permissions
-    
-    await fDis.channelAccueil.set_permissions(fDis.roleSpectateurs, read_messages = True, send_messages = True)
+    v.phaseEnCours = v.phase1
+    await fDis.channelHistorique.edit(topic = v.phase1)   
     
     
 #### Message de Ré-Inscription
@@ -132,4 +130,4 @@ async def lancementInscription():
     
 #### Nettoyage de Infos Joueurs
 
-    "A programmer"
+    a = "A programmer"

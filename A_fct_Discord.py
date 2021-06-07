@@ -87,21 +87,6 @@ def def_userAdmins ():
 
 # %%% Category Channels
 
-"""
- <CategoryChannel id=769495045308940289 name='Infos'                   position=0 nsfw=False>,
- <CategoryChannel id=818582430100750376 name='Gestion des Groupes'     position=1 nsfw=False>,
- <CategoryChannel id=769996371246710804 name='Place du Village'        position=2 nsfw=False>,
- <CategoryChannel id=770011182978957352 name='Forêt Nocturne'          position=3 nsfw=False>,
- <CategoryChannel id=790156426739056650 name="L'Au delà"               position=4 nsfw=False>,
- <CategoryChannel id=782626299146403861 name='Historique'              position=5 nsfw=False>,
- <CategoryChannel id=817842578581880863 name='Salon du Personnel'      position=6 nsfw=False>,
- <CategoryChannel id=817843165855219734 name='Ajouts'                  position=7 nsfw=False>,
- <CategoryChannel id=817797543324680254 name='Améliorations'           position=8 nsfw=False>,
- <CategoryChannel id=776186937219350569 name='Bureau des Programmeurs' position=9 nsfw=False>,
- <CategoryChannel id=786274888465252352 name='Bureau du Maître'        position=10 nsfw=False>,
-
- """
-
 CategoryChannel_GestionGrp = None
 Categorie_Village0 = None
 
@@ -124,9 +109,6 @@ def def_categoryChannelsMegaLG ():
 
 # %%% Channels
 
-
-
-#channelAccueil        = None
 channelGeneral        = None
 
 channelRegles         = None
@@ -166,9 +148,8 @@ def def_channelsMegaLG ():
     Elle doit être appelé lors du on_ready() pour définir tout les channels du serveur, une fois que le bot est connecté 
     """
     
-    global channelGeneral # channelAccueil
+    global channelGeneral
     
-    #channelAccueil        = bot.get_channel        (769495045308940291)
     channelGeneral        = bot.get_channel        (790691318786949201)
     
     
@@ -297,7 +278,6 @@ def def_rolesMegaLG ():
 
 
 
-
 # %%% Emojis du Serveur
 
 Emo_Maire       = ":military_medal:"
@@ -307,7 +287,7 @@ Emo_Voyante     = "<:V_Voyante:788784786164285482>"
 Emo_Salvateur   = "<:V_Salvateur:788778406337576981>"
 Emo_Sorciere    = "<:V_Sorciere:788784785941332000>"
 Emo_PttFille    = "<:V_Petite_Fille:788784786280808458>"
-Emo_Hirondelle  = "<:V_Hirondelle:788833861253595176>"
+Emo_Hirondelle  = "<:V_Hironlle:788833861253595176>"
 Emo_FNSoeur     = "<:V_FN_Soeur:788778409253011507>"
 Emo_FNFrere     = "<:V_FN_Frere:788778408997683281>"
 Emo_Cupidon     = "<:V_Cupidon:788784786155634719>"

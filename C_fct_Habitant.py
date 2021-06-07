@@ -184,6 +184,8 @@ class Habitant :
         self.estMaire     = False
         self.gardesMaire  = []
         
+        self.estUnExile   = False
+        
         for c in caractPersonelles :
             if   "Infecté" == c :
                 self.estInf      = True
@@ -200,6 +202,9 @@ class Habitant :
                 
             elif "M" in c :
                 self.gardesMaire.append( int(c[1:]) )
+            
+            elif "Exilé"   == c :
+                self.estUnExile  = True
             
         
 #### ||| Variante ||| Donne 2 voix de plus au maire lors des votes
@@ -375,8 +380,8 @@ class Habitant :
             
 ##  Changement des Roles
             
-            await self.member.remove_roles( fDis.roleJoueurs, village.roleDiscord )
-            await self.member.   add_roles( fDis.roleMorts   ) # village.roleDiscord**Mort**
+            await self.member.remove_roles( fDis.roleJoueurs, village.roleDiscord     )
+            await self.member.   add_roles( fDis.roleMorts  , village.roleDiscordMort )
             
             await self.member.edit(nick = self.member.nick[6:])
             
@@ -816,7 +821,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
   ### L'épitaphe ne convient pas, correction de l'épitaphe et enventuelle censure
 
         else :
-            await fDis.bot.userCamp.send(f"La première épitaphe envoyée ne convenait pas...\nLe prochain message envoyée sera l'épitaphe de {Prenom} {Nom}, si ce message est dans ('C','c'), alors l'épitaphe sera entièrement censurée")
+            await fDis.userCamp.send(f"La première épitaphe envoyée ne convenait pas...\nLe prochain message envoyée sera l'épitaphe de {Prenom} {Nom}, si ce message est dans ('C','c'), alors l'épitaphe sera entièrement censurée.")
             
             msgEpitaphe_corrigee = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
             

@@ -421,7 +421,7 @@ async def SupprTousVlg (ctx):
         await vlg.categorie     .delete()
         
         await vlg.roleDiscord   .delete()
-        # role Mort
+        await vlg.roleDiscordMort.delete()
 
 
 
@@ -434,12 +434,26 @@ async def TachesEnCours (ctx):
     Taches = asyncio.all_tasks()
     
     print("\n\n################# Tâches en cours #################\n")
-    
+
     for t in Taches :
         print(t.get_name(), t, t.done())
 
-    print("\n###################################################\n")
+    print(  "\n###################################################\n")
 
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def emojis (ctx):
+    
+    print("\n\n################ Emojis du Serveur ################\n")
+
+    for emoji in fDis.serveurMegaLG.emojis :
+        print(emoji.name, emoji.id, emoji)
+
+    print(  "\n###################################################\n")
 
 
 

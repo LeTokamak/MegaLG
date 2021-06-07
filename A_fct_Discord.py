@@ -126,7 +126,7 @@ def def_categoryChannelsMegaLG ():
 
 
 
-channelAccueil        = None
+#channelAccueil        = None
 channelGeneral        = None
 
 channelRegles         = None
@@ -166,9 +166,9 @@ def def_channelsMegaLG ():
     Elle doit être appelé lors du on_ready() pour définir tout les channels du serveur, une fois que le bot est connecté 
     """
     
-    global channelAccueil, channelGeneral
+    global channelGeneral # channelAccueil
     
-    channelAccueil        = bot.get_channel        (769495045308940291)
+    #channelAccueil        = bot.get_channel        (769495045308940291)
     channelGeneral        = bot.get_channel        (790691318786949201)
     
     

@@ -43,8 +43,6 @@ async def Tour():
     
 #### Rapports municipaux Crépusculaires
     
-    await fHab.redef_TousLesHabitants()
-    
     for vlg in fVlg.TousLesVillages :
         await vlg.rapportMunicipal()
     

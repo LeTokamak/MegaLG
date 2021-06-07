@@ -88,7 +88,7 @@ async def Inscription (membre_aInscrire):
     contenuMsg_Sexe +=  "> \n"
     contenuMsg_Sexe +=  "> Évidemment vous pouvez mentir, si vous le préféré.\n"
     contenuMsg_Sexe +=  "\n"
-    contenuMsg_Sexe += f"Pour choisir le masculin, réagissez avec {Emo_Homme}, et pour le féminin ce sera {Emo_Femme}\n"
+    contenuMsg_Sexe += f"Pour choisir le masculin, réagissez avec {Emo_Homme}, et pour le féminin ce sera {Emo_Femme}."
     
     msgSexe   = await membre_aInscrire.send          ( contenuMsg_Sexe                  )
     choixSexe = await fDis.attente_Reaction( msgSexe, membre_aInscrire, emojisEtReturns )
@@ -119,8 +119,8 @@ async def Inscription (membre_aInscrire):
     elif choixSexe == "F" : deb_contenuMsg_Prenom, monsieur, inscrit = "Compris *Madame*"     , "Madame"  , "inscrite"
     
     contenuMsg_Prenom  = deb_contenuMsg_Prenom + ", maintenant quel est votre **Prénom** ?\n"
-    contenuMsg_Prenom +=  "> Le **prochain message** que vous enverrez sera votre prénom (après que vous l'avoir confirmé, comme pour le sexe)\n"
-    contenuMsg_Prenom +=  "> Vous avez le droit aux espaces et aux tirets.\n"
+    contenuMsg_Prenom +=  "> Le **prochain message** que vous enverrez sera votre prénom (après que vous l'avoir confirmé, comme pour le sexe).\n"
+    contenuMsg_Prenom +=  "> Vous avez le droit aux espaces et aux tirets."
     
     await membre_aInscrire.send( contenuMsg_Prenom )
     
@@ -147,8 +147,8 @@ async def Inscription (membre_aInscrire):
 #### Nom
     
     contenuMsg_Nom  = f"Et c'est {monsieur} {prenom} comment ?\n"
-    contenuMsg_Nom +=  "> Le prochain message que vous enverrez sera votre **nom** (après que vous l'avoir confirmé, comme toujours)\n"
-    contenuMsg_Nom +=  "> Vous avez le droit aux espaces et aux tirets.\n"
+    contenuMsg_Nom +=  "> Le prochain message que vous enverrez sera votre **nom** (après que vous l'avoir confirmé, comme toujours).\n"
+    contenuMsg_Nom +=  "> Vous avez le droit aux espaces et aux tirets."
     
     await membre_aInscrire.send( contenuMsg_Nom )
     
@@ -169,9 +169,7 @@ async def Inscription (membre_aInscrire):
         
         if not choixConfirme :
             await membre_aInscrire.send( "*Vous pouvez taper un nouveau nom !*" )
-
-
-  
+    
     
     
 # =============================================================================
@@ -186,6 +184,7 @@ async def Inscription (membre_aInscrire):
                  fGoo.clef_idDiscord  : membre_aInscrire.id          }
     
     fGoo.ajoutLigne(nvlLigne, fGoo.page1_InfoJoueurs)
+    fGoo.ajoutLigne(nvlLigne, fGoo.page1_Archives   )
     
     
     

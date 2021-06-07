@@ -97,11 +97,7 @@ async def message_voteLoupGarou():
 # %% Phase 2
 
 async def finInscription():
-    
-#### Gestions des permissions
-    
-    await fDis.channelAccueil.set_permissions(fDis.roleSpectateurs, read_messages = False, send_messages = False)
-    
+    pass
     
 #### Nettoyage des salons de groupes
     

@@ -1817,7 +1817,7 @@ async def fctNoct_Cupidon (cupidon, village):
 #### --- Demande des amoureux ---
 # =============================================================================
 
-    if v.ajd.weekday() == 6 :
+    if v.nbTours == 0 :
 
 ### Message
 

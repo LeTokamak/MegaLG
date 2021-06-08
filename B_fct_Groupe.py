@@ -39,7 +39,7 @@ class GroupeParDefaut :
     
     
     def __str__(self):
-        return nom
+        return self.nom
 
 
 

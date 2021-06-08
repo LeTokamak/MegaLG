@@ -18,6 +18,9 @@ separation  = "_ _\n_ _\n_ _"
 
 
 
+
+nbDigit_Matricule = 3
+
 # %% Compo de la Prochaine Partie 
 
 #### Nombre des rôles (pour une partie à 30)
@@ -61,9 +64,11 @@ Juge_nbExil      = 1
 #### Paramètre de la Partie
 
 vote_aucunHabChoisi_meutreHasard = False
-vote_maire_plus2Voix             = False
+vote_maire_voixBonus             = 1
 
 partiePdt_Weekend                = True
+
+famNomb_peuventParler_Journee    = True
 
 
 # %% Variables de la Partie

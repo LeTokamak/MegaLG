@@ -207,10 +207,10 @@ class Habitant :
                 self.estUnExile  = True
             
         
-#### ||| Variante ||| Donne 2 voix de plus au maire lors des votes
+#### ||| Variante ||| Donne vote_maire_voixBonus voix de plus au maire lors des votes
         
-        if self.estMaire  and  v.vote_maire_plus2Voix :
-            self.nbVote += 2
+        if self.estMaire :
+            self.nbVote += v.vote_maire_voixBonus
         
         
 #### Fonctions de Vérifications
@@ -383,7 +383,7 @@ class Habitant :
             await self.member.remove_roles( fDis.roleJoueurs, village.roleDiscord     )
             await self.member.   add_roles( fDis.roleMorts  , village.roleDiscordMort )
             
-            await self.member.edit(nick = self.member.nick[6:])
+            await self.member.edit(nick = self.member.nick[v.nbDigit_Matricule + 1 :])
             
 ##  Meurtre des éventuels Amoureux
             

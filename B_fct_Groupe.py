@@ -32,14 +32,14 @@ class GroupeParDefaut :
     cheminBrut  =  ""
     chemin      = [""]
     rang        = 0
-    nom         = "ZZZZZZZZZZ"
+    nom         = "*Aucun Groupe*"
     
     sur_Groupes = []
     salon       = None
     
     
     def __str__(self):
-        return "*Aucun Groupe*"
+        return nom
 
 
 

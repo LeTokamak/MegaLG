@@ -397,6 +397,8 @@ async def EmbedsRoles (ctx):
 
 
 
+
+
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def SupprTousVlg (ctx):
@@ -458,6 +460,7 @@ async def emojis (ctx):
 
 
 
+
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def ResetRolesDiscord (ctx):
@@ -501,7 +504,7 @@ async def ResetMatricules (ctx):
     for j in Joueurs :
         
         membJou = fDis.serveurMegaLG.get_member( j[fGoo.clef_idDiscord] )
-        await membJou.edit(nick = membJou.display_name[6:])
+        await membJou.edit(nick = membJou.display_name[v.nbDigit_Matricule + 1 :])
 
 
 

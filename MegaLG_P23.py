@@ -130,10 +130,14 @@ async def numerotationHabitants():
         
         await habitant.init_groupe()
         
-        j["strGroupe"] = str(habitant.groupe)
+        if habitant.groupe != fGrp.GroupeParDefaut :
+            j["strGroupe"] = str(habitant.groupe)
+        
+        else :
+            j["strGroupe"] = "ZZZZZZZZZZZZZZZZZZ"
     
     
-
+    
     dfJoueurs                      = DataFrame(Joueurs)
     dfJoueurs                      = dfJoueurs.sort_values(by = ["strGroupe", fGoo.clef_Nom, fGoo.clef_Prenom])
     dfJoueurs                      = dfJoueurs.drop(["strGroupe"], axis = 1)
@@ -151,14 +155,13 @@ async def numerotationHabitants():
                 
         surnom  = membJou.display_name
         
-        while len(surnom) > 26 :
+        while len(surnom) + (v.nbDigit_Matricule + 1) > 32 :
             surnom = surnom[ :-1]
         
-        await membJou.edit(nick = f"{fMeP.AjoutZerosAvant(j[0],3)} | {surnom}")
+        await membJou.edit(nick = f"{fMeP.AjoutZerosAvant(j[0], v.nbDigit_Matricule)}┃{surnom}")
     
     
-
-
+    
     fGoo.page1_InfoJoueurs.clear()
     fGoo.page1_InfoJoueurs.insert_rows(fGoo.strListe(listeJoueurs))
     

@@ -119,7 +119,7 @@ async def Inscription (membre_aInscrire):
     elif choixSexe == "F" : deb_contenuMsg_Prenom, monsieur, inscrit = "Compris *Madame*"     , "Madame"  , "inscrite"
     
     contenuMsg_Prenom  = deb_contenuMsg_Prenom + ", maintenant quel est votre **Prénom** ?\n"
-    contenuMsg_Prenom +=  "> Le **prochain message** que vous enverrez sera votre prénom (après que vous l'avoir confirmé, comme pour le sexe).\n"
+    contenuMsg_Prenom +=  "> Le **prochain message** que vous enverrez sera votre prénom (après l'avoir confirmé, comme pour le sexe).\n"
     contenuMsg_Prenom +=  "> Vous avez le droit aux espaces et aux tirets."
     
     await membre_aInscrire.send( contenuMsg_Prenom )
@@ -147,7 +147,7 @@ async def Inscription (membre_aInscrire):
 #### Nom
     
     contenuMsg_Nom  = f"Et c'est {prenom} comment ?\n"
-    contenuMsg_Nom +=  "> Le prochain message que vous enverrez sera votre **nom** (après que vous l'avoir confirmé, comme toujours).\n"
+    contenuMsg_Nom +=  "> Le prochain message que vous enverrez sera votre **nom** (après l'avoir confirmé).\n"
     contenuMsg_Nom +=  "> Vous avez le droit aux espaces et aux tirets."
     
     await membre_aInscrire.send( contenuMsg_Nom )

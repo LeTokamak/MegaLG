@@ -301,36 +301,6 @@ async def N         (ctx, nbMessages = 10**9) :
 async def n         (ctx, nbMessages = 10**9) :
     await cmd_Nettoyage (ctx, nbMessages)
 
-
-
-
-
-# %%%% Création d'un nouveau Groupe 
-
-@fDis.bot.command()
-async def Creation_SousGroupe(ctx, *tupleNom):
-    await fGrp.com_NouveauGroupe(ctx, tupleNom)
-    
-@fDis.bot.command()
-async def creation_sousgroupe(ctx, *tupleNom):
-    await fGrp.com_NouveauGroupe(ctx, tupleNom)
-    
-@fDis.bot.command()
-async def CreationSousGroupe(ctx, *tupleNom):
-    await fGrp.com_NouveauGroupe(ctx, tupleNom)
-    
-@fDis.bot.command()
-async def creationSGrp(ctx, *tupleNom):
-    await fGrp.com_NouveauGroupe(ctx, tupleNom)
-    
-@fDis.bot.command()
-async def creatSGrp(ctx, *tupleNom):
-    await fGrp.com_NouveauGroupe(ctx, tupleNom)
-    
-@fDis.bot.command()
-async def csg(ctx, *tupleNom):
-    await fGrp.com_NouveauGroupe(ctx, tupleNom)
-    
     
     
 
@@ -677,6 +647,8 @@ async def Debut_Phase1 (ctx):
 
 
 
+# %%% Inscription
+
 @fDis.bot.command()
 async def Inscription (ctx) :
     await fP1.cmd_Inscription(ctx.author)
@@ -692,6 +664,37 @@ async def I (ctx) :
 @fDis.bot.command()
 async def i (ctx) :
     await fP1.cmd_Inscription(ctx.author)
+    
+
+
+# %%% Création d'un nouveau Groupe 
+
+@fDis.bot.command()
+async def Creation_SousGroupe(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def creation_sousgroupe(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def CreationSousGroupe(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def creationSGrp(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def creatSGrp(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def csg(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+
+
+
 
 
 

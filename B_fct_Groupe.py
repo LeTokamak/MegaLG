@@ -467,18 +467,17 @@ async def autorisation_SalonsGrp(membre, numeroGroupe):
 # %%% Commande de Création de Groupe / Sous-Groupe
 
 
-Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes pas un Joueur...\n> Si vous voulez vous inscrire (ou vous ré-inscrire), ça se passe dans ` ┃ ⅰ ┃ inscription`",
+Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes pas un Joueur...\n> Si vous voulez vous inscrire (ou vous ré-inscrire), ça se passe dans ` ┃ⅰ┃ inscription`",
                    "**ERREUR** - Le groupe que vous essayer de créer existe déjà !",
                    "**ERREUR** - Vous ne pouvez pas créer un sous-groupe à votre groupe, vous êtes déjà dans le plus petit type de groupe possible.\n> Vous ne pouvez pas créer le groupe : #NOUVGRP#"]
    
 
-async def com_NouveauGroupe(ctx, tupleNom):
+async def com_NouveauGroupe(ctx):
     """    """
     
-    nom = ' '.join(tupleNom)
-    
-    auteur           = ctx.message.author 
-    ligne, num_ligne = fGoo.ligne_avec(auteur.id, fGoo.clef_idDiscord, fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs))
+    auteur           = fDis.serveurMegaLG.get_member( ctx.message.author.id                          )
+    ligne, num_ligne = fGoo.ligne_avec              ( auteur.id            , fGoo.clef_idDiscord,
+                                                      fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs) )
     
 # =============================================================================
 #### --- 1ère Verif - L'auteur de la commande est-il un Joueur ? ---
@@ -487,8 +486,75 @@ async def com_NouveauGroupe(ctx, tupleNom):
     if ligne == None :
         await auteur.send(Erreurs_NouvGrp[0])
         return 
+            
+
+
+# =============================================================================
+#### Attente du nom du groupe
+# =============================================================================
+
+    AncienGrp = await groupe_avec( ligne[fGoo.clef_Groupe], "numero" )
+
+    contenuMsg_nomGroupe  = f"Vous êtes actuellement dans {AncienGrp}, quel sera le nom de votre **nouveau groupe** ?\n"
+    contenuMsg_nomGroupe +=  "> Le **prochain message** que vous enverrez sera le nom de votre nouveau groupe (après l'avoir confirmé).\n"
+    contenuMsg_nomGroupe +=  "> Vous avez le droit à tous les caractères spéciaux."
     
-    AncienGrp = await groupe_avec( ligne[fGoo.clef_Groupe], "numero" )    
+    await auteur.send( contenuMsg_nomGroupe )
+    
+    choixConfirme = False
+    
+    while not choixConfirme :
+    
+        msgReponseNomGrp = await fDis.attente_Message( auteur )
+        nom_groupe       = msgReponseNomGrp.content
+        
+        contenuMsg_VerifNom  = f"Est-ce bien le nom de votre futur groupe : **{nom_groupe}** ?\n"
+        
+        msgConfirmNom    = await auteur.send              ( contenuMsg_VerifNom         )
+        choixConfirme    = await fDis.attente_Confirmation( msgConfirmNom      , auteur )
+        
+        await contenuMsg_VerifNom.delete()
+        
+        if not choixConfirme :
+            await auteur.send( "*Vous pouvez taper un nouveau nom de groupe !*" )
+    
+
+
+# =============================================================================
+#### Choix du type de groupe
+# =============================================================================
+    
+    if AncienGrp.rang == 0 :
+        choixGrpPrincipal = True
+        
+    else :
+        if   AncienGrp.rang == 1 : type_nouvSousGrp = "✨"
+        elif AncienGrp.rang == 2 : type_nouvSousGrp = "🪐"
+        elif AncienGrp.rang == 3 : type_nouvSousGrp = "🌙"
+        
+        contenuMsg_typeGroupe  =  "Quel est le type du groupe que vous voulez créer ?\n"
+        contenuMsg_typeGroupe += f">  1️⃣ - Je veux créer un groupe principal, de type `🌌`, qui aurait comme salon `# 🌌┃{nom_groupe}`.\n"
+        contenuMsg_typeGroupe += f">  2️⃣ - Je veux créer un sous-groupe de {AncienGrp}, de type `{type_nouvSousGrp}`, qui aurait comme salon `# {type_nouvSousGrp}┃{nom_groupe}`."
+        
+        emojisEtReturns = [["1️⃣", True], ["2️⃣", False]]
+        
+        msgTypeGrp        = await auteur.send          ( contenuMsg_typeGroupe                          )
+        choixGrpPrincipal = await fDis.attente_Reaction( msgTypeGrp           , auteur, emojisEtReturns )
+        
+        choixConfirme = False
+        
+        while not choixConfirme :
+        
+            if choixGrpPrincipal : contenuMsg_VerifType = "Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
+            else                 : contenuMsg_VerifType = "Vous souhaitez bien créer `# {type_nouvSousGrp}┃{nom_groupe}` ?"
+                
+            msgConfirmType = await auteur.send              ( contenuMsg_VerifType         )
+            choixConfirme  = await fDis.attente_Confirmation( msgConfirmType      , auteur )
+            
+            await msgConfirmType.delete()
+            
+            if not choixConfirme : 
+                choixGrpPrincipal = not choixGrpPrincipal
     
     
     
@@ -496,58 +562,21 @@ async def com_NouveauGroupe(ctx, tupleNom):
 #### --- 2ème Verif - Le groupe existe-t-il déjà ? ---
 # =============================================================================
     
-    if AncienGrp.rang == 0 :
-        grp_ACreer = await groupe_avec( nom, "chemin" )
+    if choixGrpPrincipal : grp_ACreer = await groupe_avec(                           nom_groupe  , "chemin" )
+    else                 : grp_ACreer = await groupe_avec( f"{AncienGrp.cheminBrut}/{nom_groupe}", "chemin" )
     
-    else :
-        grp_ACreer = await groupe_avec( f"{AncienGrp.cheminBrut}/{nom}", "chemin" )
-    
-    
-    if grp_ACreer != None :
+    if type(grp_ACreer) == Groupe :
         await auteur.send(Erreurs_NouvGrp[1])
         return 
     
     
-    
-# =============================================================================
-#### --- 3ème Verif - Est-il possible de créer un sous-Groupe ? ---
-# =============================================================================
-    
-    if AncienGrp.rang == 4 :
-        msgErreur = Erreurs_NouvGrp[2].replace( "#NOUVGRP#" , f"{AncienGrp} > **{nom}**" )
-        await auteur.send(msgErreur)
-        
-#### Proposition de création d'un groupe de rang 1
-        
-        msgProposition     = await auteur.send(f"Est-ce que vous vouliez créer un groupe principal **{nom}** (un groupe représenté par une `🌌`) ?")
-        propositionAccepte = await fDis.attente_Confirmation(msgProposition, auteur)
-        
-#### Proposition acceptée
-        if propositionAccepte :
-            fGoo.remplacerVal_ligne_avec( GroupeParDefaut.numero, fGoo.clef_Groupe   , 
-                                          auteur.id             , fGoo.clef_idDiscord, 
-                                          fGoo.page1_InfoJoueurs                      )
-            
-            await autorisation_SalonsGrp(auteur, GroupeParDefaut.numero)
-            await com_NouveauGroupe(ctx, nom)
-            
-#### Proposition refusée
-        else :
-            return
-
-
-
-
 
 # =============================================================================
 #### === Création du Groupe / Sous-Groupe ===
 # =============================================================================
     
-    if AncienGrp.rang == 0 :
-        nouvGroupe = await creationGroupe(nom)
-    
-    if AncienGrp.rang in [1,2,3] :
-        nouvGroupe = await creationGroupe(f"{AncienGrp.cheminBrut}/{nom}")
+    if choixGrpPrincipal : nouvGroupe = await creationGroupe(                           nom_groupe   )
+    else                 : nouvGroupe = await creationGroupe( f"{AncienGrp.cheminBrut}/{nom_groupe}" )
     
     fGoo.remplacerVal_ligne( nouvGroupe.numero, fGoo.clef_Groupe, 
                              num_ligne                          , 

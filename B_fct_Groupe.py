@@ -545,8 +545,8 @@ async def com_NouveauGroupe(ctx):
         
         while not choixConfirme :
         
-            if choixGrpPrincipal : contenuMsg_VerifType = "Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
-            else                 : contenuMsg_VerifType = "Vous souhaitez bien créer `# {type_nouvSousGrp}┃{nom_groupe}` ?"
+            if choixGrpPrincipal : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
+            else                 : contenuMsg_VerifType = f"Vous souhaitez bien créer `# {type_nouvSousGrp}┃{nom_groupe}` ?"
                 
             msgConfirmType = await auteur.send              ( contenuMsg_VerifType         )
             choixConfirme  = await fDis.attente_Confirmation( msgConfirmType      , auteur )
@@ -577,13 +577,20 @@ async def com_NouveauGroupe(ctx):
     
     if choixGrpPrincipal : nouvGroupe = await creationGroupe(                           nom_groupe   )
     else                 : nouvGroupe = await creationGroupe( f"{AncienGrp.cheminBrut}/{nom_groupe}" )
+
+
+
+# =============================================================================
+#### Gestion des autorisations personnelles
+# =============================================================================
     
     fGoo.remplacerVal_ligne( nouvGroupe.numero, fGoo.clef_Groupe, 
                              num_ligne                          , 
                              fGoo.page1_InfoJoueurs              )
     
     await autorisation_SalonsGrp(auteur, nouvGroupe.numero)
-
+    
+    await auteur.send( "**C'est bon !** Le groupe a été créé !" )
 
 
 

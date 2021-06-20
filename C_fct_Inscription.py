@@ -61,11 +61,10 @@ async def Inscription (membre_aInscrire):
     msgAtt = await fDis.channelAttente.send( contenuMsg_Inscription )
     
     contenuMsg_Intro  =  "**Bonjour et Bienvenue sur le serveur du __Méga Loups-Garous__ !**\n"
-    contenuMsg_Intro += f"Je suis le {fDis.userMdJ.mention} de la partie, et je suis très fier qu'une personne de plus soit intrigué par mon travail !\n"
+    contenuMsg_Intro += f"Je suis le {fDis.userMdJ.mention} de la partie, et je suis très fier qu'une personne de plus soit intriguée par mon travail !\n"
     contenuMsg_Intro +=  "\n"
-    contenuMsg_Intro +=  "Après cette introduction mielleuse, passont aux choses sérieuses :\n"
-    contenuMsg_Intro +=  "> Je parle bien sûr de l'**Inscription**\n"
-    contenuMsg_Intro +=  "\n\n\n_ _"
+    contenuMsg_Intro +=  "Il est temps de passer à votre **Inscription**\n"
+    contenuMsg_Intro +=  "\n\n_ _"
     
     await membre_aInscrire.send(contenuMsg_Intro)
     
@@ -77,21 +76,22 @@ async def Inscription (membre_aInscrire):
 
 #### Sexe
     
-    Emo_Homme = ":male_sign:"
-    Emo_Femme = ":female_sign:"
+    Emo_Homme = "♂️"
+    Emo_Femme = "♀️"
     
     emojisEtReturns = [[Emo_Homme, "H"], [Emo_Femme, "F"]]
 
     contenuMsg_Sexe  =  "Alors dans un premier temps, il faut que vous choissiez votre **sexe** !\n"
-    contenuMsg_Sexe +=  "> J'utilise cette info pour accorder mes phrases, pour qu'elles soient plus imersivent que de l'écriture inclusive.\n"
-    contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient *Alberte a été retrouvée morte chez elle ce matin...*\n"
+    contenuMsg_Sexe +=  "> J'utilise cette info pour accorder mes phrases, pour qu'elles soient plus imersivent.\n"
+    contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient "
+    contenuMsg_Sexe +=  ">      *Alberte a été retrouvée morte chez elle ce matin...*\n"
     contenuMsg_Sexe +=  "> \n"
-    contenuMsg_Sexe +=  "> Évidemment vous pouvez mentir, si vous le préféré.\n"
+    contenuMsg_Sexe +=  "> *Évidemment, si vous le préférez vous pouvez mentir.*\n"
     contenuMsg_Sexe +=  "\n"
     contenuMsg_Sexe += f"Pour choisir le masculin, réagissez avec {Emo_Homme}, et pour le féminin ce sera {Emo_Femme}."
     
-    msgSexe   = await membre_aInscrire.send          ( contenuMsg_Sexe                  )
-    choixSexe = await fDis.attente_Reaction( msgSexe, membre_aInscrire, emojisEtReturns )
+    msgSexe   = await membre_aInscrire.send( contenuMsg_Sexe                                    )
+    choixSexe = await fDis.attente_Reaction( msgSexe        , membre_aInscrire, emojisEtReturns )
     
     choixConfirme = False
     
@@ -102,8 +102,8 @@ async def Inscription (membre_aInscrire):
         else : 
             contenuMsg_VerifSexe = "Donc ça sera **Madame**, c'est bien ça ?"
             
-        msgConfirmSexe = await membre_aInscrire.send( contenuMsg_VerifSexe )
-        choixConfirme  = await fDis.attente_Confirmation(msgConfirmSexe, membre_aInscrire)
+        msgConfirmSexe = await membre_aInscrire.send    ( contenuMsg_VerifSexe                   )
+        choixConfirme  = await fDis.attente_Confirmation( msgConfirmSexe      , membre_aInscrire )
         
         await msgConfirmSexe.delete()
         

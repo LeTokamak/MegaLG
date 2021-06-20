@@ -86,7 +86,7 @@ async def Inscription (membre_aInscrire):
     contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient "
     contenuMsg_Sexe +=  ">      *Alberte a été retrouvée morte chez elle ce matin...*\n"
     contenuMsg_Sexe +=  "> \n"
-    contenuMsg_Sexe +=  "> *Évidemment, si vous le préférez vous pouvez mentir.*\n"
+    contenuMsg_Sexe +=  "> *Évidemment, rien ne vous empèche de mentir.*\n"
     contenuMsg_Sexe +=  "\n"
     contenuMsg_Sexe += f"Pour choisir le masculin, réagissez avec {Emo_Homme}, et pour le féminin ce sera {Emo_Femme}."
     
@@ -132,7 +132,7 @@ async def Inscription (membre_aInscrire):
         prenom           = MeF_Prenom(msgReponsePrenom.content)
         
         contenuMsg_VerifPrenom  = f"Est-ce bien votre prénom **{prenom}** ?\n"
-        contenuMsg_VerifPrenom +=  "> Votre prénom est mis en forme pour qu'il est la même tête que tous les autres."
+        contenuMsg_VerifPrenom +=  "> *Votre prénom a été mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
         
         msgConfirmPrenom = await membre_aInscrire.send( contenuMsg_VerifPrenom )
         choixConfirme    = await fDis.attente_Confirmation(msgConfirmPrenom, membre_aInscrire)
@@ -159,7 +159,7 @@ async def Inscription (membre_aInscrire):
         msgReponseNom = await fDis.attente_Message( membre_aInscrire )
         nom           = " ".join( msgReponseNom.content.split() ).upper()
         
-        contenuMsg_VerifNom  = f"Est-ce bien votre nom **{prenom}** ?\n"
+        contenuMsg_VerifNom  = f"Est-ce bien votre nom **{nom}** ?\n"
         contenuMsg_VerifNom +=  "> Votre nom est mis en forme pour qu'il est la même tête que tous les autres."
         
         msgConfirmNom = await membre_aInscrire.send( contenuMsg_VerifNom )

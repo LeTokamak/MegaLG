@@ -513,7 +513,7 @@ async def com_NouveauGroupe(ctx):
         msgConfirmNom    = await auteur.send              ( contenuMsg_VerifNom         )
         choixConfirme    = await fDis.attente_Confirmation( msgConfirmNom      , auteur )
         
-        await contenuMsg_VerifNom.delete()
+        await msgConfirmNom.delete()
         
         if not choixConfirme :
             await auteur.send( "*Vous pouvez taper un nouveau nom de groupe !*" )

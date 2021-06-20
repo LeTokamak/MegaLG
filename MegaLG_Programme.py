@@ -670,30 +670,26 @@ async def i (ctx) :
 # %%% Création d'un nouveau Groupe 
 
 @fDis.bot.command()
-async def Creation_SousGroupe(ctx):
+async def Creation_NouvGroupe(ctx):
     await fGrp.com_NouveauGroupe(ctx)
     
 @fDis.bot.command()
-async def creation_sousgroupe(ctx):
+async def creation_nouvgroupe(ctx):
     await fGrp.com_NouveauGroupe(ctx)
     
 @fDis.bot.command()
-async def CreationSousGroupe(ctx):
-    await fGrp.com_NouveauGroupe(ctx)
-    
-@fDis.bot.command()
-async def creationSGrp(ctx):
-    await fGrp.com_NouveauGroupe(ctx)
-    
-@fDis.bot.command()
-async def creatSGrp(ctx):
-    await fGrp.com_NouveauGroupe(ctx)
-    
-@fDis.bot.command()
-async def csg(ctx):
+async def CreationNouvGroupe(ctx):
     await fGrp.com_NouveauGroupe(ctx)
 
+@fDis.bot.command()
+async def CNG(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
 
+@fDis.bot.command()
+async def cng(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+
+Test = cng
 
 
 

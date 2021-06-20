@@ -526,37 +526,98 @@ async def com_NouveauGroupe(ctx):
 #### Choix du type de groupe
 # =============================================================================
     
-    if AncienGrp.rang == 0 :
+    if   AncienGrp.rang == 0 :
         choixGrpPrincipal = True
-        
-    else :
+    
+    
+    
+    
+    
+    elif AncienGrp.rang in [1,2,3] :
         if   AncienGrp.rang == 1 : type_nouvSousGrp = "✨"
         elif AncienGrp.rang == 2 : type_nouvSousGrp = "🪐"
         elif AncienGrp.rang == 3 : type_nouvSousGrp = "🌙"
         
         contenuMsg_typeGroupe  =  "Quel est le type du groupe que vous voulez créer ?\n"
         contenuMsg_typeGroupe += f">  1️⃣ - Je veux créer un groupe principal, de type `🌌`, qui aurait comme salon `# 🌌┃{nom_groupe}`.\n"
-        contenuMsg_typeGroupe += f">  2️⃣ - Je veux créer un sous-groupe de {AncienGrp}, de type `{type_nouvSousGrp}`, qui aurait comme salon `# {type_nouvSousGrp}┃{nom_groupe}`."
+        contenuMsg_typeGroupe += f">  2️⃣ - Je veux créer un sous-groupe de {AncienGrp}, de type `{type_nouvSousGrp}`, qui aurait comme salon `# {type_nouvSousGrp}┃{nom_groupe}`.\n"
+        contenuMsg_typeGroupe +=  "> Si aucune de ces propositions ne vous conviennent, réagissez avec 🛑."
         
-        emojisEtReturns = [["1️⃣", True], ["2️⃣", False]]
+        emojisEtReturns = [["1️⃣", True], ["2️⃣", False], ["🛑", "Stop"]]
         
         msgTypeGrp        = await auteur.send          ( contenuMsg_typeGroupe                          )
         choixGrpPrincipal = await fDis.attente_Reaction( msgTypeGrp           , auteur, emojisEtReturns )
         
+        if choixGrpPrincipal == "Stop" :
+            return
+        
+        
+        
         choixConfirme = False
         
         while not choixConfirme :
-        
+            
+            emojisEtReturns = [ ["✅", True], ["❌", False], ["🛑", "Stop"] ]
+            
             if choixGrpPrincipal : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
             else                 : contenuMsg_VerifType = f"Vous souhaitez bien créer `# {type_nouvSousGrp}┃{nom_groupe}` ?"
                 
-            msgConfirmType = await auteur.send              ( contenuMsg_VerifType         )
-            choixConfirme  = await fDis.attente_Confirmation( msgConfirmType      , auteur )
+            msgConfirmType = await auteur.send          ( contenuMsg_VerifType                          )
+            choixConfirme  = await fDis.attente_Reaction( msgConfirmType      , auteur, emojisEtReturns )
+            
+            if choixConfirme == "Stop" :
+                return
             
             await msgConfirmType.delete()
             
             if not choixConfirme : 
                 choixGrpPrincipal = not choixGrpPrincipal
+    
+    
+    
+    
+    
+    else :
+        contenuMsg_typeGroupe  =  "Quel est le type du groupe que vous voulez créer ?\n"
+        contenuMsg_typeGroupe += f">  1️⃣ - Je veux créer un groupe principal, de type `🌌`, qui aurait comme salon `# 🌌┃{nom_groupe}`.\n"
+        contenuMsg_typeGroupe += f">  2️⃣ - Je veux créer un sous-groupe de {AncienGrp.sur_Groupes[-1]}, de type `🌙`, qui aurait comme salon `# 🌙┃{nom_groupe}`.\n"
+        contenuMsg_typeGroupe +=  "> Si aucune de ces propositions ne vous conviennent, réagissez avec 🛑."
+        
+        emojisEtReturns = [["1️⃣", True], ["2️⃣", False], ["🛑", "Stop"]]
+        
+        msgTypeGrp        = await auteur.send          ( contenuMsg_typeGroupe                          )
+        choixGrpPrincipal = await fDis.attente_Reaction( msgTypeGrp           , auteur, emojisEtReturns )
+        
+        if choixGrpPrincipal == "Stop" :
+            return
+        
+        
+        
+        choixConfirme = False
+        
+        while not choixConfirme :
+            
+            emojisEtReturns = [ ["✅", True], ["❌", False], ["🛑", "Stop"] ]
+            
+            if choixGrpPrincipal : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
+            else                 : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌙┃{nom_groupe}` ?"
+            
+            msgConfirmType = await auteur.send          ( contenuMsg_VerifType                          )
+            choixConfirme  = await fDis.attente_Reaction( msgConfirmType      , auteur, emojisEtReturns )
+            
+            if choixConfirme == "Stop" :
+                return
+            
+            await msgConfirmType.delete()
+            
+            if not choixConfirme : 
+                choixGrpPrincipal = not choixGrpPrincipal
+            
+            
+        if not choixGrpPrincipal :
+            AncienGrp = AncienGrp.sur_Groupes[-1]
+    
+    
     
     
     

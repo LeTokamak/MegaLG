@@ -569,7 +569,7 @@ async def evt_ChangementGroupe(membre, message_id, strEmoji):
     
     futur_AncienGrp = await groupe_avec( message_id, "idMsg_Depart" )
     
-    if futur_AncienGrp != None  and  strEmoji == Emo_departGroupe :
+    if type(futur_AncienGrp) != GroupeParDefaut  and  strEmoji == Emo_departGroupe :
         
         if   futur_AncienGrp.rang == 1 :
             numeroGrp = GroupeParDefaut.numero
@@ -589,7 +589,7 @@ async def evt_ChangementGroupe(membre, message_id, strEmoji):
     
     futur_NouveauGrp = await groupe_avec( message_id, "idMsg_Entree" )
     
-    if futur_NouveauGrp != None  and  strEmoji == futur_NouveauGrp.Emo_Entree :
+    if type(futur_NouveauGrp) != GroupeParDefaut  and  strEmoji == futur_NouveauGrp.Emo_Entree :
         
         numeroGrp = futur_NouveauGrp.numero
         

@@ -213,7 +213,6 @@ async def Inscription (membre_aInscrire):
 
 # %% Ré-Inscription
 
-
 AnciensJoueurs   = fGoo.donneeGoogleSheet(fGoo.page1_Archives)
 listeidDisConnus = fGoo.colonne_avec(fGoo.page1_Archives, fGoo.clef_idDiscord)
 

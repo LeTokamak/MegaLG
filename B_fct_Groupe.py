@@ -25,6 +25,8 @@ import asyncio
 
 Emo_departGroupe = "❌"
 
+separateur = "↘"
+
 class GroupeParDefaut :
 
     numero      = 0    
@@ -50,7 +52,7 @@ class Groupe :
         self.numero      = numGroupe
         
         self.cheminBrut  = cheminBrut
-        self.chemin      = cheminBrut.split("/")
+        self.chemin      = cheminBrut.split(separateur)
         self.rang        = len(self.chemin)
         self.nom         = self.chemin[-1]
         
@@ -69,7 +71,7 @@ class Groupe :
     async def init_surGroupes(self, creation_si_existe_pas = True):
         
         for i in range(1, self.rang) :
-            g_cheminBrut = "/".join( self.chemin[:i] )
+            g_cheminBrut = separateur.join( self.chemin[:i] )
             
             groupe = await groupe_avec( g_cheminBrut, "chemin", creation_si_existe_pas )
             
@@ -562,8 +564,8 @@ async def com_NouveauGroupe(ctx):
 #### --- 2ème Verif - Le groupe existe-t-il déjà ? ---
 # =============================================================================
     
-    if choixGrpPrincipal : grp_ACreer = await groupe_avec(                           nom_groupe  , "chemin" )
-    else                 : grp_ACreer = await groupe_avec( f"{AncienGrp.cheminBrut}/{nom_groupe}", "chemin" )
+    if choixGrpPrincipal : grp_ACreer = await groupe_avec(                                      nom_groupe  , "chemin" )
+    else                 : grp_ACreer = await groupe_avec( f"{AncienGrp.cheminBrut}{separateur}{nom_groupe}", "chemin" )
     
     if type(grp_ACreer) == Groupe :
         await auteur.send(Erreurs_NouvGrp[1])
@@ -575,8 +577,8 @@ async def com_NouveauGroupe(ctx):
 #### === Création du Groupe / Sous-Groupe ===
 # =============================================================================
     
-    if choixGrpPrincipal : nouvGroupe = await creationGroupe(                           nom_groupe   )
-    else                 : nouvGroupe = await creationGroupe( f"{AncienGrp.cheminBrut}/{nom_groupe}" )
+    if choixGrpPrincipal : nouvGroupe = await creationGroupe(                                      nom_groupe   )
+    else                 : nouvGroupe = await creationGroupe( f"{AncienGrp.cheminBrut}{separateur}{nom_groupe}" )
 
 
 
@@ -591,7 +593,6 @@ async def com_NouveauGroupe(ctx):
     await autorisation_SalonsGrp(auteur, nouvGroupe.numero)
     
     await auteur.send( "**C'est bon !** Le groupe a été créé !" )
-
 
 
 

@@ -39,7 +39,9 @@ erreurIns_dejaJoueur = "**ERREUR** - Vous êtes **déjà** inscrit !"
 erreurIns_phase1     = "**ERREUR** - Les inscriptions **ne sont pas** ouvertes pour l'instant..."
 messagIns_reInscript = "**Vous avez déjà participer à une ancienne partie.**\nVous avez donc été ré-inscrit !"
 
-async def cmd_Inscription(membre_voulantSIncrire):
+async def cmd_Inscription(user_voulantSIncrire):
+    
+    membre_voulantSIncrire = fDis.serveurMegaLG.get_member(user_voulantSIncrire.id)
     
     if   fDis.roleJoueurs in membre_voulantSIncrire.roles :
         await membre_voulantSIncrire.send( erreurIns_dejaJoueur )

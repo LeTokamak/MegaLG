@@ -146,7 +146,7 @@ async def Inscription (membre_aInscrire):
     
 #### Nom
     
-    contenuMsg_Nom  = f"Et c'est {monsieur} {prenom} comment ?\n"
+    contenuMsg_Nom  = f"Et c'est {prenom} comment ?\n"
     contenuMsg_Nom +=  "> Le prochain message que vous enverrez sera votre **nom** (après que vous l'avoir confirmé, comme toujours).\n"
     contenuMsg_Nom +=  "> Vous avez le droit aux espaces et aux tirets."
     
@@ -160,7 +160,7 @@ async def Inscription (membre_aInscrire):
         nom           = " ".join( msgReponseNom.content.split() ).upper()
         
         contenuMsg_VerifNom  = f"Est-ce bien votre nom **{nom}** ?\n"
-        contenuMsg_VerifNom +=  "> Votre nom est mis en forme pour qu'il est la même tête que tous les autres."
+        contenuMsg_VerifNom +=  "> *Votre nom est mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
         
         msgConfirmNom = await membre_aInscrire.send( contenuMsg_VerifNom )
         choixConfirme = await fDis.attente_Confirmation(msgConfirmNom, membre_aInscrire)
@@ -205,7 +205,7 @@ async def Inscription (membre_aInscrire):
     await fDis.channelHistorique.send(f"{fDis.Emo_BabyYellow}  |  Inscription de {membre_aInscrire.mention} : {prenom} {nom}   |   ({choixSexe})")
     await msgAtt                .delete()    
     
-    await fGrp.autorisation_SalonsGrp(membre_aInscrire, fGrp.GroupeParDefaut.chemin)
+    await fGrp.autorisation_SalonsGrp(membre_aInscrire, nvlLigne[fGoo.clef_Groupe])
 
     
 
@@ -246,14 +246,19 @@ async def ReInscription (membre_ReInscrit):
 
 idMessage_ReInscription = 850873077617000488
 
+erreurReI_joueurInconu  = "**ERREUR** - Vous n'avez pas participer à la partie précédente, vous ne pouvez donc pas vous ré-inscrire."
+erreurReI_joueurInconu += "\n> Pour vous inscrire, taper la commande **!Inscription** (**!i**)."
+erreurReI_joueurInconu += "\n> *Si vous avez un problème, n'hésitez pas à envoyer un message privé à Clément Campana.*"
+
+erreurReI_dejaJoueur    = "**ERREUR** - Vous êtes **déjà** inscrit !"
+
 async def evt_ReInscription (membre):
 
-    if membre.id in listeidDisConnus :        
-        await ReInscription(membre)
-            
-    else :
-        erreurReInscription  = "**ERREUR** - Vous n'avez pas participer à la partie précédente, vous ne pouvez donc pas vous ré-inscrire."
-        erreurReInscription += "\n> Pour vous inscrire, taper la commande **!Inscription** (**!i**)."
-        erreurReInscription += "\n> *Si vous avez un problème, n'hésitez pas à envoyer un message privé à Clément Campana.*"
+    if   membre.id not in listeidDisConnus :
+        await membre.send( erreurReI_joueurInconu )
+    
+    elif fDis.roleJoueurs in membre.roles :
+        await membre.send( erreurReI_dejaJoueur )
         
-        await membre.send(erreurReInscription)
+    else :
+        await ReInscription(membre)

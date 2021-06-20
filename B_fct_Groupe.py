@@ -446,7 +446,7 @@ async def autorisation_SalonsGrp(membre, numeroGroupe):
 # =============================================================================
     
         else :
-            await membre.send(f"_**Vous n'êtes inscrit dans aucun groupe...**_\n> Le fonctionnement et l'utilité des groupes sont expliqués dans `# {fDis.channelFctmentGrp.name}`, allez y faire un tour !")
+            await membre.send("_**Tu n'es inscrit dans aucun groupe...**_\n> Le fonctionnement et l'utilité des groupes sont expliqués dans `#  ┃ ⅱ ┃ groupes`, va y faire un tour !")
     
            
     
@@ -467,7 +467,7 @@ async def autorisation_SalonsGrp(membre, numeroGroupe):
 # %%% Commande de Création de Groupe / Sous-Groupe
 
 
-Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes pas un Joueur...\n> Si vous voulez vous inscrire (ou vous ré-inscrire), ça se passe dans `#👋┃accueil`",
+Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes pas un Joueur...\n> Si vous voulez vous inscrire (ou vous ré-inscrire), ça se passe dans ` ┃ ⅰ ┃ inscription`",
                    "**ERREUR** - Le groupe que vous essayer de créer existe déjà !",
                    "**ERREUR** - Vous ne pouvez pas créer un sous-groupe à votre groupe, vous êtes déjà dans le plus petit type de groupe possible.\n> Vous ne pouvez pas créer le groupe : #NOUVGRP#"]
    

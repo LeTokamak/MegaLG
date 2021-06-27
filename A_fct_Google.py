@@ -217,7 +217,7 @@ def ajout_nouvColonne(nom_nouvColonne, page_fichier):
     clefs          = clefs_de_page(page_fichier)
     
     numero_ligne   = 1
-    numero_colonne = len(clefs) + 2
+    numero_colonne = len(clefs) + 1
     
     page_fichier.update_cell(numero_ligne, numero_colonne, nom_nouvColonne)
     

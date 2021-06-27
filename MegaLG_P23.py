@@ -94,7 +94,7 @@ async def message_voteLoupGarou():
         
         
         
-# %% Phase 2
+# %% --- Phase 2 ---
 
 async def finInscription():
     pass
@@ -102,8 +102,6 @@ async def finInscription():
 #### Nettoyage des salons de groupes
     
     "A programmer"
-
-
 
 
 
@@ -167,8 +165,6 @@ async def numerotationHabitants():
     
     fGoo.page1_Sauvegarde .clear()
     fGoo.page1_Sauvegarde .insert_rows(fGoo.strListe(listeJoueurs))
-
-
 
 
 
@@ -571,8 +567,6 @@ async def repartionGroupes_Villages() :
 
 
 
-
-
 async def distributionRole(village):
     
 #### Paquet des Rôles
@@ -653,10 +647,101 @@ async def distributionRole(village):
         
         await hab.member.send( f"Vous êtes **{habRole[fRol.clefNom]}** :" )
         await hab.member.send( embed = habRole[fRol.clefEmbed]            )
+
+
+
+
+
+# %%% Commandes
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def DebutPartie (ctx):
+    
+#### DP_1
+    
+    await fDis.channelHistorique.edit(topic = v.phase2)
         
+    await finInscription()
+    await numerotationHabitants()
+    
+    
+    
+#### DP_2
+    
+    await repartionGroupes_Villages()
+    
+    
+    
+#### DP_3
+
+    for vlg in fVlg.TousLesVillages :
+        await distributionRole(vlg)
+
+    
+    await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()
+    
+    
+    
+    for vlg in fVlg.TousLesVillages :
+        await vlg.rapportMunicipal()
+    
+    v.nbTours = 0
+    await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
+    
+    await attente_lancementTour()
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def DP_1 (ctx):
+    
+    await fDis.channelHistorique.edit(topic = v.phase2)
         
-        
-# %% Phase 3 
+    await finInscription()
+    await numerotationHabitants()
+    
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def DP_2 (ctx):
+    
+    await repartionGroupes_Villages()
+    
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def DP_3 (ctx):
+
+    for vlg in fVlg.TousLesVillages :
+        await distributionRole(vlg)
+
+    
+    await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()
+    
+    
+    
+    for vlg in fVlg.TousLesVillages :
+        await vlg.rapportMunicipal()
+    
+    v.nbTours = 0
+    await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
+    
+    await attente_lancementTour()
+
+
+
+
+# %% --- Phase 3 ---
+
 
 async def attente_lancementTour() :
         
@@ -699,3 +784,163 @@ async def attente_lancementTour() :
             await asyncio.sleep(tempsAtt.seconds)
         
         await fTou.Tour()
+        
+        
+        
+        
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Lancement(ctx):
+    
+    await fDis.effacerMsg(ctx)
+    await attente_lancementTour()
+
+
+
+# %%% Vote
+
+@fDis.bot.command()
+async def Vote(ctx, matricule):
+    await fVlg.cmd_vote(ctx.author, matricule)
+    
+    
+@fDis.bot.command()
+async def vote(ctx, matricule):
+    await fVlg.cmd_vote(ctx.author, matricule)
+
+    
+
+    
+
+# %%% Exil (reservée aux Juges et au Maire)
+
+@fDis.bot.command()
+async def Exil(ctx):
+    await fVlg.cmd_demandeExilVote(ctx.author)
+
+@fDis.bot.command()
+async def exil(ctx):
+    await fVlg.cmd_demandeExilVote(ctx.author)
+
+
+
+
+
+# %%% Changement du nom du village (reservée au Maire)
+
+@fDis.bot.command()
+async def Renommage(ctx, *tupleNom):
+    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
+    
+@fDis.bot.command()
+async def renommage(ctx, *tupleNom):
+    await fVlg.cmd_changementNomVillage(ctx.author, tupleNom)
+
+
+
+
+# %%% Maintenance
+     
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Meutre (ctx, matricule):
+
+    if v.phaseEnCours in (v.phase2, v.phase3) :
+
+        await fHab.redef_TousLesHabitants()
+        
+        persTuee = fHab.habitant_avec(int(matricule))
+        
+        await persTuee.Tuer()
+        await fDis.channelHistorique.send(f"{persTuee.user.mention}  |  {persTuee.matri} {persTuee.prenom} {persTuee.nom} - ( {persTuee.groupe} ) vient d'être tué")
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Sauvetage (ctx, matriculePersSauve):
+    
+    if v.phaseEnCours == v.phase3 :
+        
+        v.choixSalvateurs.append(int(matriculePersSauve))
+        await fDis.channelHistorique.send(f"{matriculePersSauve} vient d'être protégé !")
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Rapport_TousLesVillages (ctx):
+
+    if v.phaseEnCours in (v.phase2, v.phase3, v.phase4) :
+        
+        await fHab.redef_TousLesHabitants()
+        for vlg in fVlg.TousLesVillages :
+            await vlg.rapportMunicipal()
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Amoureux (ctx, matricule1, matricule2):
+    
+    mat_amour1 = int(matricule1)
+    mat_amour2 = int(matricule2)
+    
+    fGoo.ajoutVal_cellule_avec( f"A{matricule2} ", fGoo.clef_caractJoueur ,
+                                mat_amour1       , fGoo.clef_Matricule    ,
+                                fGoo.page1_InfoJoueurs                     )
+    
+    fGoo.ajoutVal_cellule_avec( f"A{matricule1} ", fGoo.clef_caractJoueur ,
+                                mat_amour2       , fGoo.clef_Matricule    ,
+                                fGoo.page1_InfoJoueurs                     )
+            
+    pers1 = fHab.habitant_avec(mat_amour1)
+    pers2 = fHab.habitant_avec(mat_amour2)
+    
+    await pers1.user.send(f"Vous êtes amoureux de {pers2.matri}  |  {pers2.prenom} {pers2.nom} {pers2.groupe}")
+    await pers2.user.send(f"Vous êtes amoureux de {pers1.matri}  |  {pers1.prenom} {pers1.nom} {pers1.groupe}")
+    
+    await fHab.redef_TousLesHabitants()
+    
+    
+    
+    
+"""
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def AmoureuxAlea (ctx):
+    
+    await fHab.redef_TousLesHabitants()
+    
+    Celibs = []
+    
+    for pers in fPer.ToutesLesPersonnes :
+        if not pers.estAmoureux :
+            Celibs.append(pers)
+    
+    while len(Celibs) >= 2 : 
+    
+        pers1 = fMeP.rd.choice(Celibs)
+        pers2 = fMeP.rd.choice(Celibs)
+        
+        Celibs.remove(pers1)
+        Celibs.remove(pers2)
+        
+        fGoo.ajoutVal_cellule_avec( f"A{pers2.matri} ", fGoo.clef_caractJoueur ,
+                                    pers1.matri       , fGoo.clef_Matricule    ,
+                                    fGoo.page1_InfoJoueurs                      )
+    
+        fGoo.ajoutVal_cellule_avec( f"A{pers1.matri} ", fGoo.clef_caractJoueur ,
+                                    pers2.matri       , fGoo.clef_Matricule    ,
+                                    fGoo.page1_InfoJoueurs                      )
+    
+        await pers1.user.send(f"Vous êtes amoureux de {pers2.matri}  |  {pers2.prenom} {pers2.nom} {pers2.groupe}")
+        await pers2.user.send(f"Vous êtes amoureux de {pers1.matri}  |  {pers1.prenom} {pers1.nom} {pers1.groupe}")
+"""

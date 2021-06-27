@@ -30,10 +30,41 @@ rd      = fGrp.rd
 asyncio = fGrp.asyncio
 
 
+async def lancementInscription():
+    
+    v.phaseEnCours = v.phase1
+    await fDis.channelHistorique.edit(topic = v.phase1)   
+    
+    
+#### Message de Ré-Inscription
+    
+    msgReInscription = await fDis.channelAccueil.fetch_message(fIns.idMessage_ReInscription)
+    await msgReInscription.clear_reactions()
+    await msgReInscription.add_reaction(fDis.Emo_BabyOrange)
+    
+    
+#### Nettoyage de Infos Joueurs
+
+    pass
+    
+    
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Debut_Phase1 (ctx):
+    await lancementInscription()
+
+
+
+
+
+
 
 
 
 # %% Commandes
+
+# %%% Inscription
 
 erreurIns_dejaJoueur = "**ERREUR** - Vous êtes **déjà** inscrit !"
 erreurIns_phase1     = "**ERREUR** - Les inscriptions **ne sont pas** ouvertes pour l'instant..."
@@ -59,6 +90,48 @@ async def cmd_Inscription(user_voulantSIncrire):
     
     else :
         await fIns.Inscription(membre_voulantSIncrire)
+
+
+
+@fDis.bot.command()
+async def Inscription (ctx) :
+    await cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def inscription (ctx) :
+    await cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def I (ctx) :
+    await cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def i (ctx) :
+    await cmd_Inscription(ctx.author)
+
+
+
+# %%% Création d'un nouveau Groupe 
+
+@fDis.bot.command()
+async def Creation_NouvGroupe(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def creation_nouvgroupe(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def CreationNouvGroupe(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+
+@fDis.bot.command()
+async def CNG(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
+
+@fDis.bot.command()
+async def cng(ctx):
+    await fGrp.com_NouveauGroupe(ctx)
 
 
 
@@ -112,24 +185,3 @@ async def reaction_Groupe():
         await fGrp.evt_ChangementGroupe(payload.member, payload.message_id, str(payload.emoji))
 
 
-
-
-
-# %% Fonctions 
-
-async def lancementInscription():
-    
-    v.phaseEnCours = v.phase1
-    await fDis.channelHistorique.edit(topic = v.phase1)   
-    
-    
-#### Message de Ré-Inscription
-    
-    msgReInscription = await fDis.channelAccueil.fetch_message(fIns.idMessage_ReInscription)
-    await msgReInscription.clear_reactions()
-    await msgReInscription.add_reaction(fDis.Emo_BabyOrange)
-    
-    
-#### Nettoyage de Infos Joueurs
-
-    a = "A programmer"

@@ -30,12 +30,6 @@ client = gspread.authorize(creds)
 
 # %% Création des Fichier
 
-#### Réponses au Formulaire
-
-RepFormulaire       = client.open("Réponses Inscription")
-page1_RepFormulaire = RepFormulaire.sheet1
-
-
 #### Infos Joueurs
 
 InfoJoueurs         = client.open("Infos Joueurs")
@@ -61,21 +55,16 @@ page_Groupes        = Groupes_Villages.sheet1
 page_Villages       = Groupes_Villages.get_worksheet(1)
 
 
+#### Comptage des Messages
+
+Compte_Msg          = client.open("Comptage des Messages")
+page_CompteMsg      = Compte_Msg.sheet1
+
+
+
 
 
 # %%% Création des clefs des Fichiers
-
-#### Clefs de RepFormulaire
-
-clefs_RepFormulaire = page1_RepFormulaire.get()[0]
-
-( clefForm_Horodateur ,
-  clefForm_Sexe       ,
-  clefForm_Prenom     ,
-  clefForm_Nom        ,
-  clefForm_nbSynchro   ) = clefs_RepFormulaire
-
-
 
 #### Clefs de Joueurs (InfoJoueurs, Sauvegarde et Archives ont les mêmes clefs)
 
@@ -137,6 +126,27 @@ clefs_Villages = page_Villages.get()[0]
 
 
 
+#### Clefs de Villages
+
+clefs_Messages = page_CompteMsg.get()[0]
+
+( clefMsg_idDiscord              ,
+  clefMsg_display_name           ,
+  
+  clefMsg_prenom                 ,
+  clefMsg_nom                    ,
+  clefMsg_sexe                   ,
+  
+  clefMsg_est_a_ISEN             ,
+  clefMsg_ville                  ,
+  clefMsg_promo                  ,
+  
+  clefMsg_infos_verifie          ,
+  
+  clefMsg_separateur             ,
+  clefMsg_DMChannel               ) = clefs_Messages[:11]
+
+
 
 # %% Fonctions
 
@@ -146,13 +156,25 @@ def page_fichier(fichierGoogleSheet, num_page = 0) :
     """
     
     if num_page == 0 :
-        if   fichierGoogleSheet == RepFormulaire : return page1_RepFormulaire
-        elif fichierGoogleSheet == InfoJoueurs   : return page1_InfoJoueurs
+        if   fichierGoogleSheet == InfoJoueurs   : return page1_InfoJoueurs
         elif fichierGoogleSheet == Sauvegarde    : return page1_Sauvegarde
         elif fichierGoogleSheet == Archives      : return page1_Archives
     
     return fichierGoogleSheet.get_worksheet(num_page)
 
+
+
+def clefs_de_page (page_fichier) :
+    """
+    Renvoie la liste des clefs de la page
+    """
+
+    if   page_fichier == (page1_InfoJoueurs, page1_Sauvegarde, page1_Archives) : return clefs_Joueurs
+    elif page_fichier == page_Groupes                                          : return clefs_Groupes
+    elif page_fichier == page_Villages                                         : return clefs_Villages
+    elif page_fichier == page_CompteMsg                                        : return clefs_Messages
+    else                                                                       : return page_fichier.get()[0]
+    
 
 
 
@@ -186,6 +208,24 @@ def colonne_avec(page_fichier, clefColonne):
 
 # %%% Modification de page de fichier Google Sheet
 
+# %%%% En-tête
+
+def ajout_nouvColonne(nom_nouvColonne, page_fichier):
+    """
+    Ajoute une nouvelle colonne à page_fichier 
+    """
+    clefs          = clefs_de_page(page_fichier)
+    
+    numero_ligne   = 0
+    numero_colonne = len(clefs) + 2
+    
+    page_fichier.update_cell(numero_ligne, numero_colonne, nom_nouvColonne)
+    
+    
+    
+    
+    
+
 # %%%% Lignes
 
 def ajoutLigne(nvlLigne, page_fichier, numero_nvlLigne = 2) :
@@ -198,7 +238,7 @@ def ajoutLigne(nvlLigne, page_fichier, numero_nvlLigne = 2) :
     Si numero_nvlLigne == "fin", alors la ligne est ajouté à la fin de page_fichier
     """
     
-    clefs          = page_fichier.get()[0]
+    clefs          = clefs_de_page(page_fichier)
     liste_nvlLigne = []
     
     for c in clefs :
@@ -237,14 +277,9 @@ def suppressionLigne_avec(info, clefColonne, page_fichier) :
     
 # %%%% Cellules (Valeurs)    
 
-def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier, donnee = None):
+def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier, x = None):
     
-    if donnee == None :
-        donnee = donneeGoogleSheet(page_fichier)
-    else :
-        pass
-    
-    clefs  = list( donnee[0].keys() )
+    clefs  = clefs_de_page(page_fichier)
     
     numero_colonne      = clefs.index(clefColonne_aRemplacer) + 1
     
@@ -255,7 +290,7 @@ def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_f
 def remplacerVal_ligne_avec(nouvelleVal, clefColonne_aRemplacer, info, clefColonne_aRechercher, page_fichier):
     
     donnee = donneeGoogleSheet(page_fichier)
-    clefs  = list( donnee[0].keys() )
+    clefs  = clefs_de_page(page_fichier)
     
     ligne, numero_ligne = ligne_avec(info, clefColonne_aRechercher, donnee)
     numero_colonne      = clefs.index(clefColonne_aRemplacer) + 1
@@ -264,21 +299,35 @@ def remplacerVal_ligne_avec(nouvelleVal, clefColonne_aRemplacer, info, clefColon
     
 
 
-
-
-def ajoutVal_cellule_avec(valeur_aAjoutee, clefColonne_cellule, info, clefColonne_aRechercher, page_fichier, typeObjetCellule = str):
+def ajoutVal_cellule(valeur_aAjouter, clefColonne_cellule, numero_ligne, page_fichier, typeObjetCellule = str):
     """
-    type_somme peut valoir : int ou str
+    typeObjetCellule peut valoir : int ou str
+    """
+    clefs  = clefs_de_page(page_fichier)
+    
+    numero_colonne      = clefs.index(clefColonne_cellule) + 1
+    try :
+        ancienneValeur  = typeObjetCellule( page_fichier.cell(numero_ligne, numero_colonne).value )
+    except ValueError :
+        ancienneValeur  = 0
+    
+    page_fichier.update_cell(numero_ligne, numero_colonne, str(ancienneValeur + valeur_aAjouter))
+
+
+
+def ajoutVal_cellule_avec(valeur_aAjouter, clefColonne_cellule, info, clefColonne_aRechercher, page_fichier, typeObjetCellule = str):
+    """
+    typeObjetCellule peut valoir : int ou str
     """
     donnee = donneeGoogleSheet(page_fichier)
-    clefs  = list( donnee[0].keys() )
+    clefs  = clefs_de_page(page_fichier)
     
     ligne, numero_ligne = ligne_avec(info, clefColonne_aRechercher, donnee)
     numero_colonne      = clefs.index(clefColonne_cellule) + 1
     
     ancienneValeur      = typeObjetCellule( page_fichier.cell(numero_ligne, numero_colonne).value )
     
-    page_fichier.update_cell(numero_ligne, numero_colonne, str(ancienneValeur + valeur_aAjoutee))
+    page_fichier.update_cell(numero_ligne, numero_colonne, str(ancienneValeur + valeur_aAjouter))
 
 
 

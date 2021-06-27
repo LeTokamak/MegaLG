@@ -37,9 +37,9 @@ def def_cstsMegaLG ():
 #### Création de l'objet Bot
 
 intentions = discord.Intents.all()
-bot        = commands.Bot(command_prefix='!', description="Maître du Jeu", intents = intentions)
+bot        = commands.Bot(command_prefix = '!', description = "Maître du Jeu", intents = intentions)
 
-tokenMJ = "NzM3NzE3MTkxNTI0NDgzMTIy.XyBarA.A83hDJo-1XCRMatEUxAWIlcmaI0" # Maitre du Jeu
+tokenMJ    = "NzM3NzE3MTkxNTI0NDgzMTIy.XyBarA.A83hDJo-1XCRMatEUxAWIlcmaI0" # Maitre du Jeu
 
 
 #### Serveur

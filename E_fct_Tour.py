@@ -110,11 +110,11 @@ async def Tour():
     
 #### Sauvegarde de Infos Joueurs
     
-    nbColonnes = 10
-    nbLignes   = len(fHab.TousLesHabitants) + 1
+    # nbColonnes = 10
+    # nbLignes   = len(fHab.TousLesHabitants) + 1
     
-    feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.ajd)[:10]}", nbLignes, nbColonnes)
-    feuilleDuJour.insert_rows( fGoo.page1_InfoJoueurs.get() )
+    # feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.ajd)[:10]}", nbLignes, nbColonnes)
+    # feuilleDuJour.insert_rows( fGoo.page1_InfoJoueurs.get() )
     
     
     

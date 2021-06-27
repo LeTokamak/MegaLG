@@ -25,28 +25,28 @@ nbDigit_Matricule = 3
 
 #### Nombre des rôles (pour une partie à 30)
 
-tailleVlg_Ideal = 13
+tailleVlg_Ideal = 30
 
 prop_Villag     = 0
 prop_VillaVilla = 1
-prop_Cupido     = 1
-prop_Ancien     = 0
+prop_Cupido     = 0
+prop_Ancien     = 1
 
-prop_Salvat     = 1
-prop_Sorcie     = 1
-prop_Voyant     = 1
+prop_Salvat     = 2
+prop_Sorcie     = 2
+prop_Voyant     = 2
 
-prop_Corbea     = 1
-prop_Hirond     = 1
+prop_Corbea     = 2
+prop_Hirond     = 2
 prop_Juge       = 2
 
 prop_Chasse     = 0
       
-prop_Famill     = 0
+prop_Famill     = 5
 
-prop_LG         = 1
+prop_LG         = 5
 prop_LGNoir     = 1
-prop_LGBleu     = 0
+prop_LGBleu     = 3
 
 prop_LGBlan     = 1
 prop_EnSauv     = 1
@@ -58,7 +58,7 @@ Ancien_nbProtec  = 3
 Sorcie_nbPotVie  = 2
 Sorcie_nbPotMort = 1
 LGNoir_nbInfect  = 1
-Juge_nbExil      = 1
+Juge_nbExil      = 2
 
 
 #### Paramètre de la Partie

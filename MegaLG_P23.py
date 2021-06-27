@@ -720,6 +720,9 @@ async def DP_2 (ctx):
 @fDis.commands.has_permissions(ban_members = True)
 async def DP_3 (ctx):
 
+    await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()    
+
     for vlg in fVlg.TousLesVillages :
         await distributionRole(vlg)
 

@@ -517,4 +517,4 @@ async def on_ready():
 
 
 
-#fDis.bot.run(fDis.tokenMJ)
+fDis.bot.run(fDis.tokenMJ)

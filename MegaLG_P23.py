@@ -418,8 +418,8 @@ async def repartionGroupes_Villages() :
                         listeVillages_Valides.append(vlg)
                         liste_VlgPossibles.remove(vlg)
                         for grp in vlg :
-                            listeGroupes.remove(grp)
-        
+                            try    : listeGroupes.remove(grp)
+                            except : pass
         
         
         suppressionVlg_identiques(listeVillages_Valides)

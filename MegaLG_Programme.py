@@ -80,7 +80,7 @@ async def on_member_remove(member):
         await fDis.channelHistorique.send(f"Il était un joueur : {persPartie.user.mention}  |  {persPartie.matri} {persPartie.prenom} {persPartie.nom} - ( {persPartie.groupe} ) !")
         
         await persPartie.Tuer(departServeur = True)
-        await persPartie.user.send("""Vous avez quitté le serveur, vous avez donc été tué...\nVous pouvez utiliser la commande "!Nettoyage" pour effacer tout les messages que je vous ai envoyés.""")
+        await persPartie.user.send("Vous avez quitté le serveur, vous avez donc été tué...")
 
 
 
@@ -88,8 +88,6 @@ async def on_member_remove(member):
 
 @fDis.bot.event
 async def on_typing(salon, user, quand):
-    
-    print(salon, user, quand)
     
 #### Recherche de la bonne colonne
 
@@ -519,4 +517,4 @@ async def on_ready():
 
 
 
-fDis.bot.run(fDis.tokenMJ)
+#fDis.bot.run(fDis.tokenMJ)

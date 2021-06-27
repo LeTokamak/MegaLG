@@ -277,7 +277,7 @@ def suppressionLigne_avec(info, clefColonne, page_fichier) :
     
 # %%%% Cellules (Valeurs)    
 
-def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier, x = None):
+def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier, donnee = None):
     
     clefs  = clefs_de_page(page_fichier)
     

@@ -636,8 +636,8 @@ async def distributionRole(village):
         
         ligne, numLigne = fGoo.ligne_avec( hab.matri, fGoo.clef_Matricule, donnee )
         
-        fGoo.remplacerVal_ligne( habRole[fRol.clefNom], fGoo.clef_Role       , numLigne, fGoo.page1_InfoJoueurs, donnee = donnee )
-        fGoo.remplacerVal_ligne( caractRole           , fGoo.clef_caractRoles, numLigne, fGoo.page1_InfoJoueurs, donnee = donnee )
+        fGoo.remplacerVal_ligne( habRole[fRol.clefNom], fGoo.clef_Role       , numLigne, fGoo.page1_InfoJoueurs)
+        fGoo.remplacerVal_ligne( caractRole           , fGoo.clef_caractRoles, numLigne, fGoo.page1_InfoJoueurs)
         
         await asyncio.sleep(0.1)
         

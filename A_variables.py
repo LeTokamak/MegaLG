@@ -25,7 +25,7 @@ nbDigit_Matricule = 3
 
 #### Nombre des rôles (pour une partie à 30)
 
-tailleVlg_Ideal = 30
+tailleVlg_Ideal = 24
 
 prop_Villag     = 0
 prop_VillaVilla = 1
@@ -38,13 +38,13 @@ prop_Voyant     = 2
 
 prop_Corbea     = 2
 prop_Hirond     = 2
-prop_Juge       = 2
+prop_Juge       = 0 #2
 
 prop_Chasse     = 0
       
-prop_Famill     = 5
+prop_Famill     = 4 #5
 
-prop_LG         = 5
+prop_LG         = 3 #5
 prop_LGNoir     = 1
 prop_LGBleu     = 3
 

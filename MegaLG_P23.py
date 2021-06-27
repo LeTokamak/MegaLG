@@ -664,7 +664,7 @@ async def DebutPartie (ctx):
 #### DP_1
     
     await fDis.channelHistorique.edit(topic = v.phase2)
-        
+    
     await finInscription()
     await numerotationHabitants()
     
@@ -677,10 +677,10 @@ async def DebutPartie (ctx):
     
     
 #### DP_3
-
+    
     for vlg in fVlg.TousLesVillages :
         await distributionRole(vlg)
-
+    
     
     await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()
@@ -702,10 +702,10 @@ async def DebutPartie (ctx):
 async def DP_1 (ctx):
     
     await fDis.channelHistorique.edit(topic = v.phase2)
-        
+    
     await finInscription()
     await numerotationHabitants()
-    
+
 
 
 @fDis.bot.command()

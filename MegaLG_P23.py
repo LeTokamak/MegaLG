@@ -443,7 +443,7 @@ async def repartionGroupes_Villages() :
                     message += f"{grp} ({grp.nbPersonne})   ,   "
                 message += ")"
             
-            await fDis.userCamp.send(message)
+            await fDis.envoieMsg(fDis.userCamp, message)
             reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
             
             for j in reponse.content.split():

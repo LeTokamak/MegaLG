@@ -377,6 +377,26 @@ def salon_avec(info, type_dinfo) :
     
 # %%% Envoie / Modification / Suppression de Message
 
+async def envoieMsg (user_channel, contenu_message) :
+    """
+    Ajoute le texteAAjouter au bout de message, en éditant ce dernier
+    Si le nouveau message est trop long, un autre message est envoyé, contenant uniquement texteAAjouter
+    
+    Cette fonction renvoie le message qui vient soit d'être édité, soit d'être envoyé 
+    """
+    
+    while len(contenu_message) >= 2000 :
+        
+        await user_channel.send( contenu_message[ : 2000] )
+        contenu_message = contenu_message[2001 : ]
+    
+    
+    await user_channel.send(contenu_message)
+
+
+
+
+
 async def effacerMsg (ctx_channel, nbMessage = 1):
     """
     Efface les nbMessage derniers messages du channel ctx_channel

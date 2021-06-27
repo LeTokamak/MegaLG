@@ -89,6 +89,8 @@ async def on_member_remove(member):
 @fDis.bot.event
 async def on_typing(salon, user, quand):
     
+    print(salon, user, quand)
+    
 #### Recherche de la bonne colonne
 
     if   type(salon) == fDis.discord.channel.TextChannel  and  salon.name not in fGoo.clefs_Messages :

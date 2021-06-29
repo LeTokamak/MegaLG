@@ -10,9 +10,9 @@
 """
 
 # Niveau A
-import A_fct_Discord          as fDis
-import A_fct_MiseEnPage       as fMeP
-import A_variables            as v
+import A___variables          as v
+import A___discord            as fDis
+import A___mise_en_page       as fMeP
 
 
 Embed = fDis.discord.Embed
@@ -126,9 +126,9 @@ role_Juge      [clefCouleur] = 0x8A2BE2
 
 role_LG        [clefCouleur] = 0xFF0000
 role_LGNoir    [clefCouleur] = 0x9F0000
-role_LGBleu    [clefCouleur] = 0xF9F9F9
+role_LGBleu    [clefCouleur] = 0x0C80F5
 
-role_LGBlanc   [clefCouleur] = 0x0C80F5
+role_LGBlanc   [clefCouleur] = 0xF9F9F9
 role_EnfantSauv[clefCouleur] = 0xE6777B
 
 
@@ -287,7 +287,7 @@ role_LG        [clefDescription] =  "La pilosité exceptionnelle de cette bête 
 role_LGNoir    [clefDescription] = f"Il peut transformer la victime des loups en loup-garou, et il le peut **{v.LGNoir_nbInfect}** fois !\nUne infection qui peut se révéler cruciale, car l'infecté garde ses pouvoirs d'innocent !"
 role_LGBleu    [clefDescription] =  "C'est un loup-garou tout à fait classique, mais grâce à son pelage bleuté il peut se faire passer pour plus innocent qu'il ne l'est, aux yeux d'une voyante."
 
-role_LGBlanc   [clefDescription] =  "Son objectif est de finir la partie seul.\nLes autres loups croient qu'il est des leurs, mais il n'en est rien...\nChaque mercredi, il peut dévorer n'importe quel habitant, qui soit poilu ou non !"
+role_LGBlanc   [clefDescription] =  "Son objectif est de finir la partie seul.\nLes autres loups croient qu'il est des leurs, mais il n'en est rien...\nChaque mercredi, il peut dévorer n'importe quel habitant, qu'il soit poilu ou non !"
 role_EnfantSauv[clefDescription] =  "Ce petit bonhomme abandonné a choisi, lors de son arrivée dans le village, un modèle qui le guide et qui lui permet de ne pas trop perdre les pédales...\nSi ce dernier meurt, il retomberait dans la bestialité avec laquelle il a grandi, et il deviendrait Loup-Garou."
 
 

@@ -3,14 +3,16 @@
 """
 --------------------------------------------------------------------------------------
 ---                                                                                ---
----                    Niveau D - Fonction de gestion d'un Tour                    ---
+---                    Niveau F - Fonction de gestion d'un Tour                    ---
 ---                                                                                ---
 --------------------------------------------------------------------------------------
                                           v1                                29/03/2021
 """
 
+# Niveau E
+import E___village        as fVlg
+
 # Niveau D
-import D_fct_Village         as fVlg
 
 # Niveau C
 fHab = fVlg.fHab

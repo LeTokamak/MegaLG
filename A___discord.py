@@ -122,6 +122,7 @@ channelEtoile         = None
 channelPlanete        = None
 channelLune           = None
 
+"""
 channelRapport        = None
 channelCimetiere      = None
 channelBucher         = None
@@ -133,6 +134,7 @@ channelLoupsGarous    = None
 vocalLoupsGarous      = None
 channelFamilleNom     = None
 vocalFamilleNom       = None
+"""
 
 channelHistorique     = None
 channelAttente        = None
@@ -176,7 +178,7 @@ def def_channelsMegaLG ():
     channelLune           = bot.get_channel        (818581474856140841)
 
 
-
+    """
 #### Place du Village
 
     global channelRapport, channelCimetiere, channelBucher,  channelDebat, vocalDebat
@@ -199,7 +201,7 @@ def def_channelsMegaLG ():
     
     channelFamilleNom     = bot.get_channel        (774762395318747168)
     vocalFamilleNom       = bot.get_channel        (774763711856508928)
-
+    """
 
 
 #### Historique

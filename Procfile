@@ -1,1 +1,1 @@
-worker: python MegaLG_Programme.py
+worker: python _main_megaLG.py

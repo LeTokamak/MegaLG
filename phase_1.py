@@ -11,7 +11,7 @@
 
 
 # Niveau C
-import C_fct_Inscription as fIns
+import C___habitant as fIns
 
 
 # Niveau B
@@ -63,51 +63,6 @@ async def Debut_Phase1 (ctx):
 
 
 # %% Commandes
-
-# %%% Inscription
-
-erreurIns_dejaJoueur = "**ERREUR** - Vous êtes **déjà** inscrit !"
-erreurIns_phase1     = "**ERREUR** - Les inscriptions **ne sont pas** ouvertes pour l'instant..."
-messagIns_reInscript = "**Vous avez déjà participer à une ancienne partie.**\nVous avez donc été ré-inscrit !"
-
-async def cmd_Inscription(user_voulantSIncrire):
-    
-    membre_voulantSIncrire = fDis.serveurMegaLG.get_member(user_voulantSIncrire.id)
-    
-    if   fDis.roleJoueurs in membre_voulantSIncrire.roles :
-        await membre_voulantSIncrire.send( erreurIns_dejaJoueur )
-    
-    
-    elif v.phaseEnCours != v.phase1 :
-        await membre_voulantSIncrire.send( erreurIns_phase1     )
-    
-    
-    elif membre_voulantSIncrire.id in fIns.listeidDisConnus :
-        await membre_voulantSIncrire.send( messagIns_reInscript )
-        
-        await fIns.ReInscription(membre_voulantSIncrire)
-    
-    
-    else :
-        await fIns.Inscription(membre_voulantSIncrire)
-
-
-
-@fDis.bot.command()
-async def Inscription (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-@fDis.bot.command()
-async def inscription (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-@fDis.bot.command()
-async def I (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-@fDis.bot.command()
-async def i (ctx) :
-    await cmd_Inscription(ctx.author)
 
 
 

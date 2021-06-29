@@ -10,8 +10,8 @@
 """
 
 #Niveau B
-import B_fct_Groupe           as fGrp
-import B_fct_Roles            as fRol
+import B___groupe           as fGrp
+import B___roles            as fRol
 
 #Niveau A
 fGoo = fGrp.fGoo

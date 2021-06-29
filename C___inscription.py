@@ -11,11 +11,12 @@
 
 
 #Niveau B
-import B_fct_Groupe      as fGrp
+import B___groupe      as fGrp
 
 #Niveau A
 fDis = fGrp.fDis
 fGoo = fGrp.fGoo
+v    = fGrp.v
 
 
 
@@ -55,7 +56,7 @@ def MeF_Prenom (texte) :
 
 # %% Inscription
 
-async def Inscription (membre_aInscrire):
+async def fct_Inscription (membre_aInscrire):
     
     contenuMsg_Inscription = f"Inscription de {membre_aInscrire.mention} en cours..."
     msgAtt = await fDis.channelAttente.send( contenuMsg_Inscription )
@@ -115,8 +116,8 @@ async def Inscription (membre_aInscrire):
     
 #### Prénom
     
-    if   choixSexe == "H" : deb_contenuMsg_Prenom, monsieur, inscrit = "Très bien *Monsieur*" , "Monsieur", "inscrit"
-    elif choixSexe == "F" : deb_contenuMsg_Prenom, monsieur, inscrit = "Compris *Madame*"     , "Madame"  , "inscrite"
+    if   choixSexe == "H" : deb_contenuMsg_Prenom, inscrit = "Très bien *Monsieur*", "inscrit"
+    elif choixSexe == "F" : deb_contenuMsg_Prenom, inscrit = "Compris *Madame*"    , "inscrite"
     
     contenuMsg_Prenom  = deb_contenuMsg_Prenom + ", maintenant quel est votre **Prénom** ?\n"
     contenuMsg_Prenom +=  "> Le **prochain message** que vous enverrez sera votre prénom (après l'avoir confirmé, comme pour le sexe).\n"
@@ -261,3 +262,52 @@ async def evt_ReInscription (membre):
         
     else :
         await ReInscription(membre)
+        
+
+
+
+
+# %% Commande Inscription
+
+erreurIns_dejaJoueur = "**ERREUR** - Vous êtes **déjà** inscrit !"
+erreurIns_phase1     = "**ERREUR** - Les inscriptions **ne sont pas** ouvertes pour l'instant..."
+messagIns_reInscript = "**Vous avez déjà participer à une ancienne partie.**\nVous avez donc été ré-inscrit !"
+
+async def cmd_Inscription(user_voulantSIncrire):
+    
+    membre_voulantSIncrire = fDis.serveurMegaLG.get_member(user_voulantSIncrire.id)
+    
+    if   fDis.roleJoueurs in membre_voulantSIncrire.roles :
+        await membre_voulantSIncrire.send( erreurIns_dejaJoueur )
+    
+    
+    elif v.phaseEnCours != v.phase1 :
+        await membre_voulantSIncrire.send( erreurIns_phase1     )
+    
+    
+    elif membre_voulantSIncrire.id in listeidDisConnus :
+        await membre_voulantSIncrire.send( messagIns_reInscript )
+        
+        await ReInscription(membre_voulantSIncrire)
+    
+    
+    else :
+        await fct_Inscription(membre_voulantSIncrire)
+
+
+
+@fDis.bot.command()
+async def Inscription (ctx) :
+    await cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def inscription (ctx) :
+    await cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def I (ctx) :
+    await cmd_Inscription(ctx.author)
+    
+@fDis.bot.command()
+async def i (ctx) :
+    await cmd_Inscription(ctx.author)

@@ -11,18 +11,18 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ8                                04/06/2021
+Version Delta                             δ9                                04/06/2021
 
 """
 
-version = "δ8"
+version = "δ9"
 
 
-import MegaLG_Test
+#import MegaLG_Test
 
 # Phase
-import MegaLG_P1    as fP1
-import MegaLG_P23   as fP23
+import phase_1    as fP1
+import phase_2    as fP23
 
 
 # Niveau D

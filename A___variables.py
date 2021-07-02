@@ -66,7 +66,7 @@ Juge_nbExil      = 2
 vote_aucunHabChoisi_meutreHasard = False
 vote_maire_voixBonus             = 1
 
-partiePdt_Weekend                = True
+partiePdt_Weekend                = False
 
 famNomb_peuventParler_Journee    = True
 

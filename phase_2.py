@@ -748,13 +748,15 @@ async def DP_3 (ctx):
 
 async def attente_lancementTour() :
         
-    m = v.maintenant()
+    m        = v.maintenant()
     
-    tempsAtt            = v.nuit_hDeb  -  m
+    tempsAtt = v.nuit_hDeb - m
 
+# =============================================================================
 #### ||| Variable ||| Si on est dans le WE, te temps d'attente augmente
+# =============================================================================
 
-    if not v.partiePdt_Weekend :
+    if not v.partiePdt_Weekend  and  m.weekday() in (5,6) :
         
         await fDis.channelHistorique.send("Nous sommes Samedi ou Dimanche, la fonction Lancement à été stoppée dans son élan !")
         
@@ -766,9 +768,13 @@ async def attente_lancementTour() :
     
     
     
-#### Attente du début de la nuit pour lancer la fontion Tour 
     
-    intervalMaintenance = v.timedelta(minutes = 30) #v.nuit_hDeb  -  (v.tour2Vote_hFin - v.timedelta(days = 1))   # 30 mins
+    
+# =============================================================================
+#### Attente du début de la nuit pour lancer la fontion Tour 
+# =============================================================================
+    
+    intervalMaintenance = v.timedelta(minutes = 30) # v.nuit_hDeb  -  (v.tour2Vote_hFin - v.timedelta(days = 1))   # 30 mins
     
     
     
@@ -778,7 +784,7 @@ async def attente_lancementTour() :
         
         tempsAtt_Plantage = tempsAtt - (intervalMaintenance - v.timedelta(minutes = 5))
         
-        await fDis.channelHistorique.send(f"Attente de {tempsAtt_Plantage} avant le plantage")
+        await fDis.channelHistorique.send(f"Attente de {tempsAtt_Plantage} avant le plantage.")
         await asyncio.sleep(tempsAtt_Plantage.seconds)
         
         fTou.plantage()

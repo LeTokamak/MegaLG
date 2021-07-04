@@ -68,7 +68,8 @@ vote_maire_voixBonus             = 1
 
 partiePdt_Weekend                = False
 
-famNomb_peuventParler_Journee    = True
+FN_peuventParler_pdt_Journee     = True
+LG_peuventParler_pdt_Journee     = True
 
 
 # %% Variables de la Partie

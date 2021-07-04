@@ -491,7 +491,7 @@ async def fctNoct_FamilleNombreuse (membreFN, village):
     
 ### Accès aux channels
     await village.salonFamilleNb  .set_permissions ( membreFN.member , read_messages = True , send_messages = True )
-    await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = True )
+    await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = True                        )
     
 ### Attente
     msgAtt = await fDis.channelAttente.send(contenuMsgFamiNom_Attente)
@@ -501,8 +501,8 @@ async def fctNoct_FamilleNombreuse (membreFN, village):
             
 ### Fin de la nuit
 
-    await village.salonFamilleNb  .set_permissions ( membreFN.member , read_messages = True , send_messages = v.famNomb_peuventParler_Journee )
-    await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = v.famNomb_peuventParler_Journee )
+    await village.salonFamilleNb  .set_permissions ( membreFN.member , read_messages = True , send_messages = v.FN_peuventParler_pdt_Journee )
+    await village.vocalFamilleNb  .set_permissions ( membreFN.member , read_messages = v.FN_peuventParler_pdt_Journee                        )
 
 
 

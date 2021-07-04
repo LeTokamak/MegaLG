@@ -1908,8 +1908,8 @@ async def Conseil_LG (LoupGarou, village):
     village.voteLG_EnCours = False
     
     await village.salonVoteLG   .set_permissions( LoupGarou.member , read_messages = False , send_messages = False )
-    await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = False )
-    await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = False                         )
+    await village.salonConseilLG.set_permissions( LoupGarou.member , read_messages = True  , send_messages = v.LG_peuventParler_pdt_Journee )
+    await village.vocalConseilLG.set_permissions( LoupGarou.member , read_messages = v.LG_peuventParler_pdt_Journee                         )
     
     
 ### Fin de l'attente

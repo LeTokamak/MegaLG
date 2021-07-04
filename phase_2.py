@@ -749,19 +749,26 @@ async def DP_3 (ctx):
 async def attente_lancementTour() :
         
     m = v.maintenant()
+    
+    tempsAtt            = v.nuit_hDeb  -  m
 
-#### ||| Variable ||| Si on est dans le WE on ne lance pas la fonction Tour
+#### ||| Variable ||| Si on est dans le WE, te temps d'attente augmente
 
-    if not v.partiePdt_Weekend  and  m.weekday() in (4,5) :
-        await fDis.channelHistorique.send("Nous somme Vendredi ou Samedi, la fonction Lancement à été stoppée dans son élan !")
-        return None
+    if not v.partiePdt_Weekend :
+        
+        await fDis.channelHistorique.send("Nous sommes Samedi ou Dimanche, la fonction Lancement à été stoppée dans son élan !")
+        
+        if   m.weekday() == 5 :
+            tempsAtt += v.timedelta(days = 2)
+            
+        elif m.weekday() == 6 :
+            tempsAtt += v.timedelta(days = 1)
     
     
     
 #### Attente du début de la nuit pour lancer la fontion Tour 
-
-    tempsAtt            = v.nuit_hDeb  -  m
-    intervalMaintenance = v.nuit_hDeb  -  (v.tour2Vote_hFin - v.timedelta(days = 1))   # 30 mins
+    
+    intervalMaintenance = v.timedelta(minutes = 30) #v.nuit_hDeb  -  (v.tour2Vote_hFin - v.timedelta(days = 1))   # 30 mins
     
     
     

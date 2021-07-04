@@ -756,14 +756,14 @@ async def attente_lancementTour() :
 #### ||| Variable ||| Si on est dans le WE, te temps d'attente augmente
 # =============================================================================
 
-    if not v.partiePdt_Weekend  and  m.weekday() in (5,6) :
-        
-        await fDis.channelHistorique.send("Nous sommes Samedi ou Dimanche, la fonction Lancement à été stoppée dans son élan !")
+    if not v.partiePdt_Weekend :
         
         if   m.weekday() == 5 :
+            await fDis.channelHistorique.send("On est Samedi !")
             tempsAtt += v.timedelta(days = 2)
             
         elif m.weekday() == 6 :
+            await fDis.channelHistorique.send("On est Dimanche !")
             tempsAtt += v.timedelta(days = 1)
     
     

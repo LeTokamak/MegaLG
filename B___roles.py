@@ -457,6 +457,8 @@ def imageRole (info, estUnHomme):
 
 
 
+# %% Commande d'envoie des Rôles
+
 async def envoie_Embeds_TousLesRoles ():
     """
     Fonction envoyant les embeds de tous les Rôles dans fDis.channelRoles
@@ -514,3 +516,16 @@ async def envoie_Embeds_TousLesRoles ():
     
     if role_LGBlanc   [clefProp] != 0 : await fDis.channelRoles.send( embed = role_LGBlanc   [clefEmbed] )
     if role_EnfantSauv[clefProp] != 0 : await fDis.channelRoles.send( embed = role_EnfantSauv[clefEmbed] )
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def EmbedsRoles (ctx):
+    
+    await fDis.effacerMsg(ctx.channel)
+    await fDis.effacerMsg(fDis.channelRoles, 10**9)
+    
+    await envoie_Embeds_TousLesRoles()

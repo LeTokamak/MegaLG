@@ -696,3 +696,58 @@ async def evt_ChangementGroupe(membre, message_id, strEmoji):
                                      fGoo.page1_InfoJoueurs          )
         
         await autorisation_SalonsGrp(membre, numeroGrp)
+
+
+
+
+
+# %%% Création d'un nouveau Groupe 
+
+@fDis.bot.command()
+async def Creation_NouvGroupe(ctx):
+    await com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def creation_nouvgroupe(ctx):
+    await com_NouveauGroupe(ctx)
+    
+@fDis.bot.command()
+async def CreationNouvGroupe(ctx):
+    await com_NouveauGroupe(ctx)
+
+@fDis.bot.command()
+async def CNG(ctx):
+    await com_NouveauGroupe(ctx)
+
+@fDis.bot.command()
+async def cng(ctx):
+    await com_NouveauGroupe(ctx)
+
+
+
+
+
+# %% Events
+
+async def reaction_Groupe():
+    
+    def verifGroupe(payload):
+        salon        = fDis.serveurMegaLG.get_channel(payload.channel_id)
+
+#### Si la réaction n'a pas été faite dans un salon du serveur
+        if salon == None :
+            return False
+
+#### Sinon la réaction a été faite dans un salon du serveur
+        else :
+            verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
+            
+            verifPhase   = v.phaseEnCours == v.phase1
+            verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
+        
+            return verifUser  and  verifPhase and verifCategCh
+    
+#### Boucle infini
+    while True :
+        payload = await fDis.bot.wait_for('raw_reaction_add', check = verifGroupe)
+        await evt_ChangementGroupe(payload.member, payload.message_id, str(payload.emoji))

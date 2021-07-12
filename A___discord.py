@@ -88,7 +88,6 @@ def def_userAdmins ():
 # %%% Category Channels
 
 CategoryChannel_GestionGrp = None
-Categorie_Village0 = None
 
 def def_categoryChannelsMegaLG ():
     """
@@ -97,11 +96,9 @@ def def_categoryChannelsMegaLG ():
     Elle doit être appelé lors du on_ready() pour définir les categoryChannels du serveur, une fois que le bot est connecté 
     """
     
-    global CategoryChannel_GestionGrp, Categorie_Village0
+    global CategoryChannel_GestionGrp
     
     CategoryChannel_GestionGrp = bot.get_channel        (818582430100750376)
-    
-    Categorie_Village0         = bot.get_channel        (769996371246710804)
 
 
 
@@ -121,20 +118,6 @@ channelGalaxie        = None
 channelEtoile         = None
 channelPlanete        = None
 channelLune           = None
-
-"""
-channelRapport        = None
-channelCimetiere      = None
-channelBucher         = None
-channelDebat          = None
-vocalDebat            = None
-
-channelVotesLG        = None
-channelLoupsGarous    = None
-vocalLoupsGarous      = None
-channelFamilleNom     = None
-vocalFamilleNom       = None
-"""
 
 channelHistorique     = None
 channelAttente        = None
@@ -156,17 +139,25 @@ def def_channelsMegaLG ():
     
     
     
-#### Infos
+#### Explications
     
-    global channelInfos, channelRoles, channelRegles, channelAmeliorations
+    global channelInfos, channelRoles, channelRegles
     
     channelRegles         = bot.get_channel        (810553761164558346)
     channelInfos          = bot.get_channel        (770001767634305115)
     channelRoles          = bot.get_channel        (770002724074291212)
+    
+    
+    
+#### Modifs
+    
+    global channelBugs, channelAmeliorations
+    
+    channelBugs           = bot.get_channel        (841694226206294036) 
     channelAmeliorations  = bot.get_channel        (810554730383671297)
-
-
-
+    
+    
+    
 #### Gestion des Groupes
     
     global channelFctmentGrp, channelGalaxie, channelEtoile, channelPlanete, channelLune
@@ -176,34 +167,9 @@ def def_channelsMegaLG ():
     channelEtoile         = bot.get_channel        (818580520765751296)
     channelPlanete        = bot.get_channel        (818580935380303903)
     channelLune           = bot.get_channel        (818581474856140841)
-
-
-    """
-#### Place du Village
-
-    global channelRapport, channelCimetiere, channelBucher,  channelDebat, vocalDebat
     
-    channelRapport        = bot.get_channel        (780161660362293249)
-    channelCimetiere      = bot.get_channel        (771492797886103552)
-    channelBucher         = bot.get_channel        (842037427937738822)
-    channelDebat          = bot.get_channel        (770000300349980722)
-    vocalDebat            = bot.get_channel        (769495045308940292)
-
-
-
-#### Forêt Nocturne
-
-    global channelVotesLG, channelLoupsGarous, vocalLoupsGarous, channelFamilleNom, vocalFamilleNom
-
-    channelVotesLG        = bot.get_channel        (784072098612117555)
-    channelLoupsGarous    = bot.get_channel        (770013706523770880)
-    vocalLoupsGarous      = bot.get_channel        (770014246129893386)
     
-    channelFamilleNom     = bot.get_channel        (774762395318747168)
-    vocalFamilleNom       = bot.get_channel        (774763711856508928)
-    """
-
-
+    
 #### Historique
 
     global channelHistorique, channelAttente, channelGifVilebrequin
@@ -213,11 +179,8 @@ def def_channelsMegaLG ():
     channelGifVilebrequin = bot.get_channel        (818580306318721055) 
 
 
-#### Ajouts
-    
-    global channelBugs
 
-    channelBugs           = bot.get_channel        (841694226206294036) 
+
 
 
 

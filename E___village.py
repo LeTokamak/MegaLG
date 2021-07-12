@@ -39,159 +39,6 @@ scrutin_En2Tour_2emT  = "Vote en 2 Tours - 2ème Tour"
 
 
 
-def depouillement (village, typeDeSuffrage = None):
-    """
-    La fonction depouillement va :
-          - Les trier, les compter et ranger par ordre croissant les résultats
-          - Construire un message pour envoyer les résultats
-          
-    Elle prend le paramettre typeDeSuffrage, qui peut valoir 
-        scrutin_ElectionMaire,
-        scrutin_En1Tour      ,
-        scrutin_En2Tour_1erT ,
-        scrutin_En2Tour_2emT ou
-        'LG'
-    """
-    
-    symbolesVote = "⬢"
-    
-#### Type de Suffrage
-    
-    if typeDeSuffrage == None :
-        typeDeSuffrage = village.typeScrutin
-    
-    
-    
-#### Rassemblement de tout les votes
-    """
-    if typeDeSuffrage == "LG" :
-        votes = list( village.votesConseilLG )
-    else : 
-        votes = village.recolteBulletins()
-    """
-    
-    if typeDeSuffrage == "LG" :
-        votes = village.recolteBulletins(nbVoteParHab_egal_1 = True)
-    else : 
-        votes = village.recolteBulletins()
-    
-# --- votes = [1, 2, 2, 4, 5, 4, 4, 1, 2, 4, 2, 1, 1, 5, 4, 2, 4, 2, 4, 5, 4, 3, 1, 5, 2, 4, 4]
-    
-    votes.sort()
-    
-# --- votes = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
-    
-    
-#### Nettoyages des votes (exclusion des 0, des personnes n'étant pas dans le village et des personnes non accusées)
-    
-    votes     = [ v   for v in votes   if v != 0                                         ]
-    votes     = [ v   for v in votes   if fHab.habitant_avec(v).numVlg == village.numero ]
-    
-    if typeDeSuffrage == scrutin_En2Tour_2emT :
-        votes = [ v   for v in votes   if fHab.habitant_avec(v) in village.accuses       ]
-
-    
-    
-    
-    
-    
-    nbSuffrages = len(votes)
-    
-# =============================================================================
-#### --- Cas 1 : Si personne n'a voté ---
-# =============================================================================
-
-    if nbSuffrages == 0 :
-        msgResultat    = "```Personne n'a voté```"
-        resultatsTries = []
-    
-    
-    
-# =============================================================================
-#### --- Cas 2 : S'il y a des voix à comptabiliser ---
-# =============================================================================
-    
-    else :
-        
-#### Comptage des votes, création de la variable resultats
-        
-        resultats = [ [votes[0], votes.count(votes[0])] ]
-        
-        for v in votes :
-    
-##  Si l'on n'a pas déjà compté le nombre de voix que cette personne a reçu, alors on le compte
-    
-            if resultats[-1][0] != v:
-                resultats.append( [v, votes.count(v)] )
-    
-# --- resultats = [ [1,5] , [2,7] , [3,1] , [4,10] , [5,4] ]
-        
-        
-        
-        
-        
-#### Rangement des resultats (1er, 2eme, 3eme...)
-        
-        resultatsTries = []
-        
-        while len(resultats) > 0 :
-            maxReslt = resultats[0]
-            
-            for i in resultats[1:] :
-                if i[1] > maxReslt[1] :
-                    maxReslt = i
-            
-            resultatsTries.append(maxReslt)
-            resultats.remove(maxReslt)
-            
-# --- resultatsTries = [  [4,10] , [2,7] , [1,5] , [5,4] , [3,1]  ]
-        
-        
-        
-        
-        
-#### Ecriture du message décrivant les résultats
-        
-### Gestion du vote des LG
-        
-        debutMsgResultat = ""
-        
-        if typeDeSuffrage == "LG":
-            
-##  Verif si Egalité entre 1er et 2eme, alors personne n'est désigné 
-            
-            if len(resultatsTries) > 1  and  resultatsTries[0][1] == resultatsTries[1][1] :
-                village.matriculeHab_choixConseilLG =  0
-                debutMsgResultat                    =  "Personne n'est designée par le conseil ! (égalité)\n" 
-            
-            else :
-                village.matriculeHab_choixConseilLG =  resultatsTries[0][0]
-                persChoisie                         =  fHab.habitant_avec(village.matriculeHab_choixConseilLG)
-                debutMsgResultat                    = f"**{persChoisie.prenom} {persChoisie.nom}** ({persChoisie.groupe}) est la victime designée par le conseil !\n" 
-        
-        
-### Message de présentation des résultats
-
-        msgResultat = debutMsgResultat + "```py\n"
-        
-        valHexag = resultatsTries[0][1] // 30 + 1
-        
-        for p in resultatsTries :
-            msgResultat += f"{fMeP.AjoutZerosAvant(p[0], 3)} {fMeP.AjoutZerosAvant(p[1], 3, espace = True)} / {nbSuffrages}   "
-            msgResultat +=  (round(p[1]/valHexag) // 10)  *  (10*symbolesVote + " ")
-            msgResultat +=  (round(p[1]/valHexag) %  10)  *      symbolesVote
-            msgResultat +=  "\n"
-        
-        msgResultat += "```"
-        
-        
-        
-    return msgResultat, resultatsTries
-
-
-
-
-
 class Village :
     
     def __init__ (self, numVillage, nom):
@@ -230,8 +77,6 @@ class Village :
         
         self.voteLG_EnCours                = False
         self.matriculeHab_choixConseilLG   = 0
-        #self.votesConseilLG                = []
-        #self.LG_ayant_votes                = []
         self.msgResultatLG                 = None
         
         self.matriculeLGN_quiOntInfecte    = []
@@ -260,10 +105,155 @@ class Village :
         self.exilOrdonne          = False
         self.exilOrdonne_parMaire = False
         self.juges_OrdonantExil   = []
+    
+    
+    
+    
+    
+    def depouillement(self, typeDeSuffrage = None):
+        """
+        La fonction depouillement va :
+              - Les trier, les compter et ranger par ordre croissant les résultats
+              - Construire un message pour envoyer les résultats
+              
+        Elle prend le paramettre typeDeSuffrage, qui peut valoir 
+            scrutin_ElectionMaire,
+            scrutin_En1Tour      ,
+            scrutin_En2Tour_1erT ,
+            scrutin_En2Tour_2emT ou
+            'LG'
+        """
+        
+        symbolesVote = "⬢"
+        
+#### Type de Suffrage
+        
+        if typeDeSuffrage == None :
+            typeDeSuffrage = self.typeScrutin
         
         
-
         
+#### Rassemblement de tout les votes
+        
+        if typeDeSuffrage == "LG" :
+            votes = self.recolteBulletins(nbVoteParHab_egal_1 = True)
+        else : 
+            votes = self.recolteBulletins()
+        
+# --- votes = [1, 2, 2, 4, 5, 4, 4, 1, 2, 4, 2, 1, 1, 5, 4, 2, 4, 2, 4, 5, 4, 3, 1, 5, 2, 4, 4]
+        
+        votes.sort()
+        
+# --- votes = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5]
+        
+        
+#### Nettoyages des votes (exclusion des 0, des personnes n'étant pas dans le village et des personnes non accusées)
+        
+        votes     = [ v   for v in votes   if v != 0                                         ]
+        votes     = [ v   for v in votes   if fHab.habitant_avec(v).numVlg == self.numero ]
+        
+        if typeDeSuffrage == scrutin_En2Tour_2emT :
+            votes = [ v   for v in votes   if fHab.habitant_avec(v) in self.accuses       ]
+    
+        
+        
+        nbSuffrages = len(votes)
+        
+# =============================================================================
+#### --- Cas 1 : Si personne n'a voté ---
+# =============================================================================
+    
+        if nbSuffrages == 0 :
+            msgResultat    = "```Personne n'a voté```"
+            resultatsTries = []
+        
+        
+        
+# =============================================================================
+#### --- Cas 2 : S'il y a des voix à comptabiliser ---
+# =============================================================================
+        
+        else :
+            
+#### Comptage des votes, création de la variable resultats
+            
+            resultats = [ [votes[0], votes.count(votes[0])] ]
+            
+            for v in votes :
+        
+##  Si l'on n'a pas déjà compté le nombre de voix que cette personne a reçu, alors on le compte
+        
+                if resultats[-1][0] != v:
+                    resultats.append( [v, votes.count(v)] )
+        
+# --- resultats = [ [1,5] , [2,7] , [3,1] , [4,10] , [5,4] ]
+            
+            
+            
+            
+            
+#### Rangement des resultats (1er, 2eme, 3eme...)
+            
+            resultatsTries = []
+            
+            while len(resultats) > 0 :
+                maxReslt = resultats[0]
+                
+                for i in resultats[1:] :
+                    if i[1] > maxReslt[1] :
+                        maxReslt = i
+                
+                resultatsTries.append(maxReslt)
+                resultats.remove(maxReslt)
+                
+# --- resultatsTries = [  [4,10] , [2,7] , [1,5] , [5,4] , [3,1]  ]
+            
+            
+            
+            
+            
+#### Ecriture du message décrivant les résultats
+            
+### Gestion du vote des LG
+            
+            debutMsgResultat = ""
+            
+            if typeDeSuffrage == "LG":
+                
+##  Verif si Egalité entre 1er et 2eme, alors personne n'est désigné 
+                
+                if len(resultatsTries) > 1  and  resultatsTries[0][1] == resultatsTries[1][1] :
+                    self.matriculeHab_choixConseilLG =  0
+                    debutMsgResultat                    =  "Personne n'est designée par le conseil ! (égalité)\n" 
+                
+                else :
+                    self.matriculeHab_choixConseilLG =  resultatsTries[0][0]
+                    persChoisie                         =  fHab.habitant_avec(self.matriculeHab_choixConseilLG)
+                    debutMsgResultat                    = f"**{persChoisie.prenom} {persChoisie.nom}** ({persChoisie.groupe}) est la victime designée par le conseil !\n" 
+            
+            
+### Message de présentation des résultats
+    
+            msgResultat = debutMsgResultat + "```py\n"
+            
+            valHexag = resultatsTries[0][1] // 30 + 1
+            
+            for p in resultatsTries :
+                msgResultat += f"{fMeP.AjoutZerosAvant(p[0], 3)} {fMeP.AjoutZerosAvant(p[1], 3, espace = True)} / {nbSuffrages}   "
+                msgResultat +=  (round(p[1]/valHexag) // 10)  *  (10*symbolesVote + " ")
+                msgResultat +=  (round(p[1]/valHexag) %  10)  *      symbolesVote
+                msgResultat +=  "\n"
+            
+            msgResultat += "```"
+            
+            
+            
+        return msgResultat, resultatsTries
+    
+    
+    
+# %% Salons et rôles discords
+    
     async def creation_roleEtSalons (self):
         
 # =============================================================================
@@ -353,6 +343,47 @@ class Village :
     
     
     
+    def ecriture_GoogleSheet(self):
+        
+# =============================================================================
+#### Création du dictionnaire correspondant à la ligne du Village
+# =============================================================================
+        
+        ligneVillage = {fGoo.clefVlg_numVillage : self.numero,
+                        fGoo.clefVlg_Nom        : self.nom    }
+
+        if v.phaseEnCours in (v.phase2, v.phase3) :
+            ligneVillage[fGoo.clefVlg_idRoleDiscord         ] = self.roleDiscord    .id
+            ligneVillage[fGoo.clefVlg_idRoleDiscord_Mort    ] = self.roleDiscordMort.id
+            
+            ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
+            ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonBucher   .id
+            ligneVillage[fGoo.clefVlg_idSalon_Cimetiere     ] = self.salonCimetiere.id
+            ligneVillage[fGoo.clefVlg_idSalon_Debat         ] = self.salonDebat    .id
+            ligneVillage[fGoo.clefVlg_idSalon_vocDebat      ] = self.vocalDebat    .id
+            
+            ligneVillage[fGoo.clefVlg_idSalon_VoteLG        ] = self.salonVoteLG   .id
+            ligneVillage[fGoo.clefVlg_idSalon_DebatLG       ] = self.salonConseilLG.id
+            ligneVillage[fGoo.clefVlg_idSalon_vocDebatLG    ] = self.vocalConseilLG.id
+            
+            ligneVillage[fGoo.clefVlg_idSalon_FamilleNomb   ] = self.salonFamilleNb.id
+            ligneVillage[fGoo.clefVlg_idSalon_vocFamilleNomb] = self.vocalFamilleNb.id
+        
+        
+# =============================================================================
+#### Recherche du numéro de ligne et remplacement de celle-ci
+# =============================================================================
+        
+        igne, numeroLigne = fGoo.ligne_avec(self.numero,
+                                            fGoo.clefVlg_numVillage,
+                                            fGoo.donneeGoogleSheet(fGoo.page_Villages))
+        
+        fGoo.remplacerLigne(ligneVillage, numeroLigne, fGoo.page_Villages)
+    
+    
+    
+    
+    
     async def changementNom (self, nouveauNom):
         
         self.nom = nouveauNom
@@ -406,51 +437,12 @@ class Village :
         fGoo.remplacerVal_ligne_avec( self.nom   , fGoo.clefVlg_Nom       ,
                                       self.numero, fGoo.clefVlg_numVillage,
                                       fGoo.page_Villages                    )
-
     
-
-
-
-    def ecriture_GoogleSheet(self):
-        
-# =============================================================================
-#### Création du dictionnaire correspondant à la ligne du Village
-# =============================================================================
-        
-        ligneVillage = {fGoo.clefVlg_numVillage : self.numero,
-                        fGoo.clefVlg_Nom        : self.nom    }
-
-        if v.phaseEnCours in (v.phase2, v.phase3) :
-            ligneVillage[fGoo.clefVlg_idRoleDiscord         ] = self.roleDiscord    .id
-            ligneVillage[fGoo.clefVlg_idRoleDiscord_Mort    ] = self.roleDiscordMort.id
-            
-            ligneVillage[fGoo.clefVlg_idSalon_Rapport       ] = self.salonRapport  .id
-            ligneVillage[fGoo.clefVlg_idSalon_Bucher        ] = self.salonBucher   .id
-            ligneVillage[fGoo.clefVlg_idSalon_Cimetiere     ] = self.salonCimetiere.id
-            ligneVillage[fGoo.clefVlg_idSalon_Debat         ] = self.salonDebat    .id
-            ligneVillage[fGoo.clefVlg_idSalon_vocDebat      ] = self.vocalDebat    .id
-            
-            ligneVillage[fGoo.clefVlg_idSalon_VoteLG        ] = self.salonVoteLG   .id
-            ligneVillage[fGoo.clefVlg_idSalon_DebatLG       ] = self.salonConseilLG.id
-            ligneVillage[fGoo.clefVlg_idSalon_vocDebatLG    ] = self.vocalConseilLG.id
-            
-            ligneVillage[fGoo.clefVlg_idSalon_FamilleNomb   ] = self.salonFamilleNb.id
-            ligneVillage[fGoo.clefVlg_idSalon_vocFamilleNomb] = self.vocalFamilleNb.id
-        
-        
-# =============================================================================
-#### Recherche du numéro de ligne et remplacement de celle-ci
-# =============================================================================
-        
-        igne, numeroLigne = fGoo.ligne_avec(self.numero,
-                                            fGoo.clefVlg_numVillage,
-                                            fGoo.donneeGoogleSheet(fGoo.page_Villages))
-        
-        fGoo.remplacerLigne(ligneVillage, numeroLigne, fGoo.page_Villages)
     
-
-
-
+    
+    
+    
+# %% Habitants
     
     def redef_habitants(self) :
         self.habitants = []
@@ -462,7 +454,6 @@ class Village :
                 if hab.estMaire :
                     self.maire = hab
                 
-    
     
     
     
@@ -609,6 +600,8 @@ class Village :
     
     
     
+# %% Exils et Dissolution
+    
     async def dissolution(self) :
         
 
@@ -633,7 +626,7 @@ class Village :
             
             for hab in self.habitants :
                 if not hab.estMorte :
-                    await exil(hab, nouvVillage, ancienVillage = self)
+                    await exil_dans_nouvVillage(hab, nouvVillage, ancienVillage = self)
                     await asyncio.sleep(0.1)
             
             
@@ -656,6 +649,8 @@ class Village :
     
     async def gestion_mort_maire(self) :
         pass
+    
+    
     
     
     
@@ -1163,7 +1158,7 @@ class Village :
         
         self.typeScrutin = scrutin_ElectionMaire
         
-        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        contenuMsg_resultat, self.resultatVote = self.depouillement()
         self.msgResultat = await self.salonBucher.send("Voici les résultats du vote :\n" + contenuMsg_resultat)
         
         
@@ -1435,7 +1430,7 @@ class Village :
         
         self.typeScrutin = scrutin_En1Tour
         
-        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        contenuMsg_resultat, self.resultatVote = self.depouillement()
         self.msgResultat = await self.salonBucher.send("Voici les résultats du vote :\n" + contenuMsg_resultat)
         
         
@@ -1467,7 +1462,7 @@ class Village :
         
         self.typeScrutin = scrutin_En2Tour_1erT
         
-        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        contenuMsg_resultat, self.resultatVote = self.depouillement()
         self.msgResultat = await self.salonBucher.send("Voici les résultats du 1er tour :\n" + contenuMsg_resultat)
         
         
@@ -1560,7 +1555,7 @@ class Village :
         
         self.typeScrutin = scrutin_En2Tour_2emT
         
-        contenuMsg_resultat, self.resultatVote = depouillement(self)
+        contenuMsg_resultat, self.resultatVote = self.depouillement()
         self.msgResultat = await self.salonBucher.send("Voici les résultats du 2ème tour :\n" + contenuMsg_resultat)
     
 #### Boucle de vote
@@ -1828,7 +1823,7 @@ def village_avec (info, type_dinfo):
 
     
 
-async def exil(habitant, nouvVillage, ancienVillage = None):
+async def exil_dans_nouvVillage(habitant, nouvVillage, ancienVillage = None):
     """
     Cette fonction enlève l'habitant de son ancien village et le place dans un nouveau
     """
@@ -1919,78 +1914,107 @@ async def Conseil_LG (LoupGarou, village):
 
 
 
-async def evt_voteLG(memberLG, contenuMsg):
-    
-    habLG   = fHab.habitant_avec( memberLG.id            )
-    village =       village_avec( habLG.numVlg, "numero" )
-    
-#### Essaye de int le msg
-    try :    
-        matricule = int(contenuMsg)
-    except : 
-        matricule = None
-    
-    
-    
-#### Si le matricule correspond à quelqu'un en vie
-    if village.voteLG_EnCours  and  fHab.habitant_avec(matricule) != None :
-        
-        """
-#   Si ce LG a déjà voté, remplacement du vote
-        
-        if habLG.matri in village.LG_ayant_votes :
-            village.votesConseilLG[ village.LG_ayant_votes.index(habLG.matri) ] = matricule
-        
-#   Si ce LG n'a pas voté, ajout du vote
-        
-        else :
-            village.LG_ayant_votes.append(habLG.matri)
-            village.votesConseilLG.append(matricule)
-        """
-        
-        habLG.choixVote = matricule
-        
-#   Mise à Jour des Résultats
-        
-        contenuMsg_resultat, x = depouillement(village, 'LG')
-        
-        await village.msgResultatLG.edit(content = contenuMsg_resultat)
+# %% === Event - Village ===
 
-
-
-
-
-# %% Event Vote du Village
-
-async def evt_voteVlg (memberVlg, contenuMsg):
+async def fct_vote(member, contenuMsg):
+    """
+    Fonction prenant gérant le vote 
+    """
     
-    habVlg  = fHab.habitant_avec( memberVlg.id            )
+    habVlg  = fHab.habitant_avec( member.id            )
     village =       village_avec( habVlg.numVlg, "numero" )
     
-    if village.typeScrutin != None :
+    if village.typeScrutin != None  or  village.voteLG_EnCours:
         
 #### Essaye de int le msg
+        
         try :
             matriculeHab_Choisi = int(contenuMsg)
         except :
             matriculeHab_Choisi = None
         
         
+        
 #### Si le matricule correspond à quelqu'un en vie
+        
         if fHab.habitant_avec( matriculeHab_Choisi ) != None :
             
             habVlg.choixVote = matriculeHab_Choisi
             
-            village.msgHistorique_votes = await fDis.ajoutMsg(village.msgHistorique_votes, f"\n   - {habVlg.user.mention} vote {habVlg.nbVote} fois pour {habVlg.choixVote}\n") 
+            if   village.typeScrutin != None : 
+                
+                village.msgHistorique_votes = await fDis.ajoutMsg(village.msgHistorique_votes, f"\n   - {habVlg.user.mention} vote {habVlg.nbVote} fois pour {habVlg.choixVote}\n") 
+                
+                contenuMsg_resultat, village.resultatVote = village.depouillement()
+                await village.msgResultat   .edit(content = "Voici les résultats du vote :\n" + contenuMsg_resultat)
             
-            contenuMsg_resultat, village.resultatVote = depouillement(village)
-            await village.msgResultat.edit(content = "Voici les résultats du vote :\n" + contenuMsg_resultat)
+            
+            elif village.voteLG_EnCours :
+                
+                contenuMsg_resultat, x                    = village.depouillement('LG')
+                await village.msgResultatLG .edit(content = contenuMsg_resultat)
 
 
 
 
 
-# %% Commandes Village
+# %%% Vote du Village
+
+async def message_voteVillage():
+    
+    def verifVoteVillage(message):
+        verifSalon, verifUser = (False, False)
+        
+        verifPhase = v.phaseEnCours == v.phase3
+        
+        if fDis.verifServeur(message) :
+            verifUser  = fDis.roleJoueurs in message.author.roles
+            
+            if verifUser and verifPhase :
+                verifSalon = village_avec(message.channel.id, 'idSalon_Bucher') != None
+        
+        return verifUser  and  verifPhase and verifSalon
+
+
+    while True :
+        message = await fDis.bot.wait_for('message', check = verifVoteVillage)
+        await fDis.effacerMsg (message.channel)
+        await fct_vote(message.author, message.content)
+        
+        
+
+
+
+# %%% Vote du Conseil des Loups-Garous
+        
+async def message_voteLoupGarou():
+    
+    def verifVoteLG(message):
+        verifSalon, verifUser = (False, False)
+        
+        verifPhase = v.phaseEnCours == v.phase3
+        
+        if fDis.verifServeur(message) :
+            verifUser  = fDis.roleJoueurs in message.author.roles
+            
+            if verifUser and verifPhase :
+                verifSalon = village_avec(message.channel.id, 'idSalon_VoteLG') != None
+        
+        return verifUser  and  verifPhase and verifSalon
+
+
+    while True :
+        message = await fDis.bot.wait_for('message', check = verifVoteLG)
+        await fDis.effacerMsg(message.channel)
+        await fct_vote(message.author, message.content)
+
+
+
+
+
+# %% === Commandes - Village (Joueurs) ===
+
+# %%% Changement du nom du village (reservée au Maire)
 
 async def cmd_changementNomVillage(memberVlg, tupleNom):
     
@@ -2011,6 +2035,20 @@ async def cmd_changementNomVillage(memberVlg, tupleNom):
         await memberVlg.send("**ERREUR** - Seul un maire peut changer le nom de son village !")
 
 
+@fDis.bot.command()
+async def Renommage(ctx, *tupleNom):
+    await cmd_changementNomVillage(ctx.author, tupleNom)
+
+
+@fDis.bot.command()
+async def renommage(ctx, *tupleNom):
+    await cmd_changementNomVillage(ctx.author, tupleNom)
+
+
+
+
+
+# %%% Vote
 
 async def cmd_vote(memberVlg, matricule):
     
@@ -2023,12 +2061,26 @@ async def cmd_vote(memberVlg, matricule):
     verif_EnfSau = habVlg.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(habVlg.pereProtecteur) == None
             
     if village.voteLG_EnCours  and  (verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau) :
-        await evt_voteLG(memberVlg, matricule)
+        await fct_vote(memberVlg, matricule)
         
     else :
-        await evt_voteVlg(memberVlg, matricule)
+        await fct_vote(memberVlg, matricule)
+
+
+@fDis.bot.command()
+async def Vote(ctx, matricule):
+    await cmd_vote(ctx.author, matricule)
     
     
+@fDis.bot.command()
+async def vote(ctx, matricule):
+    await cmd_vote(ctx.author, matricule)
+
+    
+
+    
+
+# %%% Exil (reservée aux Juges et au Maire)
 
 async def cmd_demandeExilVote (member) :
     
@@ -2037,7 +2089,7 @@ async def cmd_demandeExilVote (member) :
 #### Cas ou un maire est aussi juge
 
     if hab.estMaire  and  (hab.role == fRol.role_Juge  and  hab.nbExilRest >= 0):
-        contenuMsg_Maire_ou_Juge  = "Vous êtes à la fois Maire (🎖️) et Juge (⚖️), sous quel rôle souhaitez-vous exiler la victime du village ? \n> *Choisissez le ⚫  pour annuler l'exil.*" 
+        contenuMsg_Maire_ou_Juge  = "Vous êtes à la fois Maire (🎖️) et Juge (⚖️), sous quel rôle souhaitez-vous exiler la victime du village ?\n> *Choisissez le ⚫  pour annuler l'exil.*" 
         emojisEtReturns           = [["🎖️", ("Maire", False)], ["⚖️", ("Juge", False)], ["⚫", (None, True)]]
         
         message_Maire_ou_Juge     = await member.send(contenuMsg_Maire_ou_Juge)
@@ -2080,5 +2132,155 @@ async def cmd_demandeExilVote (member) :
         else :
             vlg.juges_OrdonantExil.append(hab)
             await fDis.channelHistorique.send(f"Le **{hab.matri}** a décidé d'exiler l'habitant désigné par le conseil.")
+
+
+@fDis.bot.command()
+async def Exil(ctx):
+    await cmd_demandeExilVote(ctx.author)
+
+
+@fDis.bot.command()
+async def exil(ctx):
+    await cmd_demandeExilVote(ctx.author)
+
+
+
+
+
+# %% === Commandes - Village (Admins) ===
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def SupprTousVlg (ctx):
+    
+    redef_villagesExistants()
+    
+    for vlg in TousLesVillages :
+        
+        await vlg.salonRapport   .delete()
+        await vlg.salonCimetiere .delete()
+        await vlg.salonBucher    .delete()
+        await vlg.salonDebat     .delete()
+        await vlg.vocalDebat     .delete()
+        
+        await vlg.salonVoteLG    .delete()
+        await vlg.salonConseilLG .delete()
+        await vlg.vocalConseilLG .delete()
+        
+        await vlg.salonFamilleNb .delete()
+        await vlg.vocalFamilleNb .delete()
+        
+        await vlg.categorie      .delete()
+        
+        await vlg.roleDiscord    .delete()
+        await vlg.roleDiscordMort.delete()
+
+
+
+
+
+# %%% Maintenance
+     
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Meutre (ctx, matricule_hab_tue):
+
+    if v.phaseEnCours == v.phase3 :
+
+        hab_tue = fHab.habitant_avec(int(matricule_hab_tue))
+        
+        await hab_tue.Tuer()
+        await fDis.channelHistorique.send(f"{hab_tue.user.mention}  |  {hab_tue.matri} {hab_tue.prenom} {hab_tue.nom} - ( {hab_tue.groupe} ) vient d'être tué")
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Sauvetage (ctx, matricule_hab_sauv):
+    
+    if v.phaseEnCours == v.phase3 :
+        
+        hab_sauv = fHab.habitant_avec(int(matricule_hab_sauv))
+        village  = village_avec(hab_sauv.numVlg, "numero")
+        
+        village.matriculeHab_protegeSalvat.append(int(matricule_hab_sauv))
+        await fDis.channelHistorique.send(f"{matricule_hab_sauv} vient d'être protégé !")
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Rapport_TousLesVillages (ctx):
+
+    if v.phaseEnCours in (v.phase2, v.phase3, v.phase4) :
+        
+        await fHab.redef_TousLesHabitants()
+        for vlg in TousLesVillages :
+            await vlg.rapportMunicipal()
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def Amoureux (ctx, matricule1, matricule2):
+    
+    mat_amour1 = int(matricule1)
+    mat_amour2 = int(matricule2)
+    
+    fGoo.ajoutVal_cellule_avec( f"A{matricule2} ", fGoo.clef_caractJoueur ,
+                                mat_amour1       , fGoo.clef_Matricule    ,
+                                fGoo.page1_InfoJoueurs                     )
+    
+    fGoo.ajoutVal_cellule_avec( f"A{matricule1} ", fGoo.clef_caractJoueur ,
+                                mat_amour2       , fGoo.clef_Matricule    ,
+                                fGoo.page1_InfoJoueurs                     )
+            
+    pers1 = fHab.habitant_avec(mat_amour1)
+    pers2 = fHab.habitant_avec(mat_amour2)
+    
+    await pers1.user.send(f"Vous êtes amoureux de {pers2.matri}  |  {pers2.prenom} {pers2.nom} {pers2.groupe}")
+    await pers2.user.send(f"Vous êtes amoureux de {pers1.matri}  |  {pers1.prenom} {pers1.nom} {pers1.groupe}")
+    
+    await fHab.redef_TousLesHabitants()
     
     
+    
+    
+"""
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def AmoureuxAlea (ctx):
+    
+    await fHab.redef_TousLesHabitants()
+    
+    Celibs = []
+    
+    for pers in fPer.ToutesLesPersonnes :
+        if not pers.estAmoureux :
+            Celibs.append(pers)
+    
+    while len(Celibs) >= 2 : 
+    
+        pers1 = fMeP.rd.choice(Celibs)
+        pers2 = fMeP.rd.choice(Celibs)
+        
+        Celibs.remove(pers1)
+        Celibs.remove(pers2)
+        
+        fGoo.ajoutVal_cellule_avec( f"A{pers2.matri} ", fGoo.clef_caractJoueur ,
+                                    pers1.matri       , fGoo.clef_Matricule    ,
+                                    fGoo.page1_InfoJoueurs                      )
+    
+        fGoo.ajoutVal_cellule_avec( f"A{pers1.matri} ", fGoo.clef_caractJoueur ,
+                                    pers2.matri       , fGoo.clef_Matricule    ,
+                                    fGoo.page1_InfoJoueurs                      )
+    
+        await pers1.user.send(f"Vous êtes amoureux de {pers2.matri}  |  {pers2.prenom} {pers2.nom} {pers2.groupe}")
+        await pers2.user.send(f"Vous êtes amoureux de {pers1.matri}  |  {pers1.prenom} {pers1.nom} {pers1.groupe}")
+"""

@@ -367,7 +367,7 @@ async def reaction_Inscription():
         
         verifPhase   = v.phaseEnCours     == v.phase1
         verifMessage = payload.message_id == idMessage_Inscription
-        verifEmoji   = str(payload.emoji) == fDis.Emo_BabyOrange
+        verifEmoji   = str(payload.emoji) == fDis.Emo_BabyYellow
         
         return verifUser  and  verifPhase and verifMessage and verifEmoji
     

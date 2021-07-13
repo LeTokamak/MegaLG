@@ -22,7 +22,6 @@ import asyncio
 
 
 
-
 Emo_departGroupe = "❌"
 
 separateur = "↘"

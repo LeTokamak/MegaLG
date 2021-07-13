@@ -118,6 +118,9 @@ async def on_ready():
         v.nbTours = int( fDis.channelHistorique.topic.split() [-1] [2:] )
         
         await fP3.attente_lancementTour()
+        
+    for grp in fGrp.TousLesGroupes :
+        print(grp.salon)
 
 
 

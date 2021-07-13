@@ -15,19 +15,12 @@ import C___inscription as fIns
 
 
 # Niveau B
-fGrp = fIns.fGrp
-
 
 # Niveau A
-fGoo = fGrp.fGoo
-fDis = fGrp.fDis
-fMeP = fGrp.fMeP
-v    = fGrp.v
+fGoo = fIns.fGoo
+fDis = fIns.fDis
+v    = fIns.v
 
-
-
-rd      = fGrp.rd
-asyncio = fGrp.asyncio
 
 
 async def lancementInscription():
@@ -38,19 +31,21 @@ async def lancementInscription():
     
 #### Message de Ré-Inscription
     
-    msgReInscription = await fDis.channelAccueil.fetch_message(fIns.idMessage_ReInscription)
+    msgReInscription = await fDis.channelAccueil.fetch_message(fIns.idMessage_Inscription)
     await msgReInscription.clear_reactions()
-    await msgReInscription.add_reaction(fDis.Emo_BabyOrange)
+    await msgReInscription.add_reaction(fDis.Emo_BabyYellow)
     
     
 #### Nettoyage de Infos Joueurs
+    
+    nb_Joueurs_anc_partie = len( fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs) )
+    
+    if nb_Joueurs_anc_partie != 0 :
+        fGoo.page1_InfoJoueurs.delete_rows(2, nb_Joueurs_anc_partie + 1)
 
-    pass
-    
-    
+
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def Debut_Phase1 (ctx):
     await lancementInscription()
-

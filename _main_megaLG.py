@@ -56,9 +56,9 @@ asyncio = fHab.asyncio
 # %% Réaction à un message
 
 async def event_reactions():
-    asyncio.create_task( fP0.     ajout_roleArtisans()  , name = "Ajout du rôle d'Artisant" )
-    asyncio.create_task( fP1.fIns.reaction_Inscription(), name = "Inscription"              )
-    asyncio.create_task( fP1.fGrp.reaction_Groupe()     , name = "Changement de Groupe"     )
+    asyncio.create_task( fP0.          ajout_roleArtisans()  , name = "Ajout du rôle d'Artisant" )
+    asyncio.create_task( fP1.fIns.     reaction_Inscription(), name = "Inscription"              )
+    asyncio.create_task( fP1.fIns.fGrp.reaction_Groupe()     , name = "Changement de Groupe"     )
 
 
 

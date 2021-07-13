@@ -596,7 +596,7 @@ async def cmd_modif_infosPerso(user_voulantSIncrire):
         await membre_voulantSIncrire.send( erreurMaJ_pasJoueur )
     
     else :
-        await fct_Inscription(membre_voulantSIncrire)
+        await fct_modif_infosPerso(membre_voulantSIncrire)
 
 
 

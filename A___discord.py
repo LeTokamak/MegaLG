@@ -109,8 +109,11 @@ def def_categoryChannelsMegaLG ():
 channelGeneral        = None
 
 channelRegles         = None
+channelInscription    = None
 channelInfos          = None
 channelRoles          = None
+
+channelBugs           = None
 channelAmeliorations  = None
 
 channelFctmentGrp     = None
@@ -123,7 +126,6 @@ channelHistorique     = None
 channelAttente        = None
 channelGifVilebrequin = None
 
-channelBugs           = None
 
 
 def def_channelsMegaLG ():
@@ -141,9 +143,10 @@ def def_channelsMegaLG ():
     
 #### Explications
     
-    global channelInfos, channelRoles, channelRegles
+    global channelInfos, channelInscription, channelRoles, channelRegles
     
     channelRegles         = bot.get_channel        (810553761164558346)
+    channelInscription    = bot.get_channel        (845186482263293962)
     channelInfos          = bot.get_channel        (770001767634305115)
     channelRoles          = bot.get_channel        (770002724074291212)
     

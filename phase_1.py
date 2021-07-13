@@ -29,11 +29,11 @@ async def lancementInscription():
     await fDis.channelHistorique.edit(topic = v.phase1)   
     
     
-#### Message de Ré-Inscription
+#### Message de Inscription
     
-    msgReInscription = await fDis.channelAccueil.fetch_message(fIns.idMessage_Inscription)
-    await msgReInscription.clear_reactions()
-    await msgReInscription.add_reaction(fDis.Emo_BabyYellow)
+    msgInscription = await fDis.channelInscription.fetch_message(fIns.idMessage_Inscription)
+    await msgInscription.clear_reactions()
+    await msgInscription.add_reaction(fDis.Emo_BabyYellow)
     
     
 #### Nettoyage de Infos Joueurs

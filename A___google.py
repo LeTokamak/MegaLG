@@ -328,6 +328,17 @@ def ajoutVal_cellule_avec(valeur_aAjouter, clefColonne_cellule, info, clefColonn
     ancienneValeur      = typeObjetCellule( page_fichier.cell(numero_ligne, numero_colonne).value )
     
     page_fichier.update_cell(numero_ligne, numero_colonne, str(ancienneValeur + valeur_aAjouter))
+    
+
+
+def modif_groupe_cellules(ligne_init, colonne_init, ligne_finale, colonne_finale, page_fichier, nouvelle_val = ""):
+    cell_list = page_fichier.range( ligne_init  , colonne_init  ,
+                                    ligne_finale, colonne_finale )
+    
+    for cell in cell_list:
+        cell.value = nouvelle_val
+    
+    page_fichier.update_cells(cell_list)
 
 
 

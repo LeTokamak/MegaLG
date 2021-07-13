@@ -48,11 +48,10 @@ import itertools
 
 
 async def finInscription():
-    pass
     
 #### Nettoyage des salons de groupes
     
-    "A programmer"
+    await fGrp.fct_suppression_salons_msgs_idDiscord_TousLesGroupes()
 
 
 

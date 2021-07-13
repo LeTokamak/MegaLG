@@ -463,6 +463,27 @@ async def autorisation_SalonsGrp(membre, numeroGroupe):
 
 
 
+async def fct_suppression_salons_msgs_idDiscord_TousLesGroupes ():
+    
+    for grp in TousLesGroupes :
+       await grp.salon.delete()
+       
+       if grp.rang == 1 :
+           grp.MsgEntree.delete()
+    
+    fGoo.modif_groupe_cellules(2, 3, fGoo.page_Groupes.row_count, 5, fGoo.page_Groupes)
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def supprTousLesGroupes (ctx):
+    await fct_suppression_salons_msgs_idDiscord_TousLesGroupes()
+
+
+
+
+
 # %% Events et commandes liés aux groupes
 
 # %%% Commande de Création de Groupe / Sous-Groupe

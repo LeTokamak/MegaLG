@@ -82,7 +82,7 @@ async def fct_Inscription (membre_aInscrire):
 
     contenuMsg_Sexe  =  "Dans un premier temps, il faut que vous choissiez votre **sexe** !\n"
     contenuMsg_Sexe +=  "> J'utilise cette info pour accorder mes phrases, pour qu'elles soient plus imersivent.\n"
-    contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient "
+    contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient\n"
     contenuMsg_Sexe +=  ">      *Alberte a été retrouvée morte chez elle ce matin...*\n"
     contenuMsg_Sexe +=  "> \n"
     contenuMsg_Sexe +=  "> *Évidemment, rien ne vous empèche de mentir.*\n"
@@ -417,9 +417,9 @@ async def fct_modif_infosPerso(user_a_maj):
 
     emojisEtReturns = [[Emo_eventuel_nouv_sexe, eventuel_nouv_sexe], ["❌", None]]
 
-    contenuMsg_Sexe  =  "Est-ce que vous souhaitez devenir {texte_eventuel_nouv_sexe} ?\n"
+    contenuMsg_Sexe  = f"Est-ce que vous souhaitez devenir {texte_eventuel_nouv_sexe} ?\n"
     contenuMsg_Sexe +=  "> Pour rappel, j'utilise cette info pour accorder mes phrases, pour qu'elles soient plus imersivent.\n"
-    contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient "
+    contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient\n"
     contenuMsg_Sexe +=  ">      *Alberte a été retrouvée morte chez elle ce matin...*\n"
     contenuMsg_Sexe +=  "> \n"
     contenuMsg_Sexe +=  "> *Évidemment, rien ne vous empèche de mentir.*\n"
@@ -523,9 +523,9 @@ async def fct_modif_infosPerso(user_a_maj):
             
             if not choixConfirme :
                 await user_a_maj.send( "*Vous pouvez taper un nouveau nom !*" )
-                
+            
     else :
-        nouv_prenom = ancienne_ligne_joueur[fGoo.clef_Nom]
+        nouv_nom = ancienne_ligne_joueur[fGoo.clef_Nom]
     
     
     
@@ -557,7 +557,7 @@ async def fct_modif_infosPerso(user_a_maj):
 # =============================================================================
     
     x, nb_ligne_Archives = fGoo.ligne_avec(user_a_maj.id, fGoo.clef_idDiscord, fGoo.donneeGoogleSheet(fGoo.page1_Archives))
-
+    
     nvlLigne_Archives = { fGoo.clef_Sexe       : choix_nouv_Sexe             , 
                           fGoo.clef_Prenom     : nouv_prenom                 ,
                           fGoo.clef_Nom        : nouv_nom                    ,
@@ -570,16 +570,16 @@ async def fct_modif_infosPerso(user_a_maj):
     
     
     fGoo.remplacerLigne(nvlLigne_Archives, nb_ligne_Archives, fGoo.page1_Archives)
-
+    
     
     
 # =============================================================================
 #### --- Message de confirmation de la modification ---
 # =============================================================================   
     
-    await user_a_maj.send(f"**C'est bon {nouv_prenom}, tes infos personnelles ont bien été changées !" )
+    await user_a_maj.send(f"C'est bon {nouv_prenom}, tes infos personnelles ont bien été changées !" )
     await msgAtt    .delete()    
-    
+
 
 
 

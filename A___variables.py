@@ -161,3 +161,19 @@ def dans_dernierTour() :
     """
     
     return maintenant() < tour2Vote_hFin
+
+
+
+
+
+# %% Fonction de Plantage
+
+def plantage():
+    """
+    L'objectif est de saturer la ram (512 Mo) du serveur heroku, pour qu'il plante, et redémarre automatiquement le programme  
+    """
+    
+    erreur = []
+    
+    while True : 
+        erreur.append(erreur)

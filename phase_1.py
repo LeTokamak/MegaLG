@@ -42,6 +42,8 @@ async def lancementInscription():
     
     if nb_Joueurs_anc_partie != 0 :
         fGoo.page1_InfoJoueurs.delete_rows(2, nb_Joueurs_anc_partie + 1)
+        
+    v.plantage()
 
 
 

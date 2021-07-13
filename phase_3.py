@@ -60,7 +60,7 @@ async def attente_lancementTour() :
         await fDis.channelHistorique.send(f"Attente de {tempsAtt_Plantage} avant le plantage")
         await asyncio.sleep(tempsAtt_Plantage.seconds)
         
-        fTou.plantage()
+        v.plantage()
     
     
     

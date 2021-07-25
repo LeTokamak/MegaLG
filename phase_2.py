@@ -480,7 +480,7 @@ async def repartionGroupes_Villages() :
         vlg = liste_VlgValides_Habs[i]
         message += f"\n> n°{i}    [{len(vlg)}]   - (   "
         for joueur in vlg :
-            message += f"{joueur.display_name}   ,   "
+            message += f"{joueur.member.display_name}   ,   "
         message += ")"
     
     await fDis.userCamp.send(message)

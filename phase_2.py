@@ -650,7 +650,7 @@ async def DP_1 (ctx):
     
     await fDis.channelHistorique.edit(topic = v.phase2)
     
-    await finInscription()
+    #await finInscription()
     await numerotationHabitants()
 
 

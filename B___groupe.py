@@ -469,9 +469,9 @@ async def fct_suppression_salons_msgs_idDiscord_TousLesGroupes ():
        await grp.salon.delete()
        
        if grp.rang == 1 :
-           grp.MsgEntree.delete()
+           await grp.MsgEntree.delete()
     
-    fGoo.modif_groupe_cellules(2, 3, fGoo.page_Groupes.row_count, 5, fGoo.page_Groupes)
+    fGoo.modif_groupe_cellules(2, 3, fGoo.page_Groupes.row_count, 6, fGoo.page_Groupes)
 
 
 

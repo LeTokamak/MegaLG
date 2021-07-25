@@ -179,21 +179,21 @@ async def repartionGroupes_Villages() :
     
     margeHabitants = 0.05
     
-    TousLesJoueurs = fDis.roleJoueurs.members
+    await fHab.redef_TousLesHabitants()
     
     nbHabitants_parVillage_Souhaite = v.tailleVlg_Ideal
     
     #nbVillages_Reel                 = 0
     nbHabitants_parVillage_Reel     = nbHabitants_parVillage_Souhaite
     
-    ecartMin                        = len(TousLesJoueurs) + 1
+    ecartMin                        = len(fHab.TousLesHabitants) + 1
     
-    for n in range( 1, len(TousLesJoueurs) + 1 ):
-        ecart = abs(len(TousLesJoueurs)/n - nbHabitants_parVillage_Souhaite)
+    for n in range( 1, len(fHab.TousLesHabitants) + 1 ):
+        ecart = abs(len(fHab.TousLesHabitants)/n - nbHabitants_parVillage_Souhaite)
         
         if ecart < ecartMin :
             #nbVillages_Reel             = n
-            nbHabitants_parVillage_Reel = len(TousLesJoueurs) // n
+            nbHabitants_parVillage_Reel = len(fHab.TousLesHabitants) // n
             
             ecartMin                    = ecart
     
@@ -211,9 +211,9 @@ async def repartionGroupes_Villages() :
 
     for grp in listeGroupes :
         grp.personnes = []
-        for member in TousLesJoueurs :
-            if grp.salon.permissions_for(member).read_messages == True :
-                grp.personnes.append(member)
+        for hab in fHab.TousLesHabitants :
+            if hab.groupe == grp :
+                grp.personnes.append(hab)
         
         grp.nbPersonne = len(grp.personnes)
     
@@ -431,7 +431,7 @@ async def repartionGroupes_Villages() :
     
 #### --- Gestion des personnes manquantes ---
     
-    listeJoueursRestants = list(TousLesJoueurs)
+    listeJoueursRestants = list(fHab.TousLesHabitants)
     for vlg in listeVillages_Valides :
         for hab in habitants(vlg):
             try :

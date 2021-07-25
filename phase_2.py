@@ -448,15 +448,15 @@ async def repartionGroupes_Villages() :
     
 #### Ajout des personnes restantes aux autres villages (manuellement)
     
-    for joueur in listeJoueursRestants :
+    for hab in listeJoueursRestants :
         
         grpJoueur = None
         for grp in fGrp.TousLesGroupes :
-            if grp.salon.permissions_for(joueur).read_messages == True :
+            if hab.groupe == grp :
                 grpJoueur = grp
         
         
-        message = f"Il reste {joueur} (il est dans {grpJoueur}) (envoie le village sous cette forme : '12') :"
+        message = f"Il reste {hab.member.mention} (il est dans {grpJoueur}) (envoie le village sous cette forme : '12') :"
         
         for i in range(len(listeVillages_Valides)) :
             vlg = listeVillages_Valides[i]
@@ -468,7 +468,7 @@ async def repartionGroupes_Villages() :
         await fDis.userCamp.send(message)
         reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
         
-        liste_VlgValides_Habs[int(reponse.content)].append(joueur)
+        liste_VlgValides_Habs[int(reponse.content)].append(hab)
     
     
     
@@ -498,7 +498,7 @@ async def repartionGroupes_Villages() :
         vlg = liste_VlgValides_Habs[i]
         
         for hab in vlg :
-            ligne, numLigne = fGoo.ligne_avec( hab.id, fGoo.clef_idDiscord, donneeJoueur )
+            ligne, numLigne = fGoo.ligne_avec( hab.member.id, fGoo.clef_idDiscord, donneeJoueur )
             fGoo.remplacerVal_ligne( i+1 , fGoo.clef_numVillage, numLigne, fGoo.page1_InfoJoueurs )
         
         await asyncio.sleep(1)

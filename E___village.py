@@ -1096,7 +1096,7 @@ class Village :
 
 #### Dissolution si le maire est tué
             
-            if self.maire.matri in self.matriculeHab_vraimentTues :
+            if self.maire != None  and  self.maire.matri in self.matriculeHab_vraimentTues :
                 village = await self.dissolution()
                 
                 

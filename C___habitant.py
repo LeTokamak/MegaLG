@@ -306,10 +306,10 @@ class Habitant :
         
         elif suicideAmoureux :
             couleurEmbed = fMeP.couleurRandom("amour")
-            
+        
         elif meurtreNocturne :
             couleurEmbed = fMeP.couleurRandom("matin")
-            
+        
         else :
             couleurEmbed = fMeP.couleurRandom("soir")
 
@@ -327,9 +327,9 @@ class Habitant :
                 if     self.estUnHomme and not premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Homme_AmourDe_Fem
                 if not self.estUnHomme and     premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Femme_AmourDe_Hom
                 if not self.estUnHomme and not premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Femme_AmourDe_Fem
-                                    
+                
                 descripEmbed = rd.choice(finsDePhrases)
-
+                
                 descripEmbed = descripEmbed.replace( "#aPRENOM#" , premAmoureuxTue.prenom                                          )
                 descripEmbed = descripEmbed.replace( "#aNOM#"    , premAmoureuxTue.nom                                             )
                 descripEmbed = descripEmbed.replace( "#aGROUPE#" , str(premAmoureuxTue.groupe)                                     )
@@ -342,10 +342,10 @@ class Habitant :
                 
                 if   meurtreNocturne : Phrases      = rd.choice(mortPhrases_Matin)
                 else                 : Phrases      = rd.choice(mortPhrases_Soir )
-                    
+                
                 if   self.estUnHomme : descripEmbed = Phrases[0]
                 else                 : descripEmbed = Phrases[1]
-                    
+                
                 if descripEmbed == inv : descripEmbed = Phrases[0]
             
             
@@ -353,15 +353,15 @@ class Habitant :
             descripEmbed = descripEmbed.replace    (  "#NOM#"    , self.nom                                                        )
             descripEmbed = descripEmbed.replace    (  "#GROUPE#" , str(self.groupe)                                                )
             descripEmbed = descripEmbed.replace    (  "#ROLE#"   , self.role[fRol.clefNom]                                         )
-            descripEmbed = descripEmbed.replace    (  "#EMOJI#"  , fRol.emojiRole(self.role,self.estUnHomme)                       )
+            descripEmbed = descripEmbed.replace    (  "#EMOJI#"  , fRol.emojiRole(self.role, self.estUnHomme)                      )
             descripEmbed = descripEmbed.replace    (  "#MENTION#", str(self.user.mention)                                          )
         
         
         
-### Réalisation de l'embed    
+### Réalisation de l'embed
         
-        AnnonceMort = fDis.discord.Embed(title = titreEmbed, description = descripEmbed, color = couleurEmbed)
-        AnnonceMort.set_thumbnail(url = urlImageRole)
+        AnnonceMort = fDis.discord.Embed( title = titreEmbed  , description = descripEmbed, color = couleurEmbed )
+        AnnonceMort.set_thumbnail       (   url = urlImageRole                                                   )
         
         if Details != "" :
             AnnonceMort.set_footer(text = Details)
@@ -383,7 +383,7 @@ class Habitant :
             await self.member.remove_roles( fDis.roleJoueurs, village.roleDiscord     )
             await self.member.   add_roles( fDis.roleMorts  , village.roleDiscordMort )
             
-            await self.member.edit(nick = self.member.nick[v.nbDigit_Matricule + 1 :])
+            await self.member.edit( nick = self.member.nick[v.nbDigit_Matricule + 1 : ] )
             
 ##  Meurtre des éventuels Amoureux
             
@@ -397,10 +397,10 @@ class Habitant :
             
             asyncio.create_task( cimetiere(village = village, habitant = self), name = f"Lancement cimetière de {self.prenom} {self.nom}." )
 
-    
 
 
-    
+
+
 # %%% Vote
     
     def vote (self, vote):

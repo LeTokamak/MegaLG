@@ -86,7 +86,7 @@ async def on_ready():
     
     v.phaseEnCours = fDis.channelHistorique.topic[ : len(v.phase0) ]
     
-    await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours})  - ⬢```\n`{v.maintenant()}` - Début du 'on_ready'")
+    msgIntro = await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours})  - ⬢```\n`{v.maintenant()}` - Début du 'on_ready'")
     
     
 #### Redéfinition Groupes, Habitants et Villages
@@ -107,7 +107,7 @@ async def on_ready():
         if fDis.Emo_Red == message.content.split()[0] :
             asyncio.create_task( fHab.cimetiere(message = message, rappelDeFonction = True), name = f"Re-Lancement de Cimetière de {message.content}.")
     
-    await fDis.channelHistorique.send(f"`{v.maintenant()}` - Fin du 'on_ready'")
+    await msgIntro.edit( content = msgIntro.content + f"\n`{v.maintenant()}` - Fin du 'on_ready'")
     
     
 #### Phase 3 - Récupération du numéro de Tour et Lancement du Tour

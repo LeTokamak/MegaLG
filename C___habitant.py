@@ -368,7 +368,7 @@ class Habitant :
         
 #   Envoie de AnnonceMort
         
-        await village.salonBucher.send(embed = AnnonceMort)
+        await village.salonBucher.send( embed = AnnonceMort )
         
         
         

@@ -79,7 +79,7 @@ async def event_messages():
 @fDis.bot.event
 async def on_ready():
     
-    fDis.def_cstsMegaLG()
+    fDis.def_constantes_discord()
     
     
 #### Recherche de la phase en cours

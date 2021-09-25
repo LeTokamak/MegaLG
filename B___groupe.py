@@ -462,23 +462,32 @@ async def autorisation_SalonsGrp(membre, numeroGroupe):
     
 
 
-
-async def fct_suppression_salons_msgs_idDiscord_TousLesGroupes ():
+@fDis.bot.command(aliases = ["supprTousLesGroupes"])
+@fDis.commands.has_permissions(ban_members = True)
+async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
+    """
+    Cette commande supprime :
+        - Les salons de Groupes 
+        - Les messages d'entrée des groupes de rang n°1
+        - Les id des salons, des msgs d'entrées et de sortie des groupes contenu dans fGoo.page_Groupes
+    """
     
+# Suppression des salons des groupes
+
     for grp in TousLesGroupes :
        await grp.salon.delete()
-       
+
+
+# Suppression des messages d'entrées des groupes de rang 1
+
        if grp.rang == 1 :
            await grp.MsgEntree.delete()
+
+
+# Suppression des idDiscord dans fGoo.page_Groupes
     
     fGoo.modif_groupe_cellules(2, 3, fGoo.page_Groupes.row_count, 6, fGoo.page_Groupes)
 
-
-
-@fDis.bot.command()
-@fDis.commands.has_permissions(ban_members = True)
-async def supprTousLesGroupes (ctx):
-    await fct_suppression_salons_msgs_idDiscord_TousLesGroupes()
 
 
 
@@ -492,10 +501,16 @@ async def supprTousLesGroupes (ctx):
 Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes pas un Joueur...\n> Si vous voulez vous inscrire (ou vous ré-inscrire), ça se passe dans ` ┃ⅰ┃ inscription`",
                    "**ERREUR** - Le groupe que vous essayer de créer existe déjà !",
                    "**ERREUR** - Vous ne pouvez pas créer un sous-groupe à votre groupe, vous êtes déjà dans le plus petit type de groupe possible.\n> Vous ne pouvez pas créer le groupe : #NOUVGRP#"]
-   
 
-async def com_NouveauGroupe(ctx):
-    """    """
+
+
+@fDis.bot.command(aliases = ["creation_nouvgroupe", "CreationNouvGroupe", "CNG", "cng"])
+async def Creation_NouvGroupe(ctx):
+    """
+    Cette commande gère la création d'un groupe ou d'un sous-groupe.
+    Elle n'est utilisable que pendant la phase d'inscription.
+    
+    """
     
     auteur           = fDis.serveurMegaLG.get_member( ctx.message.author.id                          )
     ligne, num_ligne = fGoo.ligne_avec              ( auteur.id            , fGoo.clef_idDiscord,
@@ -720,34 +735,6 @@ async def evt_ChangementGroupe(membre, message_id, strEmoji):
 
 
 
-
-# %%% Création d'un nouveau Groupe 
-
-@fDis.bot.command()
-async def Creation_NouvGroupe(ctx):
-    await com_NouveauGroupe(ctx)
-    
-@fDis.bot.command()
-async def creation_nouvgroupe(ctx):
-    await com_NouveauGroupe(ctx)
-    
-@fDis.bot.command()
-async def CreationNouvGroupe(ctx):
-    await com_NouveauGroupe(ctx)
-
-@fDis.bot.command()
-async def CNG(ctx):
-    await com_NouveauGroupe(ctx)
-
-@fDis.bot.command()
-async def cng(ctx):
-    await com_NouveauGroupe(ctx)
-
-
-
-
-
-# %% Events
 
 async def reaction_Groupe():
     

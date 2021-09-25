@@ -55,7 +55,7 @@ async def on_member_remove(member):
         fHab.redef_TousLesHabitants()
         
         persPartie = fHab.habitant_avec(member.id)
-        await fDis.channelHistorique.send(f"Il était un joueur : {persPartie.user.mention}  |  {persPartie.matri} {persPartie.prenom} {persPartie.nom} - ( {persPartie.groupe} ) !")
+        await fDis.channelHistorique.send(f"Il était un joueur : {persPartie.user.mention}  |  {persPartie.matricule} {persPartie.prenom} {persPartie.nom} - ( {persPartie.groupe} ) !")
         
         await persPartie.Tuer(departServeur = True)
         await persPartie.user.send("Vous avez quitté le serveur, vous avez donc été tué...")
@@ -129,44 +129,73 @@ async def ajout_roleArtisans():
 
 # %%% Déclaration d'un nouveau Bug
 
-async def declarationBug (descriptionBug):
+async def declarationBug (descriptionBug, niveau_bug):
     """
-    N'a qu'un seul niveau de bug ==> Vilebrequin
+    Gère des bugs pouvant avoir deux niveaux :
+        Le niveau 1 - le moins grave
+        Le niveau 2 - le plus grave
+        
+    En fonction du niveau du bug, le gif ne sera pas le même et le message variera
     """
-    
+
+#### Sélection du gif
+
     messagesGif = []
     
-    async for message in fDis.channelGifVilebrequin.history():
+    if niveau_bug == 1 : channel_Gif = fDis.channelGifBug_Petit
+    if niveau_bug == 2 : channel_Gif = fDis.channelGifBug_Gros
+    
+    async for message in channel_Gif.history():
         messagesGif.append(message)
     
+    url_gif_choisi = rd.choice(messagesGif).content
+    
+    
+
+#### Recherche du numéro du nouveau bug
+    
     messagesBug = []
+    
+# Sélection des messages dans channel bug annonçant un bug 
     
     async for message in fDis.channelBugs.history():
         if "Bug n°" == message.content[:6] :
             messagesBug.append(message)
 
     
+# Chois du numéro du nouveau bug, soit le numéro suivant, soit 0
+
     try :
         numero = int( messagesBug[0].content.split() [1] [2:] ) + 1
         
     except :
         numero = 0
     
+
+
+#### Envoie du message de bug
+    
+    if niveau_bug == 1 : description_niveau = "*(Bug mineur)*"
+    if niveau_bug == 2 : description_niveau = "**(Bug majeur)**"
+
     strDescriptionBug = ' '.join(descriptionBug)
     
-    await fDis.channelBugs.send(f"Bug n°{numero} :\n>>> " + strDescriptionBug )
-    await fDis.channelBugs.send( rd.choice(messagesGif).content )
+    await fDis.channelBugs.send(f"Bug n°{numero} : {description_niveau}\n>>> " + strDescriptionBug )
+    await fDis.channelBugs.send( url_gif_choisi )
     await fDis.channelBugs.send( "_ _\n\n\n_ _")
     
     
+    
+    
 
-@fDis.bot.command()
-async def Bug (ctx, *descriptionBug):
-    await declarationBug (descriptionBug)
+@fDis.bot.command(aliases = ["Bug", "bug", "B", "b"])
+async def Bug_niveau_1 (ctx, *descriptionBug):
+    await declarationBug (descriptionBug, niveau_bug = 1)
+    
 
-@fDis.bot.command()
-async def bug (ctx, *descriptionBug):
-    await declarationBug (descriptionBug)
+@fDis.bot.command(aliases = ["Bug2", "bug2", "B2", "b2"])
+async def Bug_niveau_2 (ctx, *descriptionBug):
+    await declarationBug (descriptionBug, niveau_bug = 2)
 
 
 
@@ -246,58 +275,6 @@ async def suppressionBug (numeroBug):
 @fDis.commands.has_permissions(ban_members = True)
 async def supprBug (ctx, numeroBug):
     await suppressionBug (numeroBug)
-
-
-
-
-
-# %% Commande de Nettoyage
-
-async def cmd_Nettoyage (ctx, nbMessages):
-    """
-    Efface tout les messages que le @Maître du Jeu vous a envoyé 
-    Vous pouvez y ajouter un paramètre optionnel, le nombre de message
-
-    !Nettoyage     ==> Efface tout les messages qu'il vous a envoyé
-    !Nettoyage 3   ==> Efface les 3 derniers messages qu'il vous a envoyé 
-    """
-        
-    if ctx.guild == fDis.serveurMegaLG :
-        
-        await fDis.effacerMsg(ctx)
-        
-        if fDis.roleMaitre in ctx.author.roles :
-            await fDis.effacerMsg(ctx, nbMessages)
-            
-    else :
-        await fDis.effacerMsg(ctx, nbMessages)
-        await fDis.channelHistorique.send(f"{fDis.Emo_BabyLime}  |  {ctx.author.mention} a fait un peu de ménage dans son salon privée !   ({nbMessages} messages supprimés)")
-
-
-
-@fDis.bot.command()
-async def Nettoyage (ctx, nbMessages = 10**9) :
-    await cmd_Nettoyage (ctx, nbMessages)
-    
-@fDis.bot.command()
-async def nettoyage (ctx, nbMessages = 10**9) :
-    await cmd_Nettoyage (ctx, nbMessages)
-
-@fDis.bot.command()
-async def Net       (ctx, nbMessages = 10**9) :
-    await cmd_Nettoyage (ctx, nbMessages)
-
-@fDis.bot.command()
-async def net       (ctx, nbMessages = 10**9) :
-    await cmd_Nettoyage (ctx, nbMessages)
-
-@fDis.bot.command()
-async def N         (ctx, nbMessages = 10**9) :
-    await cmd_Nettoyage (ctx, nbMessages)
-
-@fDis.bot.command()
-async def n         (ctx, nbMessages = 10**9) :
-    await cmd_Nettoyage (ctx, nbMessages)
 
 
 

@@ -68,21 +68,23 @@ async def Tour():
     if v.nbTours != 0 :
         for vlg in fVlg.TousLesVillages :
             await vlg.application_nuit()
-
-
-
-
-
+    
+    
+    
+    
+    
 # %% Journée
-
+    
     v.nbTours += 1
     await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
     await fDis.channelHistorique.send(f"```\n⬢⬢⬢\n\nJournée {v.nbTours} - {fMeP.strDate(v.ajd)}\n\n⬢⬢⬢\n```")
-
+    
 #### Début de la Journée
     
-    for vlg in fVlg.TousLesVillages :
-        await vlg.debutJournee()
+    for village in fVlg.TousLesVillages :
+        await village.debutJournee()
+    
+    await fVlg.gestion_dissolutions_meurtres_exils(meutre_nocturne = True)
     
     
     
@@ -105,18 +107,10 @@ async def Tour():
     
 #### Rapports municipaux Matinaux
     
-    for vlg in fVlg.TousLesVillages :
-        await vlg.rapportMunicipal()
-
-
+    for village in fVlg.TousLesVillages :
+        await village.rapportMunicipal()
     
-#### Sauvegarde de Infos Joueurs
     
-    # nbColonnes = 10
-    # nbLignes   = len(fHab.TousLesHabitants) + 1
-    
-    # feuilleDuJour = fGoo.Sauvegarde.add_worksheet(f"Matinée {str(v.ajd)[:10]}", nbLignes, nbColonnes)
-    # feuilleDuJour.insert_rows( fGoo.page1_InfoJoueurs.get() )
     
     
     
@@ -125,13 +119,12 @@ async def Tour():
     coroutinesVotes = []
     
     for vlg in fVlg.TousLesVillages :
-        if vlg.maire == None :
-            coroutinesVotes.append( vlg.gestion_electionMaire()    )
-        
-        else :
-            coroutinesVotes.append( vlg.gestion_voteEliminatoire() )
+        if vlg.maire == None : coroutinesVotes.append( vlg.gestion_electionMaire()    )
+        else                 : coroutinesVotes.append( vlg.gestion_voteEliminatoire() )
         
     await asyncio.gather(*coroutinesVotes)
+    
+    await fVlg.gestion_dissolutions_meurtres_exils(meutre_nocturne = False)
     
     
     

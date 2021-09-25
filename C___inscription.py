@@ -16,43 +16,13 @@ import B___groupe      as fGrp
 #Niveau A
 fDis = fGrp.fDis
 fGoo = fGrp.fGoo
+fMeP = fGrp.fMeP
 v    = fGrp.v
 
 
 
 Emo_Homme = "♂️"
 Emo_Femme = "♀️"
-
-def MeF_Prenom (texte) :
-    """
-    Cette fonction Met en Forme la variable texte (str) pour les transformer en Prénom
-        "   JeAn-cléMENt frANçoiS       "  ==>  "Jean-Clément François"
-    """
-    
-    # 1er split pour les espaces "___cléMENt__" et gestion des Majuscules
-    
-    listePrenoms = texte.split()
-    listePrenoms_MeF = []
-    
-    for p in listePrenoms :
-        listePrenoms_MeF.append( p[0].upper() + p[1:].lower() )
-        
-    prenom_Maj = " ".join( listePrenoms_MeF )
-    
-    
-    
-    # 2nd split pour la gestion des Majuscules après les "-" (prénoms composées)
-    
-    listePrenoms = prenom_Maj.split("-")
-    listePrenoms_MeF = []
-    
-    for p in listePrenoms :
-        listePrenoms_MeF.append( p[0].upper() + p[1:] )
-    
-    return "-".join( listePrenoms_MeF )
-    
-
-
     
 
 # %% Inscription
@@ -127,8 +97,8 @@ async def fct_Inscription (membre_aInscrire):
     
     while not choixConfirme :
     
-        msgReponsePrenom = await fDis.attente_Message( membre_aInscrire )
-        prenom           = MeF_Prenom(msgReponsePrenom.content)
+        msgReponsePrenom = await fDis.attente_Message( membre_aInscrire         )
+        prenom           = fMeP.MeF_Prenom(            msgReponsePrenom.content )
         
         contenuMsg_VerifPrenom  = f"Est-ce bien votre prénom **{prenom}** ?\n"
         contenuMsg_VerifPrenom +=  "> *Votre prénom a été mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
@@ -243,77 +213,7 @@ async def ReInscription (membre_ReInscrit):
 
 
 
-"""
 
-idMessage_ReInscription = 850873077617000488
-
-erreurReI_joueurInconu  = "**ERREUR** - Vous n'avez pas participer à la partie précédente, vous ne pouvez donc pas vous ré-inscrire."
-erreurReI_joueurInconu += "\n> Pour vous inscrire, taper la commande **!Inscription** (**!i**)."
-erreurReI_joueurInconu += "\n> *Si vous avez un problème, n'hésitez pas à envoyer un message privé à Clément Campana.*"
-
-erreurReI_dejaJoueur    = "**ERREUR** - Vous êtes **déjà** inscrit !"
-
-async def evt_ReInscription (membre):
-
-    if   membre.id not in listeidDisConnus :
-        await membre.send( erreurReI_joueurInconu )
-    
-    elif fDis.roleJoueurs in membre.roles :
-        await membre.send( erreurReI_dejaJoueur )
-        
-    else :
-        await ReInscription(membre)
-        
-
-
-
-
-# %% Commande Inscription
-
-erreurIns_dejaJoueur = "**ERREUR** - Vous êtes **déjà** inscrit !"
-erreurIns_phase1     = "**ERREUR** - Les inscriptions **ne sont pas** ouvertes pour l'instant..."
-messagIns_reInscript = "**Vous avez déjà participer à une ancienne partie.**\nVous avez donc été ré-inscrit !"
-
-async def cmd_Inscription(user_voulantSIncrire):
-    
-    membre_voulantSIncrire = fDis.serveurMegaLG.get_member(user_voulantSIncrire.id)
-    
-    if   fDis.roleJoueurs in membre_voulantSIncrire.roles :
-        await membre_voulantSIncrire.send( erreurIns_dejaJoueur )
-    
-    
-    elif v.phaseEnCours != v.phase1 :
-        await membre_voulantSIncrire.send( erreurIns_phase1     )
-    
-    
-    elif membre_voulantSIncrire.id in listeidDisConnus :
-        await membre_voulantSIncrire.send( messagIns_reInscript )
-        
-        await ReInscription(membre_voulantSIncrire)
-    
-    
-    else :
-        await fct_Inscription(membre_voulantSIncrire)
-
-
-
-@fDis.bot.command()
-async def Inscription (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-@fDis.bot.command()
-async def inscription (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-@fDis.bot.command()
-async def I (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-@fDis.bot.command()
-async def i (ctx) :
-    await cmd_Inscription(ctx.author)
-    
-"""
 
 # %% Event Inscription
 
@@ -473,7 +373,7 @@ async def fct_modif_infosPerso(user_a_maj):
         while not choixConfirme :
         
             msgReponsePrenom = await fDis.attente_Message( user_a_maj               )
-            nouv_prenom      = MeF_Prenom(                 msgReponsePrenom.content )
+            nouv_prenom      = fMeP.MeF_Prenom(            msgReponsePrenom.content )
             
             
             contenuMsg_VerifPrenom  = f"Est-ce bien votre prénom **{nouv_prenom}** ?\n"
@@ -588,39 +488,13 @@ async def fct_modif_infosPerso(user_a_maj):
 
 erreurMaJ_pasJoueur = "**ERREUR** - Vous **n'êtes pas** inscrit !"
 
-async def cmd_modif_infosPerso(user_voulantSIncrire):
+@fDis.bot.command(aliases = ["Modif", "modif", "MaJ_Infos_Perso", "MaJ", "maj"])
+async def Modif_Infos_Perso(ctx):
     
-    membre_voulantSIncrire = fDis.serveurMegaLG.get_member(user_voulantSIncrire.id)
+    membre_a_modif = fDis.serveurMegaLG.get_member(ctx.author.id)
     
-    if   fDis.roleJoueurs not in membre_voulantSIncrire.roles :
-        await membre_voulantSIncrire.send( erreurMaJ_pasJoueur )
+    if   fDis.roleJoueurs not in membre_a_modif.roles :
+        await membre_a_modif.send( erreurMaJ_pasJoueur )
     
     else :
-        await fct_modif_infosPerso(membre_voulantSIncrire)
-
-
-
-@fDis.bot.command()
-async def Modif_Infos_Perso (ctx) :
-    await cmd_modif_infosPerso(ctx.author)
-    
-@fDis.bot.command()
-async def Modif (ctx) :
-    await cmd_modif_infosPerso(ctx.author)
-    
-@fDis.bot.command()
-async def modif (ctx) :
-    await cmd_modif_infosPerso(ctx.author)
-    
-
-@fDis.bot.command()
-async def MaJ_Infos_Perso (ctx) :
-    await cmd_modif_infosPerso(ctx.author)
-    
-@fDis.bot.command()
-async def MaJ (ctx) :
-    await cmd_modif_infosPerso(ctx.author)
-    
-@fDis.bot.command()
-async def maj (ctx) :
-    await cmd_modif_infosPerso(ctx.author)
+        await fct_modif_infosPerso(membre_a_modif)

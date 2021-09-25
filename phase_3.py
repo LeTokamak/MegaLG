@@ -44,7 +44,7 @@ async def attente_lancementTour() :
     
     
     
-#### Attente du début de la nuit pour lancer la fontion Tour 
+#### Attente du début de la nuit pour lancer la fontion Tour
     
     tempsAtt            = v.nuit_hDeb  -  m
     intervalMaintenance = v.nuit_hDeb  -  (v.tour2Vote_hFin - v.timedelta(days = 1))   # 30 mins

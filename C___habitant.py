@@ -121,21 +121,21 @@ class Habitant :
 
 #### Constantes Personnelles
         
-        self.matri   = matricule
+        self.matricule = matricule
         
-        self.prenom  = prenom
-        self.nom     = nom
+        self.prenom    = prenom
+        self.nom       = nom
         
-        self.numGrp  = numeroGroupe
-        self.groupe  = None
+        self.numGrp    = numeroGroupe
+        self.groupe    = None
         
-        self.numVlg  = numeroVillage 
+        self.numVlg    = numeroVillage 
         
-        self.user    = fDis.bot          .get_user  (idDiscord)
-        self.member  = fDis.serveurMegaLG.get_member(idDiscord)
-        self.idDis   = idDiscord
+        self.user      = fDis.bot          .get_user  (idDiscord)
+        self.member    = fDis.serveurMegaLG.get_member(idDiscord)
+        self.idDis     = idDiscord
         
-        self.role    = fRol.role_avec(nomRole, "nom")
+        self.role      = fRol.role_avec(nomRole, "nom")
         
         if sexe == "H" : self.estUnHomme = True
         if sexe == "F" : self.estUnHomme = False
@@ -155,7 +155,7 @@ class Habitant :
 
         elif self.role == fRol.role_EnfantSauv :
             try    : self.pereProtecteur = int(caractRole)
-            except : self.pereProtecteur = self.matri
+            except : self.pereProtecteur = self.matricule
         
         elif self.role == fRol.role_LGNoir :
             self.nbInfRestantes = int(caractRole)
@@ -240,18 +240,16 @@ class Habitant :
     async def Tuer (self, village, meurtreNocturne = True, suicideAmoureux = False, premAmoureuxTue = None, departServeur = False):
 
         self.estMorte = True
-        await fDis.channelHistorique.send(f"Tentative de meurtre de {self.matri} {self.prenom} {self.nom} {self.groupe}  |  {self.user.mention} {self.user}")
-
+        await fDis.channelHistorique.send(f"Tentative de meurtre de {self.matricule} {self.prenom} {self.nom} {self.groupe}  |  {self.user.mention} {self.user}")
 
 
 # -----------------------------------------------
 # ---  Retire le joueur de Infos Joueurs      ---
 # -----------------------------------------------
 
-        fGoo.suppressionLigne_avec( self.matri                         , 
+        fGoo.suppressionLigne_avec( self.matricule                         , 
                                     fGoo.clef_Matricule                ,
                                     fGoo.page_fichier(fGoo.InfoJoueurs) )
-        
 
 
 # -----------------------------------------------
@@ -385,17 +383,11 @@ class Habitant :
             
             await self.member.edit( nick = self.member.nick[v.nbDigit_Matricule + 1 : ] )
             
-##  Meurtre des éventuels Amoureux
-            
-            if self.estAmoureux :
-                
-                for matri in self.amants :
-                    if not habitant_avec(matri, autorisationMort = True).estMorte :
-                        await habitant_avec(matri).Tuer(village, suicideAmoureux = True, premAmoureuxTue = self)
-            
 ##  Lancement de la fonction Cimetiere
             
-            asyncio.create_task( cimetiere(village = village, habitant = self), name = f"Lancement cimetière de {self.prenom} {self.nom}." )
+            coroutine_cimetiere = cimetiere(village = village, habitant = self)
+
+            asyncio.create_task( coroutine_cimetiere, name = f"Lancement cimetière de {self.prenom} {self.nom}." )
 
 
 
@@ -512,7 +504,7 @@ class Habitant :
         estCertain      = False
         matricule       = ""
         
-        while  not estCertain  or  habitant_avec(matricule) == None  or  (matricule == self.matri  and  not autorisation_AutoDesignation)  or  (habitant_avec(matricule).numVlg != self.numVlg  and  not autorisation_AutreVillage):
+        while  not estCertain  or  habitant_avec(matricule) == None  or  (matricule == self.matricule  and  not autorisation_AutoDesignation)  or  (habitant_avec(matricule).numVlg != self.numVlg  and  not autorisation_AutreVillage):
         
 #### Attente d'un entier
             
@@ -683,7 +675,7 @@ def habitant_avec(info, autorisationMort = False) :
     elif type(info) == int  and  info < 10**6  :
         
         for p in TousLesHabitants :
-            if p.matri == info      : persCorrespondante = p
+            if p.matricule == info      : persCorrespondante = p
     
     
 #### info est un User

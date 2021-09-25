@@ -415,5 +415,3 @@ def ligne_avec(info, clefColonne, donnee) :
             return donnee[i], i+2
 
     return None, None
-
-

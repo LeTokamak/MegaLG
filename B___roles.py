@@ -243,12 +243,12 @@ else                                             : s_Ancien = ""
 
 #   Sorcière
 
-if   v.Sorcie_nbPotVie + v.Sorcie_nbPotMort >= 2 : s_So_Potion = "s"
-else                                             : s_So_Potion = ""
+if   v.Sorcie_nbPotVie + v.Sorcie_nbPotMort >= 2 : s_So_Potion =  "s"
+else                                             : s_So_Potion =  ""
 
-if   v.Sorcie_nbPotVie  == 0                     : So_potsVie =  ""
-elif v.Sorcie_nbPotVie  == 1                     : So_potsVie = f"\n - **{v.Sorcie_nbPotVie}** potion de vie, qui peut sauver une victime des loups."
-elif v.Sorcie_nbPotVie  >= 2                     : So_potsVie = f"\n - **{v.Sorcie_nbPotVie}** potions de vie, qui peuvent sauver la victime des loups."
+if   v.Sorcie_nbPotVie  == 0                     : So_potsVie  =  ""
+elif v.Sorcie_nbPotVie  == 1                     : So_potsVie  = f"\n - **{v.Sorcie_nbPotVie}** potion de vie, qui peut sauver une victime des loups."
+elif v.Sorcie_nbPotVie  >= 2                     : So_potsVie  = f"\n - **{v.Sorcie_nbPotVie}** potions de vie, qui peuvent sauver la victime des loups."
 
 if   v.Sorcie_nbPotMort == 0                     : So_potsMort =  ""
 elif v.Sorcie_nbPotMort == 1                     : So_potsMort = f"\n - **{v.Sorcie_nbPotMort}** potion de mort, pour se débarrasser d'un gêneur."
@@ -459,10 +459,15 @@ def imageRole (info, estUnHomme):
 
 # %% Commande d'envoie des Rôles
 
-async def envoie_Embeds_TousLesRoles ():
+@fDis.bot.command(aliases = ["Envoie_Roles", "Roles"])
+@fDis.commands.has_permissions(ban_members = True)
+async def envoie_Embeds_TousLesRoles (ctx):
     """
     Fonction envoyant les embeds de tous les Rôles dans fDis.channelRoles
     """
+
+    await fDis.effacerMsg(ctx.channel)
+    await fDis.effacerMsg(fDis.channelRoles, 10**9)
 
     separation = "_ _\n_ _\n_ _"
 
@@ -518,14 +523,3 @@ async def envoie_Embeds_TousLesRoles ():
     if role_EnfantSauv[clefProp] != 0 : await fDis.channelRoles.send( embed = role_EnfantSauv[clefEmbed] )
 
 
-
-
-
-@fDis.bot.command()
-@fDis.commands.has_permissions(ban_members = True)
-async def EmbedsRoles (ctx):
-    
-    await fDis.effacerMsg(ctx.channel)
-    await fDis.effacerMsg(fDis.channelRoles, 10**9)
-    
-    await envoie_Embeds_TousLesRoles()

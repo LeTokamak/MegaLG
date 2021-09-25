@@ -15,26 +15,24 @@ from   discord.ext import commands
 
 # %% Constantes du serveurs
 
-def def_cstsMegaLG ():
+def def_constantes_discord ():
     """
-    Redef de toutes les variables liés au serveur MégaLG
+    Redef de toutes les variables liés au serveur
     """
     
     print("Redef des Constantes liées à Discord")
     
-    def_serveurMegaLG()
+    def_serveur   ()
     def_userAdmins()
-    def_categoryChannelsMegaLG()
-    def_channelsMegaLG()
-    def_rolesMegaLG()
+    def_categories()
+    def_salons    ()
+    def_roles     ()
 
 
 
 
 
-# %%% Bot et Serveur
-
-#### Création de l'objet Bot
+# %%% Bot
 
 intentions = discord.Intents.all()
 bot        = commands.Bot(command_prefix = '!', description = "Maître du Jeu", intents = intentions)
@@ -42,11 +40,13 @@ bot        = commands.Bot(command_prefix = '!', description = "Maître du Jeu", 
 tokenMJ    = "NzM3NzE3MTkxNTI0NDgzMTIy.XyBarA.A83hDJo-1XCRMatEUxAWIlcmaI0" # Maitre du Jeu
 
 
-#### Serveur
+
+
+# %%% Serveur
 
 serveurMegaLG = None
 
-def def_serveurMegaLG ():
+def def_serveur ():
     """
     Cette Fonction ne renvoie rien
        
@@ -85,11 +85,11 @@ def def_userAdmins ():
 
 
 
-# %%% Category Channels
+# %%% Categories
 
 CategoryChannel_GestionGrp = None
 
-def def_categoryChannelsMegaLG ():
+def def_categories ():
     """
     Cette Fonction ne renvoie rien
        
@@ -116,19 +116,21 @@ channelRoles          = None
 channelBugs           = None
 channelAmeliorations  = None
 
+channelHistorique     = None
+channelAttente        = None
+
+channelGifBug_Petit   = None
+channelGifBug_Gros    = None
+
 channelFctmentGrp     = None
 channelGalaxie        = None
 channelEtoile         = None
 channelPlanete        = None
 channelLune           = None
 
-channelHistorique     = None
-channelAttente        = None
-channelGifVilebrequin = None
 
 
-
-def def_channelsMegaLG ():
+def def_salons ():
     """
     Cette Fonction ne renvoie rien
        
@@ -141,7 +143,7 @@ def def_channelsMegaLG ():
     
     
     
-#### Explications
+#### ― Explications ―
     
     global channelInfos, channelInscription, channelRoles, channelRegles
     
@@ -152,12 +154,29 @@ def def_channelsMegaLG ():
     
     
     
-#### Modifs
+#### ― Modifs ―
     
     global channelBugs, channelAmeliorations
     
     channelBugs           = bot.get_channel        (841694226206294036) 
     channelAmeliorations  = bot.get_channel        (810554730383671297)
+    
+    
+    
+#### ✽ - Bot - ✽
+
+    global channelHistorique, channelAttente
+
+    channelHistorique     = bot.get_channel        (782626433255997480)
+    channelAttente        = bot.get_channel        (789105310408900619)
+    
+
+#### ✽ - Gifs et Autres - ✽
+
+    global channelGifBug_Petit, channelGifBug_Gros
+
+    channelGifBug_Petit   = bot.get_channel        (818580306318721055)
+    channelGifBug_Gros    = bot.get_channel        (889911450309632102)
     
     
     
@@ -172,16 +191,6 @@ def def_channelsMegaLG ():
     channelLune           = bot.get_channel        (818581474856140841)
     
     
-    
-#### Historique
-
-    global channelHistorique, channelAttente, channelGifVilebrequin
-
-    channelHistorique     = bot.get_channel        (782626433255997480)
-    channelAttente        = bot.get_channel        (789105310408900619)
-    channelGifVilebrequin = bot.get_channel        (818580306318721055) 
-
-
 
 
 
@@ -209,7 +218,7 @@ id_roleJoueurs     = 782625030123159562
 id_roleMorts       = 790158481634099250
 
 
-def def_rolesMegaLG ():
+def def_roles ():
     """
     Cette Fonction ne renvoie rien
        
@@ -551,3 +560,29 @@ async def attente_Message(expediteur_msgAttendu, salon_msgAttendu = "DMChannel",
     
     except :
         return None
+
+
+
+# %% Commandes
+
+# %%% Nettoyage
+
+@bot.command(aliases = ["nettoyage", "Net", "net", "N", "n"])
+async def Nettoyage (ctx, nbMessages = 10**9):
+    """
+    Efface tout les messages que le @Maître du Jeu vous a envoyé 
+    Vous pouvez y ajouter un paramètre optionnel, le nombre de message
+
+    !Nettoyage     ==> Efface tout les messages qu'il vous a envoyé
+    !Nettoyage 3   ==> Efface les 3 derniers messages qu'il vous a envoyé 
+    """
+        
+    if ctx.guild != None :
+        
+        await effacerMsg(ctx)
+        
+        if ctx.author.guild_permissions.manage_messages == True :
+            await effacerMsg(ctx, nbMessages)
+            
+    else :
+        await effacerMsg(ctx, nbMessages)

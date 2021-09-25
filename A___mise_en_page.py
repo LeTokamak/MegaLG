@@ -33,7 +33,7 @@ def AjoutZerosAvant(x, nbChiffre, espace = False):
 
 
 
-# %%% Mise en forme de phrases 
+# %%% Mise en forme de texte 
 
 def de_dApostrophe (mot, debutDePhrase = False):
     """
@@ -63,6 +63,34 @@ def de_dApostrophe (mot, debutDePhrase = False):
         return de + mot
 
 
+
+def MeF_Prenom (texte) :
+    """
+    Cette fonction Met en Forme la variable texte (str) pour les transformer en Prénom
+        "   JeAn-cléMENt frANçoiS       "  ==>  "Jean-Clément François"
+    """
+    
+    # 1er split pour les espaces "___cléMENt__" et gestion des Majuscules
+    
+    listePrenoms = texte.split()
+    listePrenoms_MeF = []
+    
+    for p in listePrenoms :
+        listePrenoms_MeF.append( p[0].upper() + p[1:].lower() )
+        
+    prenom_Maj = " ".join( listePrenoms_MeF )
+    
+    
+    
+    # 2nd split pour la gestion des Majuscules après les "-" (prénoms composées)
+    
+    listePrenoms = prenom_Maj.split("-")
+    listePrenoms_MeF = []
+    
+    for p in listePrenoms :
+        listePrenoms_MeF.append( p[0].upper() + p[1:] )
+    
+    return "-".join( listePrenoms_MeF )
 
 
 

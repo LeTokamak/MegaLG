@@ -124,6 +124,23 @@ async def ajout_roleArtisans():
 
 
 
+async def gestion_role_iseniens():
+    
+    listeMembre = fGoo.donneeGoogleSheet(fGoo.page_compta)
+    
+    for membre_club in listeMembre :
+        
+        membre_discord = fDis.serveurMegaLG.get_member(membre_club[fGoo.clefCompta_idDiscord])
+        
+        if membre_club[fGoo.clefCompta_Verif] == "TRUE" : membre_verif = True
+        else                                            : membre_verif = False
+        
+        if membre_discord != None  and  membre_verif :
+            await membre_discord.add_roles( fDis.roleISEN_Nantes )
+
+
+
+
 
 # %% Commande de Bug
 

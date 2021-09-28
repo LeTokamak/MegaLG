@@ -61,6 +61,12 @@ Compte_Msg          = client.open("Comptage des Messages")
 page_CompteMsg      = Compte_Msg.sheet1
 
 
+#### Fichier de Comptabilité
+
+Compta              = client.open("ISEN'tertainment - comptabilité")
+page_compta         = Compta.sheet1
+
+
 
 
 
@@ -145,6 +151,30 @@ clefs_Messages = page_CompteMsg.get()[0]
   
   clefMsg_separateur             ,
   clefMsg_DMChannel               ) = clefs_Messages[:11]
+
+
+
+#### Clefs de Comptabilité
+
+clefs_Compta = page_compta.get()[0]
+
+( clefCompta_Nom            ,
+  clefCompta_Prenom         ,
+  clefCompta_Classe         ,
+  clefCompta_Ville          ,
+  
+  clefCompta_Verif          ,
+  
+  clefCompta_idDiscord      ,
+  clefCompta_Pseudo_discord ,
+  clefCompta_Pseudo_lichess ,
+  
+  clefCompta_Total_heures   ,
+  
+  clefCompta_Administratif  ,
+  clefCompta_Permanences     ) = clefs_Compta[:11]
+
+
 
 
 

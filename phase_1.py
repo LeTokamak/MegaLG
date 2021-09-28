@@ -23,7 +23,9 @@ v    = fIns.v
 
 
 
-async def lancementInscription():
+@fDis.bot.command(aliases = ["Debut_Phase1"])
+@fDis.commands.has_permissions(ban_members = True)
+async def lancement_Inscription(ctx):
     
     v.phaseEnCours = v.phase1
     await fDis.channelHistorique.edit(topic = v.phase1)   
@@ -44,10 +46,3 @@ async def lancementInscription():
         fGoo.page1_InfoJoueurs.delete_rows(2, nb_Joueurs_anc_partie + 1)
         
     v.plantage()
-
-
-
-@fDis.bot.command()
-@fDis.commands.has_permissions(ban_members = True)
-async def Debut_Phase1 (ctx):
-    await lancementInscription()

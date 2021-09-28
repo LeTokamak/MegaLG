@@ -198,10 +198,11 @@ def def_salons ():
 
 # %%% Roles du Serveur
 
-roleEveryone, roleMaitre     , roleBot = (None, None, None)
-roleMdJ     , roleAssistant            = (None, None      )
-roleArtisans, roleSpectateurs          = (None, None      )
-roleJoueurs , roleMorts                = (None, None      )
+roleEveryone   , roleMaitre     , roleBot = (None, None, None)
+roleMdJ        , roleAssistant            = (None, None      )
+roleArtisans   , roleSpectateurs          = (None, None      )
+roleJoueurs    , roleMorts                = (None, None      )
+roleISEN_Nantes                           =  None
 
 
 id_roleEveryone    = 769495045308940288
@@ -216,6 +217,8 @@ id_roleSpectateurs = 795550455224205312
 
 id_roleJoueurs     = 782625030123159562
 id_roleMorts       = 790158481634099250
+
+id_roleISEN_Nantes = 848145158561202227
 
 
 def def_roles ():
@@ -245,7 +248,11 @@ def def_roles ():
     
     roleJoueurs           = serveurMegaLG.get_role (id_roleJoueurs)
     roleMorts             = serveurMegaLG.get_role (id_roleMorts)
-
+    
+    
+    global roleISEN_Nantes
+    
+    roleISEN_Nantes       = serveurMegaLG.get_role (id_roleISEN_Nantes)
 
 
 

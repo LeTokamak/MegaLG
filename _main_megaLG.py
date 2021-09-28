@@ -89,6 +89,11 @@ async def on_ready():
     msgIntro = await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours})  - ⬢```\n`{v.maintenant()}` - Début du 'on_ready'")
     
     
+#### Ajout du role ISEN Nantes aux membres du club étant sur le serveur
+
+    await fP0.gestion_role_iseniens()
+    
+    
 #### Redéfinition Groupes, Habitants et Villages
     
     await fGrp.redef_groupesExistants()

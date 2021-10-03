@@ -437,7 +437,7 @@ async def repartionGroupes_Villages() :
             try :
                 listeJoueursRestants.remove(hab)
             except :
-                print(f"ERREUR - Cette personne a déjà été supprimmé : {hab.display_name} ({vlg})")
+                print(f"ERREUR - Cette personne a déjà été supprimmé : {hab.member.display_name} ({vlg})")
     
     
     if len(listeJoueursRestants) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :

@@ -177,7 +177,7 @@ async def repartionGroupes_Villages() :
     
     listeGroupes   = list(fGrp.TousLesGroupes)
     
-    margeHabitants = 0.05
+    margeHabitants = 0.00
     
     await fHab.redef_TousLesHabitants()
     

@@ -397,7 +397,7 @@ async def repartionGroupes_Villages() :
             reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
             
             for j in reponse.content.split():
-                listeVillages_Valides.append(liste_VlgPossibles[j])
+                listeVillages_Valides.append(liste_VlgPossibles[int(j)])
             
             del(liste_VlgPossibles)
     

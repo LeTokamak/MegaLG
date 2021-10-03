@@ -380,10 +380,10 @@ async def repartionGroupes_Villages() :
         
 #### ===== FIN DE LA BOUCLE ====
 
-        if len(listeGroupes) == 0 :
+    if len(listeGroupes) == 0 :
             composition_canton_Trouve = True
             
-        else :
+    else :
             message = "On a tous tenté mais il reste des groupes qui respecte tous les critères, lesquels veux-tu choisir et garder (envoie les villages a garder sous cette forme : '12 54 94 2 0 47') :"
             
             for i in range(len(liste_VlgPossibles)) :

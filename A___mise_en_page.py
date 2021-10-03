@@ -88,7 +88,7 @@ def MeF_Prenom (texte) :
     listePrenoms_MeF = []
     
     for p in listePrenoms :
-        listePrenoms_MeF.append( p[0].upper() + p[1:] )
+        if p != "" : listePrenoms_MeF.append( p[0].upper() + p[1:] )
     
     return "-".join( listePrenoms_MeF )
 

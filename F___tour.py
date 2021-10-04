@@ -84,7 +84,7 @@ async def Tour():
     for village in fVlg.TousLesVillages :
         await village.debutJournee()
     
-    await fVlg.gestion_dissolutions_meurtres_exils(meutre_nocturne = True)
+    await fVlg.gestion_dissolutions_meurtres_exils(meurtre_nocturne = True)
     
     
     
@@ -119,12 +119,12 @@ async def Tour():
     coroutinesVotes = []
     
     for vlg in fVlg.TousLesVillages :
-        if vlg.maire == None : coroutinesVotes.append( vlg.gestion_electionMaire()    )
+        if vlg.maire == None : coroutinesVotes.append( vlg.gestion_electionMaire   () )
         else                 : coroutinesVotes.append( vlg.gestion_voteEliminatoire() )
         
     await asyncio.gather(*coroutinesVotes)
     
-    await fVlg.gestion_dissolutions_meurtres_exils(meutre_nocturne = False)
+    await fVlg.gestion_dissolutions_meurtres_exils(meurtre_nocturne = False)
     
     
     

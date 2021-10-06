@@ -11,7 +11,7 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Delta                             δ10                               12/07/2021
+Version Delta                             δ13                               12/07/2021
 """
 
 version = "δ10"
@@ -53,34 +53,12 @@ asyncio = fHab.asyncio
 
 
 
-# %% Réaction à un message
-
-async def event_reactions():
-    asyncio.create_task( fP0.          ajout_roleArtisans()  , name = "Ajout du rôle d'Artisant" )
-    asyncio.create_task( fP1.fIns.     reaction_Inscription(), name = "Inscription"              )
-    asyncio.create_task( fP1.fIns.fGrp.reaction_Groupe()     , name = "Changement de Groupe"     )
-
-
-
-
-
-# %% Envoie d'un message
-
-async def event_messages():
-    asyncio.create_task( fVlg.message_voteVillage()  , name = "Vote du village"          )
-    asyncio.create_task( fVlg.message_voteLoupGarou(), name = "Vote des Loups-Garous"    )
-
-
-
-
-
 # %% === on_ready ===
 
 @fDis.bot.event
 async def on_ready():
     
     fDis.def_constantes_discord()
-    
     
 #### Recherche de la phase en cours
     
@@ -89,9 +67,15 @@ async def on_ready():
     msgIntro = await fDis.channelHistorique.send(f"```⬢ -  Je suis connecté ! ({version} | {v.phaseEnCours})  - ⬢```\n`{v.maintenant()}` - Début du 'on_ready'")
     
     
+    
+    
+    
 #### Ajout du role ISEN Nantes aux membres du club étant sur le serveur
 
     await fP0.gestion_role_iseniens()
+    
+    
+    
     
     
 #### Redéfinition Groupes, Habitants et Villages
@@ -99,10 +83,24 @@ async def on_ready():
     await fGrp.redef_groupesExistants()
     
     
-#### Lancement des events 
     
-    asyncio.create_task( event_reactions() )
-    asyncio.create_task( event_messages () )
+    
+    
+#### Lancement des events
+
+##   Réaction à un message
+
+    asyncio.create_task( fP0.          ajout_roleArtisans()  , name = "Ajout du rôle d'Artisant" )
+    asyncio.create_task( fP1.fIns.     reaction_Inscription(), name = "Inscription"              )
+    asyncio.create_task( fP1.fIns.fGrp.reaction_Groupe()     , name = "Changement de Groupe"     )
+
+##   Envoie d'un message
+
+    asyncio.create_task( fVlg.message_voteVillage()          , name = "Vote du village"          )
+    asyncio.create_task( fVlg.message_voteLoupGarou()        , name = "Vote des Loups-Garous"    )
+    
+    
+    
     
     
 #### Lancement des attendes d'épitaphe
@@ -113,6 +111,9 @@ async def on_ready():
             asyncio.create_task( fHab.cimetiere(message = message, rappelDeFonction = True), name = f"Re-Lancement de Cimetière de {message.content}.")
     
     await msgIntro.edit( content = msgIntro.content + f"\n`{v.maintenant()}` - Fin du 'on_ready'")
+    
+    
+    
     
     
 #### Phase 3 - Récupération du numéro de Tour et Lancement du Tour

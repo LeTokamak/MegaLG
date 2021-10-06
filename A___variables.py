@@ -63,7 +63,7 @@ Juge_nbExil      = 2
 
 #### Paramètre de la Partie
 
-vote_aucunHabChoisi_meutreHasard = False
+vote_aucunHabChoisi_meurtreHasard = False
 vote_maire_voixBonus             = 1
 
 partiePdt_Weekend                = True

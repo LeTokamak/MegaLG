@@ -136,8 +136,8 @@ async def repartionGroupes_Villages() :
             sommeHab += grp.nbPersonne
             
         return sommeHab
-        
-        
+    
+    
     def verifVlg_Incoherent(vlg):
         villageIncoherent = False
             
@@ -147,12 +147,24 @@ async def repartionGroupes_Villages() :
                     villageIncoherent = True
             
         return villageIncoherent
+    
+    
+    def contient (L1, L2) :
+        """
+        Verifie si les élément de L2 sont contenus dans L1
+        """
+        L1_contient_L2 = True
         
+        for element in L2 :
+            if element not in L1 : L1_contient_L2 = False
+                
+        return L1_contient_L2
+    
     
     def suppressionVlg_identiques(liste_vlg):
         for vlg in liste_vlg :
             for vlg2 in liste_vlg :
-                if vlg != vlg2  and  habitants(vlg) == habitants(vlg2):
+                if vlg != vlg2  and  contient(habitants(vlg), habitants(vlg2)):
                     liste_vlg.remove(vlg)
     
     
@@ -171,35 +183,28 @@ async def repartionGroupes_Villages() :
                 
         return False
     
+    def verif_personneGrpDansVillage(liste_Vlg, grp):
+        for vlg in liste_Vlg :
+            for hab in habitants(vlg) :
+                if hab in grp.personnes :
+                    return True
+                
+        return False
     
     
-#### --- Variables ---
-    
-    listeGroupes   = list(fGrp.TousLesGroupes)
-    
-    margeHabitants = 0.00
     
     await fHab.redef_TousLesHabitants()
     
-    nbHabitants_parVillage_Souhaite = v.tailleVlg_Ideal
     
-    #nbVillages_Reel                 = 0
-    nbHabitants_parVillage_Reel     = nbHabitants_parVillage_Souhaite
+# =============================================================================
+#### --- Taille des villages ---
+# =============================================================================
     
-    ecartMin                        = len(fHab.TousLesHabitants) + 1
+    listeGroupes     = list(fGrp.TousLesGroupes)
+    margeHabitants   = 0.00
     
-    for n in range( 1, len(fHab.TousLesHabitants) + 1 ):
-        ecart = abs(len(fHab.TousLesHabitants)/n - nbHabitants_parVillage_Souhaite)
-        
-        if ecart < ecartMin :
-            #nbVillages_Reel             = n
-            nbHabitants_parVillage_Reel = len(fHab.TousLesHabitants) // n
-            
-            ecartMin                    = ecart
-    
-    
-    nbHab_parVlg_Min = int( nbHabitants_parVillage_Reel * (1 - margeHabitants) - 1 )
-    nbHab_parVlg_Max = int( nbHabitants_parVillage_Reel * (1 + margeHabitants) + 1 )
+    nbHab_parVlg_Min = int( v.tailleVlg_Ideal * (1 - margeHabitants) - 1 )
+    nbHab_parVlg_Max = int( v.tailleVlg_Ideal * (1 + margeHabitants) + 1 )
     
     listeVillages_Valides = []
     
@@ -207,28 +212,51 @@ async def repartionGroupes_Villages() :
     
     
     
-#### --- Nombre de personne dans chaque groupe ---
+# =============================================================================
+#### --- Listage des membres de chaque groupe ---
+# =============================================================================
+#
+#     Un attribut est ajouté a chaque groupe, c'est une liste qui
+#  contient les objets Habitants des membres du groupes.
+#
 
     for grp in listeGroupes :
+        
         grp.personnes = []
+        
         for hab in fHab.TousLesHabitants :
-            if hab.groupe == grp :
-                grp.personnes.append(hab)
+            if hab.groupe == grp         : grp.personnes.append(hab)
         
         grp.nbPersonne = len(grp.personnes)
     
     
     
     
-#### --- Nettoyages de listeGroupes ---
     
-#### Groupes vides || Suppression des groupes vides ou ne contanant qu'une personne (géré après en tant que personne manquante)
+# =============================================================================
+#### --- Nettoyages de listeGroupes ---
+# =============================================================================
+#
+#    Suppression des groupes ne pouvant pas former de village, ou formant déjà un village. 
+#
+  
+## -- Groupes vides -- 
+#
+# Suppression des groupes vides.
+# Suppression des groupes ne contanant qu'une personne (gérée après en tant que personne manquante).
+#
     
     listeGroupes = [grp for grp in listeGroupes if grp.nbPersonne >= 2]
     
     
     
-#### Groupes bons || Villages déjà formés (groupes ayant un bon nombre de personne)    
+## -- Groupes bons --
+#
+# Création    des villages déjà formés (groupes ayant un bon nombre de personne).
+# Suppression des villages formés à partir d'un sous-groupe d'un groupe formant un village.
+# Suppression des groupes pouvant former des villages.
+# Suppression des sous-groupes des villages formées.
+# 
     
     listeVillages_Valides.extend([ (grp,)  for  grp   in listeGroupes          if grp.nbPersonne in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1)])
     listeVillages_Valides =      [ (grp,)  for (grp,) in listeVillages_Valides if not estUnSousGroupe_dUnVlgValide(grp)]
@@ -238,107 +266,114 @@ async def repartionGroupes_Villages() :
     
     
     
-#### Groupes surchargés || Suppression des sur-groupes ayant un trop grand nombre de personnes
-    
-# Créations de village composé d'un seul sous-groupe ayant trop de membre
+## -- Groupes surchargés --
+#
+# Créations de village composé d'un seul sous-groupe ayant trop de membre.
+# Suppression des groupes ayant trop de membre :
+#     sur-groupes  trop chargés ==> A supprimer          (les personnes supprimées sont gérés dans les personnes manquantes) 
+#     sous-groupes trop chargés ==> Devenus des villages
+#    
+
     listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes   if (grp.nbPersonne >  nbHab_parVlg_Max  and  not estUnSurGroupe(grp))])
     
-    
-# Suppression des groupes ayant trop de membre (sur-groupes ==> A supprimer (les personnes supprimées sont gérés dans personnes manquantes) , sous-groupe ==> devenu des villages )
     listeGroupes =               [  grp    for grp in listeGroupes   if  grp.nbPersonne <= nbHab_parVlg_Max ]
     
     
     
     
     
-#### --- Classement des Groupes par nombre de personne ---
-    """
-    PAS ENCORE UTILISE
+# =============================================================================
+# ============                                                     ============
+# ============   RECHERCHE DES MEILLEURES COMPOSITIONS DE VILLAGE  ============
+# ============                                                     ============
+# =============================================================================
     
-    listeGroupes_Tries = []
-    
-    for i in range(1, nbHab_parVlg_Min + 1):
-        listeGroupes_Tries.append([])
-    
-    for grp in listeGroupes :
-        listeGroupes_Tries[grp.nbPersonne].append(grp)
-    
-    listeGroupes_Restants = list(listeGroupes_Tries)
-    """
-    
-    
-    
-    
-    
-#### --- Listage de toutes les combinaison ---
-    
-    composition_canton_Trouve = False
-    
-    while not composition_canton_Trouve :
-        
-        liste_VlgPossibles = []
-    
-#### Il y a peu de groupe : Listage complet
-        
-        if len(listeGroupes) <= 30 :
-            
-            for n in range(1,8):
-                liste_VlgPossibles.extend( list(itertools.combinations(listeGroupes, n)) )
-                
-#### Il y a plus de groupe : Pré-triage et Listage des villages intéressants
-        
-        
-#### Il y a trop de groupe : Listage impossible
-        
-        else :
-            await fDis.channelHistorique.send("**ERREUR** - Il y a trop de groupes (> 30)")
-        
-        
-        
-        
-        
-#### --- Tri des villages Possibles ---    
-    
-#### 1er Tri : Suppression des villages trop petit ou trop grop et des villages incohérents
-        
-        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) ]
-        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg)                                     ]
-        
-        
-        
-#### 2ème Tri : Gestions des groupes Supprimé lors du 1er Tri
-        
-#### Listage des groupes manquants
+    listeGroupes_aCombiner = list(listeGroupes)
 
-        def verif_personneGrpDansVillage(liste_Vlg, grp):
-            for vlg in liste_Vlg:
-                if grp.personnes[0] in habitants(vlg) :
-                    return True
-                
-            return False
+# =============================================================================
+#### --- Listage de toutes les combinaison ---
+# =============================================================================        
+#
+#     Listage des tous les combinaison de groupes (ou villages) possibles,
+#  ce calcul de cobinaison est très complexe, donc pour limiter le temps de 
+#  calcul, des limites sont imposées par le programme. 
+#     Elles concernent :
+#        - Le nombre de groupe utilisé pour faire les combinaisons.
+#        - Le nombre de groupe pouvant former un village.
+#
+
+    limite_nbGrp_max_combinaison = 30
+    limite_nbGrp_par_combinaison = 8
+    
+# S'il y a trop de groupe : Le listage est imcomplet, seule une partie des groupes est combiné 
+
+    if len(listeGroupes) > limite_nbGrp_max_combinaison :
         
-        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
+        await fDis.channelHistorique.send(f"Il y a trop de groupes (> {limite_nbGrp_max_combinaison}) - Le listage n'est que partiel")
+        listeGroupes_aCombiner = rd.sample(listeGroupes_aCombiner, limite_nbGrp_max_combinaison)
+    
+    liste_VlgPossibles = []
         
-#### Ajouts des petits groupes manquants au villages qui peuvent les accueillir 
+    for n in range(1, limite_nbGrp_par_combinaison):
+        liste_VlgPossibles.extend( list(itertools.combinations(listeGroupes_aCombiner, n)) )
+    
+    
+    
+    
+    
+# =============================================================================
+#### --- Tri des villages Possibles ---    
+# =============================================================================
+    
+#### -- 1er Tri :
+# 
+# Suppression des villages trop grop.
+# Suppression des villages incohérents.
+#
+        
+    liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) <= nbHab_parVlg_Max ]
+    liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg)        ]
+        
+        
+#### -- 2ème Tri :
+#
+# Gestions des groupes n'étant dans aucun village possible.
+#
+
+# --- Listage des groupes manquants ---
+        
+    grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
+    
+    
+    
+# --- Ajouts des petits groupes manquants au villages qui peuvent les accueillir ---
+        
+    for vlg in liste_VlgPossibles :
+        rd.shuffle(grpManquant)
         
         for grp in grpManquant :
-            for vlg in liste_VlgPossibles : 
-                if nbHabitant(vlg) + grp.nbPersonne < nbHab_parVlg_Max :
-                    vlg += ( grp ,)
-        
-        grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
+            
+            if nbHabitant(vlg) + grp.nbPersonne <= nbHab_parVlg_Max :
+                vlg += ( grp ,)
     
-#### Formation d'un village avec les groupes manquants restants
-        
-        if len(grpManquant) != 0 :
-            liste_VlgPossibles.append(tuple(grpManquant))
-        
-        
-        
-#### 3ème Tri : Suppresion des villages ayant les même habitants
-        
-        suppressionVlg_identiques(liste_VlgPossibles)
-        suppressionVlg_identiques(listeVillages_Valides)
+    grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
+    
+    
+    
+# --- Formation d'un village avec les groupes manquants restants ---
+    
+    if len(grpManquant) != 0 :
+        liste_VlgPossibles.append(tuple(grpManquant))
+    
+    
+    
+#### -- 3ème Tri : --
+#
+# Suppresion des villages ayant les même habitants
+#
+       
+    suppressionVlg_identiques( liste_VlgPossibles    )
+    suppressionVlg_identiques( listeVillages_Valides )
         
     
         
@@ -351,40 +386,47 @@ async def repartionGroupes_Villages() :
     
     
     
-#### --- Determination des villages validés ---
+# =============================================================================
+#### --- Sélection des villages validés ---
+# =============================================================================
+#
+# Validation des villages contenant un groupe présent qu'une fois.
+#
     
-#### Mise de côté des village contenant un groupe présent qu'une fois
-    
-        for grp in listeGroupes :
-            
-            comptePresenceGrp = 0
+    for grp in listeGroupes :
+        
+        comptePresenceGrp = 0
+        for vlg in liste_VlgPossibles :
+            if grp in vlg : comptePresenceGrp += 1
+        
+        if comptePresenceGrp == 1 :
             for vlg in liste_VlgPossibles :
                 if grp in vlg :
-                    comptePresenceGrp += 1
-            
-            if comptePresenceGrp == 1 :
-                for vlg in liste_VlgPossibles :
-                    if grp in vlg :
-                        listeVillages_Valides.append(vlg)
-                        liste_VlgPossibles.remove(vlg)
-                        for grp in vlg :
-                            try    : listeGroupes.remove(grp)
-                            except : pass
+                    listeVillages_Valides.append(vlg)
+                    liste_VlgPossibles   .remove(vlg)
+    
+    
+    suppressionVlg_identiques( listeVillages_Valides )
+    
+    listeGroupes_nonValides = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(listeVillages_Valides, grp) ]
+    
+    
+    
+    
+    
+# Sélection des autres villages 
+    """
+    if len(listeGroupes_nonValides) != 0 :
+        
+        for 
         
         
-        suppressionVlg_identiques(listeVillages_Valides)
-        
-        listeGroupes = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(listeVillages_Valides, grp) ]
         
         
         
-#### ===== FIN DE LA BOUCLE ====
-
-        if len(listeGroupes) == 0 :
-            composition_canton_Trouve = True
-            
-        else :
-            message = "On a tous tenté mais il reste des groupes qui respecte tous les critères, lesquels veux-tu choisir et garder (envoie les villages a garder sous cette forme : '12 54 94 2 0 47') :"
+        
+        
+        message = "On a tous tenté mais il reste des groupes qui respecte tous les critères, lesquels veux-tu choisir et garder (envoie les villages a garder sous cette forme : '12 54 94 2 0 47') :"
             
             for i in range(len(liste_VlgPossibles)) :
                 vlg = liste_VlgPossibles[i]
@@ -404,7 +446,7 @@ async def repartionGroupes_Villages() :
             composition_canton_Trouve = True
     
     
-    
+    """
 
     
 #### --- Suppression des villages qui contiennent toutes les pers d'un autre village ---

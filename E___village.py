@@ -820,9 +820,9 @@ class Village :
                 
 ##  Modification de InfosJoueurs
             
-            fGoo.ajoutVal_cellule_avec( "Infecté "            , fGoo.clef_caractJoueur,
+            fGoo.ajoutVal_cellule_avec( "Infecté "                , fGoo.clef_caractJoueur,
                                         habitantInfecte.matricule , fGoo.clef_Matricule   ,
-                                        fGoo.page1_InfoJoueurs                          )
+                                        fGoo.page1_InfoJoueurs                             )
             
             
 ##  Gestion des Permissions
@@ -1350,7 +1350,7 @@ class Village :
             
 #### ||| Variante 1 ||| Choix de l'habitant tué au hasard
             
-            if v.vote_aucunHabChoisi_meutreHasard :
+            if v.vote_aucunHabChoisi_meurtreHasard :
                 persTue        = rd.choice( self.habitants )
                 
                 contenuMsg_Sentence  =  "Comme personne n'a voté, un habitant choisi au hasard partira sur le bûcher !\n"
@@ -1411,7 +1411,7 @@ class Village :
             
             
             
-#### --- Meutre ---
+#### --- Meurtre ---
             
             else :
                 
@@ -1908,8 +1908,8 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
         contenuMsg_vlg_non_dissous  = "*Le village aurait dû être dissous. **CEPENDANT**, c'est le dernier restant, sa dissolution a été **annulé** !*\n"
         contenuMsg_vlg_non_dissous += "> *Mais le maire, va quand même être tué... Il va donc falloir en élire un nouveau !*"
         
-        await village_non_dissous.salonBucher.send( contenuMsg_CEPENDANT )
-        await village_non_dissous.salonBucher.send(contenuMsg_vlg_non_dissous)
+        await village_non_dissous.salonBucher.send( contenuMsg_CEPENDANT       )
+        await village_non_dissous.salonBucher.send( contenuMsg_vlg_non_dissous )
         
 
 #### Dissolution des villages
@@ -1920,7 +1920,7 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
     
     
 # =============================================================================
-#### --- Meutre de tous les habitants à tuer ---
+#### --- Meurtre de tous les habitants à tuer ---
 # =============================================================================
 
     for element in tous_les_habitants_a_tuer :
@@ -1931,7 +1931,7 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
         village = village_avec(habitant_a_tuer.numVlg, "numero")
         
         await habitant_a_tuer.Tuer( village         = village                     , 
-                                    meutreNocturne  = meurtre_nocturne            , 
+                                    meurtreNocturne = meurtre_nocturne            , 
                                     suicideAmoureux = amant_tue_en_premier != None, 
                                     premAmoureuxTue = amant_tue_en_premier          )
         
@@ -2219,14 +2219,14 @@ async def SupprTousVlg (ctx):
      
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
-async def Meutre (ctx, matricule_hab_tue):
+async def Meurtre (ctx, matricule_hab_tue):
 
     if v.phaseEnCours == v.phase3 :
 
         hab_tue = fHab.habitant_avec(int(matricule_hab_tue))
         
         await hab_tue.Tuer()
-        await fDis.channelHistorique.send(f"{hab_tue.user.mention}  |  {hab_tue.matricule} {hab_tue.prenom} {hab_tue.nom} - ( {hab_tue.groupe} ) vient d'être tué (meutre ordonné par {ctx.author})")
+        await fDis.channelHistorique.send(f"{hab_tue.user.mention}  |  {hab_tue.matricule} {hab_tue.prenom} {hab_tue.nom} - ( {hab_tue.groupe} ) vient d'être tué (meurtre ordonné par {ctx.author})")
 
 
 

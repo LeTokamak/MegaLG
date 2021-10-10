@@ -120,7 +120,11 @@ async def numerotationHabitants():
 
 
 
-async def repartionGroupes_Villages() :
+# %% Répartition des Groupes en Villages 
+
+async def repartitionGroupes_Villages() :
+    
+# %%% Sous-fonctions
     
     def habitants(vlg):
         habsVlg = []
@@ -156,7 +160,7 @@ async def repartionGroupes_Villages() :
         L1_contient_L2 = True
         
         for element in L2 :
-            if element not in L1 : L1_contient_L2 = False
+            L1_contient_L2 = L1_contient_L2  and  element not in L1
                 
         return L1_contient_L2
     
@@ -164,6 +168,7 @@ async def repartionGroupes_Villages() :
     def suppressionVlg_identiques(liste_vlg):
         for vlg in liste_vlg :
             for vlg2 in liste_vlg :
+                
                 if vlg != vlg2  and  contient(habitants(vlg), habitants(vlg2)):
                     liste_vlg.remove(vlg)
     
@@ -192,7 +197,10 @@ async def repartionGroupes_Villages() :
         return False
     
     
+# %%% Début de la fonction
     
+    await fDis.channelHistorique.send("``` --- Début de la répartition des joueurs en villages --- ```")
+
     await fHab.redef_TousLesHabitants()
     
     
@@ -207,6 +215,8 @@ async def repartionGroupes_Villages() :
     nbHab_parVlg_Max = int( v.tailleVlg_Ideal * (1 + margeHabitants) + 1 )
     
     listeVillages_Valides = []
+    
+    await fDis.channelHistorique.send(f"> nbHab_parVlg_Min = {nbHab_parVlg_Min}\n> nbHab_parVlg_Max = {nbHab_parVlg_Max}")
     
     
     
@@ -276,20 +286,40 @@ async def repartionGroupes_Villages() :
 
     listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes   if (grp.nbPersonne >  nbHab_parVlg_Max  and  not estUnSurGroupe(grp))])
     
-    listeGroupes =               [  grp    for grp in listeGroupes   if  grp.nbPersonne <= nbHab_parVlg_Max ]
+    listeGroupes_nonValides =    [  grp    for grp in listeGroupes   if  grp.nbPersonne <= nbHab_parVlg_Max ]
     
     
     
     
     
-# =============================================================================
-# ============                                                     ============
-# ============   RECHERCHE DES MEILLEURES COMPOSITIONS DE VILLAGE  ============
-# ============                                                     ============
-# =============================================================================
+## -- Envoie de listeGroupes_nonValides et de listeVillages_Valides --
     
-    listeGroupes_aCombiner = list(listeGroupes)
-
+    msgLogs  = "_ _\n\n\n ` Après nettoyages des groupes `\n"
+    
+    msgLogs += "listeVillages_Valides ="
+    
+    for vlg in listeVillages_Valides :
+        msgLogs += f"\n> {vlg} **( {nbHabitant(vlg)} )**"
+        
+    msgLogs += "\n\n"
+    msgLogs += "listeGroupes_nonValides ="
+    
+    for grp in listeGroupes_nonValides :
+        msgLogs += f"\n> {grp} **( {grp.nbPersonne} )**"
+    
+    await fDis.envoieMsg( fDis.channelHistorique, msgLogs )
+    
+    
+    
+    
+    
+    
+# %%% Boucle de Répartition des groupes non validés en villages
+    
+    while len(listeGroupes_nonValides) != 0 :
+        
+        listeGroupes_aCombiner = list(listeGroupes_nonValides)
+        
 # =============================================================================
 #### --- Listage de toutes les combinaison ---
 # =============================================================================        
@@ -301,170 +331,186 @@ async def repartionGroupes_Villages() :
 #        - Le nombre de groupe utilisé pour faire les combinaisons.
 #        - Le nombre de groupe pouvant former un village.
 #
-
-    limite_nbGrp_max_combinaison = 30
-    limite_nbGrp_par_combinaison = 8
-    
+        
+        limite_nbGrp_max_combinaison = 30
+        limite_nbGrp_par_combinaison = 8
+        
 # S'il y a trop de groupe : Le listage est imcomplet, seule une partie des groupes est combiné 
-
-    if len(listeGroupes) > limite_nbGrp_max_combinaison :
         
-        await fDis.channelHistorique.send(f"Il y a trop de groupes (> {limite_nbGrp_max_combinaison}) - Le listage n'est que partiel")
-        listeGroupes_aCombiner = rd.sample(listeGroupes_aCombiner, limite_nbGrp_max_combinaison)
-    
-    liste_VlgPossibles = []
+        if len(listeGroupes_nonValides) > limite_nbGrp_max_combinaison :
+            
+            await fDis.channelHistorique.send(f"Il y a trop de groupes (> {limite_nbGrp_max_combinaison}) - Le listage n'est que partiel")
+            listeGroupes_aCombiner = rd.sample(listeGroupes_aCombiner, limite_nbGrp_max_combinaison)
         
-    for n in range(1, limite_nbGrp_par_combinaison):
-        liste_VlgPossibles.extend( list(itertools.combinations(listeGroupes_aCombiner, n)) )
-    
-    
-    
-    
-    
+        liste_VlgPossibles = []
+        
+        for n in range(1, limite_nbGrp_par_combinaison):
+            liste_VlgPossibles.extend( list(itertools.combinations(listeGroupes_aCombiner, n)) )
+        
+        
+        
+        
+        
 # =============================================================================
 #### --- Tri des villages Possibles ---    
 # =============================================================================
-    
-#### -- 1er Tri :
+        
+#### - 1er Tri :
 # 
 # Suppression des villages trop grop.
 # Suppression des villages incohérents.
 #
-        
-    liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) <= nbHab_parVlg_Max ]
-    liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg)        ]
-        
-        
-#### -- 2ème Tri :
+            
+        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   nbHabitant(vlg) <= nbHab_parVlg_Max ]
+        liste_VlgPossibles = [ vlg   for vlg in liste_VlgPossibles if   not verifVlg_Incoherent(vlg)        ]
+            
+            
+#### - 2ème Tri :
 #
 # Gestions des groupes n'étant dans aucun village possible.
 #
-
+    
 # --- Listage des groupes manquants ---
-        
-    grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
-    
-    
-    
-# --- Ajouts des petits groupes manquants au villages qui peuvent les accueillir ---
-        
-    for vlg in liste_VlgPossibles :
-        rd.shuffle(grpManquant)
-        
-        for grp in grpManquant :
             
-            if nbHabitant(vlg) + grp.nbPersonne <= nbHab_parVlg_Max :
-                vlg += ( grp ,)
-    
-    grpManquant = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
-    
-    
-    
-# --- Formation d'un village avec les groupes manquants restants ---
-    
-    if len(grpManquant) != 0 :
-        liste_VlgPossibles.append(tuple(grpManquant))
-    
-    
-    
-#### -- 3ème Tri : --
-#
-# Suppresion des villages ayant les même habitants
-#
-       
-    suppressionVlg_identiques( liste_VlgPossibles    )
-    suppressionVlg_identiques( listeVillages_Valides )
+        grpManquant = [ grp   for grp in listeGroupes_nonValides   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
         
-    
         
-# Ici liste_VlgPossibles ne contient que :
+        
+# --- Ajouts des petits groupes manquants au villages qui peuvent les accueillir ---
+            
+        for vlg in liste_VlgPossibles :
+            rd.shuffle(grpManquant)
+            
+            for grp in grpManquant :
+                
+                if nbHabitant(vlg) + grp.nbPersonne <= nbHab_parVlg_Max :
+                    vlg += ( grp ,)
+        
+        grpManquant = [ grp   for grp in listeGroupes_nonValides   if not verif_personneGrpDansVillage(liste_VlgPossibles, grp) ]
+        
+        
+        
+# --- Formation de villages avec les groupes manquants restants ---
+        
+        if len(grpManquant) != 0 :
+            
+            nb_hab_nv_Vlg = 0
+            nv_Vlg        = ( )
+            
+            for grp in grpManquant :
+                
+                nb_hab_nv_Vlg +=   grp.nbPersonne
+                nv_Vlg        += ( grp ,)
+                
+                if nb_hab_nv_Vlg >= nbHab_parVlg_Min :
+                    
+                    liste_VlgPossibles.append(nv_Vlg)
+                    
+                    nb_hab_nv_Vlg = 0
+                    nv_Vlg        = ( )
+            
+            
+            if nv_Vlg != () :
+                liste_VlgPossibles.append(nv_Vlg)
+        
+        
+        
+#### - 3ème Tri :
+#
+# Suppresion des villages possibles ayant les même habitants
+#
+        
+        suppressionVlg_identiques( liste_VlgPossibles )
+        
+        
+        
+# A ce stade, liste_VlgPossibles ne contient que :
 #   - des villages de bonne taille          (sauf un eventuel village créer avec les groupes manquants restants)
 #   - des villages cohérents INDEPENDAMMENT (cad pas de sous-groupe associer avec un de ses sur-groupe)
 #   - des villages différents               (aucun village n'ont les même habitants)
-    
-    
-    
-    
-    
+        
+        msgLogs  = "_ _\n\n\n ` Boucle  -  Suite au tri des villages Possibles `\n"
+        
+        msgLogs += "listeVillages_Valides ="
+        
+        for vlg in listeVillages_Valides :
+            msgLogs += f"\n> {vlg} **( {nbHabitant(vlg)} )**"
+            
+        msgLogs += "\n\n"
+        msgLogs += "liste_VlgPossibles ="
+        
+        for vlg in liste_VlgPossibles :
+            msgLogs += f"\n> {vlg} **( {nbHabitant(vlg)} )**"
+        
+        await fDis.envoieMsg( fDis.channelHistorique, msgLogs )
+        
+        await asyncio.sleep(2)
+        
+        
+        
+        
+        
 # =============================================================================
-#### --- Sélection des villages validés ---
+#### --- Validation de villages ---
 # =============================================================================
 #
 # Validation des villages contenant un groupe présent qu'une fois.
 #
-    
-    for grp in listeGroupes :
         
-        comptePresenceGrp = 0
-        for vlg in liste_VlgPossibles :
-            if grp in vlg : comptePresenceGrp += 1
-        
-        if comptePresenceGrp == 1 :
+        for grp in listeGroupes_nonValides :
+            
+            comptePresenceGrp = 0
             for vlg in liste_VlgPossibles :
-                if grp in vlg :
-                    listeVillages_Valides.append(vlg)
-                    liste_VlgPossibles   .remove(vlg)
-    
-    
-    suppressionVlg_identiques( listeVillages_Valides )
-    
-    listeGroupes_nonValides = [ grp   for grp in listeGroupes   if not verif_personneGrpDansVillage(listeVillages_Valides, grp) ]
-    
-    
-    
-    
-    
-# Sélection des autres villages 
-    """
-    if len(listeGroupes_nonValides) != 0 :
-        
-        for 
+                if grp in vlg : comptePresenceGrp += 1
+            
+            if comptePresenceGrp == 1 :
+                for vlg in liste_VlgPossibles :
+                    if grp in vlg :
+                        listeVillages_Valides.append(vlg)
+                        liste_VlgPossibles   .remove(vlg)
+                        
+                        await fDis.channelHistorique.send(f"Boucle - Validation de {vlg}, car c'est le seul village où {grp} est présent.")
         
         
         
         
         
+# Sélection d'un autre village (au hasard) 
+        
+        vlg_choisi = rd.choice(liste_VlgPossibles)
+        
+        await fDis.channelHistorique.send(f"Boucle - Sélection de {vlg_choisi} au hasard parmis la liste des villages possibles.")
+        
+        listeVillages_Valides.append(vlg_choisi)
+        
+        del(liste_VlgPossibles)
         
         
-        message = "On a tous tenté mais il reste des groupes qui respecte tous les critères, lesquels veux-tu choisir et garder (envoie les villages a garder sous cette forme : '12 54 94 2 0 47') :"
+        
+        suppressionVlg_identiques( listeVillages_Valides )
+        
+        listeGroupes_nonValides = [ grp   for grp in listeGroupes_nonValides   if not verif_personneGrpDansVillage(listeVillages_Valides, grp) ]
+        
+        
+        
+        
+        
+# Cas où le rassemblement de tous les groupes non validés forme un village trop petit 
+        
+        if nbHabitant( tuple(listeGroupes_nonValides) ) < nbHab_parVlg_Min :
             
-            for i in range(len(liste_VlgPossibles)) :
-                vlg = liste_VlgPossibles[i]
-                message += f"\n> n°{i}    [{nbHabitant(vlg)}]   - (  "
-                for grp in vlg :
-                    message += f"{grp} ({grp.nbPersonne})   ,   "
-                message += ")"
+            listeVillages_Valides.append(tuple(listeGroupes_nonValides))
+            listeGroupes_nonValides = []
             
-            await fDis.envoieMsg(fDis.userCamp, message)
-            reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
-            
-            for j in reponse.content.split():
-                listeVillages_Valides.append(liste_VlgPossibles[int(j)])
-            
-            del(liste_VlgPossibles)
-            
-            composition_canton_Trouve = True
-    
-    
-    """
-
-    
-#### --- Suppression des villages qui contiennent toutes les pers d'un autre village ---
-    
-    for vlg in listeVillages_Valides :
-        for vlg2 in listeVillages_Valides :
-            
-            habDansVlg2 = True
-            
-            for hab in habitants(vlg) :
-                habDansVlg2 = habDansVlg2  and  hab in habitants(vlg2)
-            
-            if habDansVlg2 and vlg != vlg2 :
-                listeVillages_Valides.remove(vlg)
+            await fDis.channelHistorique.send(f"Boucle - Ajout d'un village constitué des groupes non validés\n> {listeVillages_Valides[-1]}")
     
     
     
-#### --- Transformation des villages validés en liste d'habitants ---
+    
+    
+# %%% Gestion des personnes sans groupes
+    
+# Transformation des villages validés en liste d'habitants
     
     liste_VlgValides_Habs = []
     
@@ -473,69 +519,85 @@ async def repartionGroupes_Villages() :
     
     
     
-#### --- Gestion des personnes manquantes ---
+# Listage des joueurs restants
     
     listeJoueursRestants = list(fHab.TousLesHabitants)
-    for vlg in listeVillages_Valides :
-        for hab in habitants(vlg):
-            try :
-                listeJoueursRestants.remove(hab)
-            except :
-                print(f"ERREUR - Cette personne a déjà été supprimmé : {hab.member.display_name} ({vlg})")
     
+    for hab_vlg in liste_VlgValides_Habs :
+        
+        for hab in hab_vlg :
+            
+            try    : listeJoueursRestants.remove(hab)
+            except : await fDis.channelHistorique.send(f"ERREUR - Cette personne a déjà été supprimmé : {hab.member.display_name} ({hab_vlg})")
+    
+    
+    
+#### Création d'un village contenant tous les joueurs restants (si possible)
     
     if len(listeJoueursRestants) in range(nbHab_parVlg_Min, nbHab_parVlg_Max + 1) :
+        
         liste_VlgValides_Habs.append(tuple(listeJoueursRestants))
         listeJoueursRestants = []
-    
-    
-    
-#### Ajout des personnes restantes aux autres villages (manuellement)
-    
-    for hab in listeJoueursRestants :
         
-        grpJoueur = None
-        for grp in fGrp.TousLesGroupes :
-            if hab.groupe == grp :
-                grpJoueur = grp
-        
-        
-        message = f"Il reste {hab.member.mention} (il est dans {grpJoueur}) (envoie le village sous cette forme : '12') :"
-        
-        for i in range(len(listeVillages_Valides)) :
-            vlg = listeVillages_Valides[i]
-            message += f"\n> n°{i}    [{len(liste_VlgValides_Habs[i])}]   - (  "
-            for grp in vlg :
-                message += f"{grp} ({grp.nbPersonne})   ,   "
-            message += ")"
-        
-        await fDis.userCamp.send(message)
-        reponse = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
-        
-        liste_VlgValides_Habs[int(reponse.content)].append(hab)
+        await fDis.channelHistorique.send(f"Ajout d'un village constitué des joueurs restants\n> {liste_VlgValides_Habs[-1]}")
     
     
     
-#### Création d'un village avec toutes les personnes restantes, si possible
+#### Si c'est impossible, ajout des joueurs restants aux villages les moins peuplés
     
-    message = "Voici la liste des villages définitive :"
+    else :
+
+        for hab in listeJoueursRestants :
+            
+# Recherche du village le moins peuplé
+            
+            hab_vlg_moins_peuple = liste_VlgValides_Habs[0]
+            
+            for hab_vlg in liste_VlgValides_Habs :
+                
+                if len(hab_vlg) < len(hab_vlg_moins_peuple) :
+                    hab_vlg_moins_peuple = hab_vlg
+            
+            
+            index_vlg_moins_peuple = liste_VlgValides_Habs.index( hab_vlg_moins_peuple )
+            
+            
+            
+# Ajout de la personne au village le moins peuplé
+
+            liste_VlgValides_Habs[index_vlg_moins_peuple].append(hab)
+    
+    
+    
+    
+    
+# %%% Création des villages
+    
+# Envoie de la liste des villages définitifs
+
+    msgLogs  = "_ _\n\n\n ` Voici la liste des villages définitive : `\n"
     
     for i in range(len(liste_VlgValides_Habs)) :
+        
         vlg = liste_VlgValides_Habs[i]
-        message += f"\n> n°{i}    [{ len(vlg) }]   - (   "
+        
+        msgLogs += f"\n> n°{i}    [{ len(vlg) }]   - (   "
+        
         for joueur in vlg :
-            message += f"{joueur.member.display_name}   ,   "
-        message += ")"
+            msgLogs += f"{joueur.member.display_name}   ,   "
+            
+        msgLogs += ")"
     
-    await fDis.userCamp.send(message)
+    await fDis.envoieMsg( fDis.channelHistorique, msgLogs )
+    
+    await asyncio.sleep(1)
     
     
     
-#### --- Création des villages ---
+#### Association des habitants à leur village
     
     donneeJoueur = fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs)
     
-#### Association des habitants à leur village
     
     for i in range(len(liste_VlgValides_Habs)) :
         
@@ -543,23 +605,29 @@ async def repartionGroupes_Villages() :
         
         for hab in vlg :
             ligne, numLigne = fGoo.ligne_avec( hab.member.id, fGoo.clef_idDiscord, donneeJoueur )
-            fGoo.remplacerVal_ligne( i+1 , fGoo.clef_numVillage, numLigne, fGoo.page1_InfoJoueurs )
+            
+            fGoo.remplacerVal_ligne( i+1                   , fGoo.clef_numVillage, 
+                                     numLigne              , 
+                                     fGoo.page1_InfoJoueurs                       )
         
-        await asyncio.sleep(1)
+            await asyncio.sleep(0.1)
     
-    await fHab.redef_TousLesHabitants()
+    
     
 #### Création des villages
+
+    await fHab.redef_TousLesHabitants()
     
     for i in range(len(liste_VlgValides_Habs)) :
     
         await fVlg.creationVillage( numNouvVillage = i+1 )
-        
         await asyncio.sleep(0.5)
 
 
 
 
+
+# %% Distribution des rôles
 
 async def distributionRole(village):
     
@@ -646,7 +714,7 @@ async def distributionRole(village):
 
 
 
-# %%% Commandes
+# %% Commandes
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
@@ -656,14 +724,14 @@ async def DebutPartie (ctx):
     
     await fDis.channelHistorique.edit(topic = v.phase2)
     
-    await finInscription()
+    #await finInscription()
     await numerotationHabitants()
     
     
     
 #### DP_2
     
-    await repartionGroupes_Villages()
+    await repartitionGroupes_Villages()
     
     
     
@@ -703,7 +771,7 @@ async def DP_1 (ctx):
 @fDis.commands.has_permissions(ban_members = True)
 async def DP_2 (ctx):
     
-    await repartionGroupes_Villages()
+    await repartitionGroupes_Villages()
     
 
 

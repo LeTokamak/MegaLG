@@ -14,7 +14,7 @@ Créé par Clément Campana
 Version Delta                             δ13                               12/07/2021
 """
 
-version = "δ10"
+version = "δ13"
 
 
 # import MegaLG_Test

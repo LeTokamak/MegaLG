@@ -136,6 +136,6 @@ async def Tour():
     
     await asyncio.sleep( 5*60 )
     
-    await fDis.channelHistorique.send(f"{fDis.roleMaitre.mention}\nLe soleil ne va plus tardé à se coucher !\n> Il est {v.maintenant()}.")
+    await fDis.channelHistorique.send(f"Le soleil ne va plus tardé à se coucher !\n> Il est {v.maintenant()}.")
     
     v.plantage()

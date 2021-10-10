@@ -1077,8 +1077,8 @@ class Village :
             contenuMsg = f"*Aucun habitant de {self.nom} n'a été tué cette nuit*"
             
             if v.nbTours - 1 == 0 :
-                contenuMsg += " ***(Nuit n°0)***"
-                contenuMsg += "> *Pour rappel : la Nuit n°0 est une nuit qui se passe comme les autres, mais elle n'a **aucune conséquence**.*"
+                contenuMsg += "\n> **(Nuit n°0)**"
+                contenuMsg += "\n> *__Pour rappel :__ la Nuit n°0 est une nuit qui se passe comme les autres, mais elle n'a **aucune conséquence**.*"
             
             await self.salonBucher.send(contenuMsg)
         
@@ -1995,12 +1995,24 @@ async def fct_vote(member, contenuMsg):
     
     if village.typeScrutin != None  or  village.voteLG_EnCours:
         
-#### Essaye de int le msg
+#### Gestion de la fonction de random
         
-        try :
-            matriculeHab_Choisi = int(contenuMsg)
-        except :
-            matriculeHab_Choisi = None
+        if contenuMsg in ["Random", "random", "Rd", "rd", "R", "r"]:
+            
+            matriculeHab_Choisi = habVlg.matricule
+            
+            while matriculeHab_Choisi == habVlg.matricule :
+                
+                habChoisi           = rd.choice( village.habitants )
+                matriculeHab_Choisi = habChoisi.matricule
+        
+        
+        
+#### Essaye de int le msg
+
+        else :
+            try    : matriculeHab_Choisi = int(contenuMsg)
+            except : matriculeHab_Choisi = None
         
         
         

@@ -475,13 +475,19 @@ async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
 # Suppression des salons des groupes
 
     for grp in TousLesGroupes :
-       await grp.salon.delete()
+        try :
+            await grp.salon.delete()
+        except :
+            pass
 
 
 # Suppression des messages d'entrées des groupes de rang 1
 
-       if grp.rang == 1 :
-           await grp.MsgEntree.delete()
+        if grp.rang == 1 :
+            try :
+                await grp.MsgEntree.delete()
+            except :
+                pass
 
 
 # Suppression des idDiscord dans fGoo.page_Groupes

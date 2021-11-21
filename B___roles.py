@@ -366,7 +366,8 @@ role_FamilleNb [clefEmbed] = Ebd_Famill
 # Création des embeds des Autres Roles 
 # =============================================================================
 
-AutresRoles = TousLesRoles.remove(role_FamilleNb)
+AutresRoles = list(TousLesRoles)
+AutresRoles.remove(role_FamilleNb)
 
 for role in AutresRoles :
     

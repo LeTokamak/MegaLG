@@ -27,31 +27,31 @@ nbDigit_Matricule = 3
 
 tailleVlg_Ideal = 12
 
-prop_Villag        = 0
-prop_VillaVilla    = 0
-prop_Cupido        = 0
-prop_Ancien        = 0
+prop_Villag        = 1
+prop_VillaVilla    = 1
+prop_Cupido        = 1
+prop_Ancien        = 1
 
 prop_Salvat        = 2
 prop_Sorcie        = 2
 prop_Voyant        = 2
-prop_Voyante_dAura = 0
+prop_Voyante_dAura = 1
 
 prop_Corbea        = 1
 prop_Hirond        = 1
 prop_Juge          = 1
 
-prop_Chasse        = 0
+prop_Chasse        = 1
       
-prop_Famill        = 0
+prop_Famill        = 1
 
 prop_LG            = 2
-prop_LGNoir        = 0
+prop_LGNoir        = 1
 prop_LGBleu        = 1
-prop_Traitre       = 0
+prop_Traitre       = 1
 
-prop_LGBlan        = 0
-prop_EnSauv        = 0
+prop_LGBlan        = 1
+prop_EnSauv        = 1
 
 
 

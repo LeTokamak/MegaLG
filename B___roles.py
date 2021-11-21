@@ -224,7 +224,7 @@ role_Ancien       [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/asset
 role_Salvateur    [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte4.png"
 role_Sorciere     [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte5.png"
 role_Voyante      [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte3.png"
-role_Voyante_dAura[clefImage] = "https://cdn.discordapp.com/attachments/778152934948470834/911209529331560468/Voyante_dAura.png"
+role_Voyante_dAura[clefImage] = "https://cdn.discordapp.com/attachments/911407078646640720/912048950394114089/Voyante_dAura.png"
 
 role_Chasseur     [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte6.png"
 role_Corbeau      [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte17.png"
@@ -237,8 +237,8 @@ role_Juge         [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/asset
 
 role_LG           [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte2.png"
 role_LGNoir       [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte21.png"
-role_LGBleu       [clefImage] = "https://cdn.discordapp.com/attachments/778152934948470834/788836782279884800/le-loup-garou-bleu.png"
-role_Traitre      [clefImage] = "https://cdn.discordapp.com/attachments/778152934948470834/911400426534998067/Traitre.png"
+role_LGBleu       [clefImage] = "https://cdn.discordapp.com/attachments/911407078646640720/912048867434979338/LG_Bleu.png"
+role_Traitre      [clefImage] = "https://cdn.discordapp.com/attachments/911407078646640720/912048976000335912/Traitre-min.png"
 
 role_LGBlanc      [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte9.png"
 role_EnfantSauv   [clefImage] = "https://www.loups-garous-en-ligne.com/jeu/assets/images/carte16.png"

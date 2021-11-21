@@ -57,6 +57,8 @@ class Village :
         self.roleDiscordMort= None
         
         self.categorie      = None
+        self.categorie_LG   = None
+        self.categorie_FN   = None
         
         self.salonRapport   = None
         self.salonCimetiere = None
@@ -230,7 +232,7 @@ class Village :
                 else :
                     self.matriculeHab_choixConseilLG =  resultatsTries[0][0]
                     persChoisie                         =  fHab.habitant_avec(self.matriculeHab_choixConseilLG)
-                    debutMsgResultat                    = f"**{persChoisie.prenom} {persChoisie.nom}** ({persChoisie.groupe}) est la victime designée par le conseil !\n" 
+                    debutMsgResultat                    = f"**{persChoisie.pseudo}** ({persChoisie.groupe}) est la victime designée par le conseil !\n" 
             
             
 ### Message de présentation des résultats
@@ -280,28 +282,29 @@ class Village :
         
 
 # =============================================================================
-#### Création de la Catégorie du Village
+#### Création des Catégories du Village
 # =============================================================================
 
-        self.categorie = await fDis.serveurMegaLG.create_category( name = f"⬢ - {self.nom} - ⬢" , position = fDis.CategoryChannel_GestionGrp.position + 1 )
-        
+        self.categorie    = await fDis.serveurMegaLG   .create_category( name = f"⬢ - {self.nom} - ⬢" , position = fDis.CategoryChannel_GestionGrp.position + 1 )
+        self.categorie_LG = await fDis.serveurMegaLG_LG.create_category( name = f"⬢ - {self.nom} - ⬢" , position = fDis.CategoryChannel_GestionGrp.position + 1 )
+        self.categorie_FN = await fDis.serveurMegaLG_FN.create_category( name = f"⬢ - {self.nom} - ⬢" , position = fDis.CategoryChannel_GestionGrp.position + 1 )
         
 # =============================================================================
 #### Création des Salons du Village
 # =============================================================================
 
-        self.salonRapport   = await self.categorie.create_text_channel ( "📋┃rapport-municipal"   , topic = f"Rapport Municipal {fMeP.de_dApostrophe(self.nom)}"              )
-        self.salonCimetiere = await self.categorie.create_text_channel ( "💀┃cimetière"           , topic = f"Cimetière {fMeP.de_dApostrophe(self.nom)}"                      )
-        self.salonBucher    = await self.categorie.create_text_channel ( "🔥┃bûcher"              , topic = f"Salon de Vote {fMeP.de_dApostrophe(self.nom)}"                  )
-        self.salonDebat     = await self.categorie.create_text_channel ( "🔪┃débats"              , topic = f"Salon de Débat {fMeP.de_dApostrophe(self.nom)}"                 )
-        self.vocalDebat     = await self.categorie.create_voice_channel( "📢┃débats"                                                                                          )
+        self.salonRapport   = await self.categorie   .create_text_channel ( "📋┃rapport-municipal"   , topic = f"Rapport Municipal {fMeP.de_dApostrophe(self.nom)}"              )
+        self.salonCimetiere = await self.categorie   .create_text_channel ( "💀┃cimetière"           , topic = f"Cimetière {fMeP.de_dApostrophe(self.nom)}"                      )
+        self.salonBucher    = await self.categorie   .create_text_channel ( "🔥┃bûcher"              , topic = f"Salon de Vote {fMeP.de_dApostrophe(self.nom)}"                  )
+        self.salonDebat     = await self.categorie   .create_text_channel ( "🔪┃débats"              , topic = f"Salon de Débat {fMeP.de_dApostrophe(self.nom)}"                 )
+        self.vocalDebat     = await self.categorie   .create_voice_channel( "📢┃débats"                                                                                          )
         
-        self.salonVoteLG    = await self.categorie.create_text_channel ( "🐺┃votes-du-conseil"    , topic = f"Salon de Vote des Loups-Garous {fMeP.de_dApostrophe(self.nom)}" )
-        self.salonConseilLG = await self.categorie.create_text_channel ( "🐺┃meute"               , topic = f"Débats entre les Loups-Garous {fMeP.de_dApostrophe(self.nom)}"  )
-        self.vocalConseilLG = await self.categorie.create_voice_channel( "🐺┃meute"                                                                                           )
+        self.salonVoteLG    = await self.categorie_LG.create_text_channel ( "🐺┃votes-du-conseil"    , topic = f"Salon de Vote des Loups-Garous {fMeP.de_dApostrophe(self.nom)}" )
+        self.salonConseilLG = await self.categorie_LG.create_text_channel ( "🐺┃meute"               , topic = f"Débats entre les Loups-Garous {fMeP.de_dApostrophe(self.nom)}"  )
+        self.vocalConseilLG = await self.categorie_LG.create_voice_channel( "🐺┃meute"                                                                                           )
         
-        self.salonFamilleNb = await self.categorie.create_text_channel ( "🏡┃la-maison-familiale" , topic = f"Maison familiale {fMeP.de_dApostrophe(self.nom)}"               )
-        self.vocalFamilleNb = await self.categorie.create_voice_channel( "🏡┃les débats familiaux"                                                                            )
+        self.salonFamilleNb = await self.categorie_FN.create_text_channel ( "🏡┃la-maison-familiale" , topic = f"Maison familiale {fMeP.de_dApostrophe(self.nom)}"               )
+        self.vocalFamilleNb = await self.categorie_FN.create_voice_channel( "🏡┃les débats familiaux"                                                                            )
 
 
 
@@ -312,11 +315,13 @@ class Village :
         await self.salonBucher   .set_permissions( fDis.roleEveryone   , read_messages = False )
         await self.salonDebat    .set_permissions( fDis.roleEveryone   , read_messages = False )
         await self.vocalDebat    .set_permissions( fDis.roleEveryone   , read_messages = False )
-        await self.salonVoteLG   .set_permissions( fDis.roleEveryone   , read_messages = False )
-        await self.salonConseilLG.set_permissions( fDis.roleEveryone   , read_messages = False )
-        await self.vocalConseilLG.set_permissions( fDis.roleEveryone   , read_messages = False )
-        await self.salonFamilleNb.set_permissions( fDis.roleEveryone   , read_messages = False )
-        await self.vocalFamilleNb.set_permissions( fDis.roleEveryone   , read_messages = False )
+        
+        await self.salonVoteLG   .set_permissions( fDis.roleEveryone_LG, read_messages = False )
+        await self.salonConseilLG.set_permissions( fDis.roleEveryone_LG, read_messages = False )
+        await self.vocalConseilLG.set_permissions( fDis.roleEveryone_LG, read_messages = False )
+        
+        await self.salonFamilleNb.set_permissions( fDis.roleEveryone_FN, read_messages = False )
+        await self.vocalFamilleNb.set_permissions( fDis.roleEveryone_FN, read_messages = False )
         
         
         await self.salonRapport  .set_permissions( self.roleDiscord    , read_messages = True , send_messages = False )
@@ -404,7 +409,9 @@ class Village :
 #### Modification du nom de la Catégorie du Village
 # =============================================================================
 
-        await self.categorie.edit ( name = f"⬢ - {self.nom} - ⬢" )
+        await self.categorie   .edit ( name = f"⬢ - {self.nom} - ⬢" )
+        await self.categorie_LG.edit ( name = f"⬢ - {self.nom} - ⬢" )
+        await self.categorie_FN.edit ( name = f"⬢ - {self.nom} - ⬢" )
         
         
 # =============================================================================
@@ -529,7 +536,7 @@ class Village :
             if hab.estMaire                     : texteMaire  = fDis.Emo_Maire
             else                                : texteMaire  = ":black_circle:"
             
-            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢  {texteVilVil} {texteMaire}  {hab.user.mention} - {hab.prenom} {hab.nom}")
+            listeMsgJoueurs = fDis.ajoutListe(listeMsgJoueurs, f"\n>       ⬢  {texteVilVil} {texteMaire}  {hab.user.mention} - {hab.pseudo}")
             
 #### Role
             if not hab.estUnExile :
@@ -547,56 +554,64 @@ class Village :
 #### --- Rôles Restants ---
 # =============================================================================
         
-        msgNbRole = "_ _\n__**Rôles restants :**__"
-
-#### Rôles Inconnus (des exilés)
-        
-        if   nbRolesInconnus != 0 :
-            msgNbRole += f"\n`{nbRolesInconnus}` {fDis.Emo_RoleInconnu}\n\n"
-        
-#### = Listage des rôles =
-        
-        Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_Cupidon    [fRol.clefEmoji], fRol.role_Ancien  [fRol.clefEmoji] ],
-                     [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji] ],
-                     [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji] ],
-                 list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                            ),
-                     [                                                                                                                 ],
-                     [fRol.role_LG         [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji] ],
-                     [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfantSauv [fRol.clefEmoji]                                     ] ]
-        
-        
-        for ligneRole in Emo_Roles :
+        if v.rapportMunicipal_affichage_roles  or  v.nbTours == 0:
             
-#### Retour à la ligne
-
-            ligneVide = True
-            
-            for role in RolesRestants:
-                ligneVide = ligneVide  and  not (role in ligneRole)
-            
-            if   not ligneVide :
-                msgNbRole += "\n> "
+            if   v.nbTours != 0 :
+                msgNbRole = "_ _\n__**Rôles restants :**__"
                 
-            elif ligneRole == []:
-                msgNbRole += "\n"
-            
-            for i in range(len(ligneRole)):
-                
-                if RolesRestants.count(ligneRole[i]) != 0 :
-                    msgNbRole += f"`{RolesRestants.count(ligneRole[i])}` {ligneRole[i]}"
-                    
-                    somme_RolesRestants_finLigne = 0
-                    
-                    for emo_role in ligneRole[ i+1 : ] :
-                        somme_RolesRestants_finLigne += RolesRestants.count(emo_role)
-                        
-                    if somme_RolesRestants_finLigne != 0 : 
-                        msgNbRole += 10 * " "
-        
-        msgNbRole += "_ _"
-        
-        await self.salonRapport.send( msgNbRole )
+            else :
+                msgNbRole = "```\n⬢⬢⬢\n\nCompo initiale :\n\n⬢⬢⬢\n```\n_ _"
     
+#### Rôles Inconnus (des exilés)
+            
+            if   nbRolesInconnus != 0 :
+                msgNbRole += f"\n`{nbRolesInconnus}` {fDis.Emo_RoleInconnu}\n\n"
+            
+#### = Listage des rôles =
+            
+            Emo_Roles = [[fRol.role_Villageois [fRol.clefEmoji], fRol.role_Cupidon    [fRol.clefEmoji], fRol.role_Ancien  [fRol.clefEmoji]                                            ],
+                         [fRol.role_Salvateur  [fRol.clefEmoji], fRol.role_Sorciere   [fRol.clefEmoji], fRol.role_Voyante [fRol.clefEmoji] , fRol.role_Voyante_dAura [fRol.clefEmoji] ],
+                         [fRol.role_Corbeau    [fRol.clefEmoji], fRol.role_Hirondelle [fRol.clefEmoji], fRol.role_Juge    [fRol.clefEmoji]                                            ],
+                     list(fRol.role_FamilleNb  [fRol.clefEmoji]                                                                                                                       ),
+                         [                                                                                                                                                            ],
+                         [fRol.role_LG         [fRol.clefEmoji], fRol.role_LGNoir     [fRol.clefEmoji], fRol.role_LGBleu  [fRol.clefEmoji] , fRol.role_Traitre [fRol.clefEmoji]       ],
+                         [fRol.role_LGBlanc    [fRol.clefEmoji], fRol.role_EnfantSauv [fRol.clefEmoji]                                                                                ] ]
+            
+            
+            for ligneRole in Emo_Roles :
+                
+#### Retour à la ligne
+    
+                ligneVide = True
+                
+                for role in RolesRestants:
+                    ligneVide = ligneVide  and  not (role in ligneRole)
+                
+                if   not ligneVide :
+                    msgNbRole += "\n> "
+                    
+                elif ligneRole == []:
+                    msgNbRole += "\n"
+                
+                for i in range(len(ligneRole)):
+                    
+                    if RolesRestants.count(ligneRole[i]) != 0 :
+                        msgNbRole += f"`{RolesRestants.count(ligneRole[i])}` {ligneRole[i]}"
+                        
+                        somme_RolesRestants_finLigne = 0
+                        
+                        for emo_role in ligneRole[ i+1 : ] :
+                            somme_RolesRestants_finLigne += RolesRestants.count(emo_role)
+                            
+                        if somme_RolesRestants_finLigne != 0 : 
+                            msgNbRole += 10 * " "
+            
+            msgNbRole += "_ _"
+            
+#### Envoie des rôles
+            
+            await self.salonRapport.send( msgNbRole )
+        
     
     
     
@@ -681,25 +696,37 @@ class Village :
 # =============================================================================
         
         for hab in self.habitants :
-            asyncio.Task( hab.role[fRol.clefFctsNoct](hab, self), name = f"Fonction Nocturne de {hab.prenom} {hab.nom} ({hab.matricule}) - {hab.role[fRol.clefNom]}" )
+            asyncio.Task( hab.role[fRol.clefFctsNoct](hab, self), name = f"Fonction Nocturne de {hab.pseudo} ({hab.matricule}) - {hab.role[fRol.clefNom]}" )
             
 #### Accès au Conseil des Loups-Garous
             
-            verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG
+            verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG  and  hab.role != fRol.role_Traitre
             verifLG_Infe =  hab.estInf
             verif_LGBlan =  hab.role == fRol.role_LGBlanc
             verif_EnfSau =  hab.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(hab.pereProtecteur) == None
             
             if verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau :
-                asyncio.Task( fNct.participation_au_Conseil_LG(hab, self), name = f"Participation au Conseil des LG de {hab.prenom} {hab.nom} ({hab.matricule}) - {hab.role[fRol.clefNom]}")
+                asyncio.Task( fNct.participation_au_Conseil_LG(hab, self), name = f"Participation au Conseil des LG de {hab.pseudo} ({hab.matricule}) - {hab.role[fRol.clefNom]}")
                 
 #### Nomination des gardes mayoraux
             
             if hab.estMaire  and  len(hab.gardesMaire) == 0 :
-                asyncio.Task( fNct.nomination_gardes_maire(hab, self), name = f"Nomination gardes mayoraux de {hab.prenom} {hab.nom} ({hab.matricule}) - {hab.role[fRol.clefNom]}" )
+                asyncio.Task( fNct.nomination_gardes_maire(hab, self), name = f"Nomination gardes mayoraux de {hab.pseudo} ({hab.matricule}) - {hab.role[fRol.clefNom]}" )
+
+
+
+# =============================================================================
+#### --- Attente de la fin du vote des Loups-Garous ---
+# =============================================================================
+
+        self.voteLG_EnCours = True
+        
+        await asyncio.sleep(v.conseilLG_duree)
             
-            
-            
+        self.voteLG_EnCours = False
+        
+        
+        
 # =============================================================================
 #### --- Attente que la nuit se termine ---
 # =============================================================================
@@ -810,7 +837,7 @@ class Village :
             
 ##  Messages d'infections
             
-            await habitantInfecte.user.send("Vous avez été infecté par un Loup-Garou Noir, vous rencontrerez vos nouveaux camarades ce soir !")
+            await habitantInfecte.user.send(f"Vous avez été infecté par un Loup-Garou Noir, vous rencontrerez vos nouveaux camarades ce soir !\n> **Lien du serveur des Loups-Garous :** {fDis.lien_serveurMegaLG_LG}")
                 
             if habitantInfecte.estUnHomme : e = ""
             else                          : e = "e"
@@ -825,10 +852,10 @@ class Village :
                                         fGoo.page1_InfoJoueurs                             )
             
             
-##  Gestion des Permissions
+##  Accès au serveur des Loups-Garous
             
-            await self.salonConseilLG.set_permissions ( habitantInfecte.member , read_messages = True , send_messages = False )
-                       
+            await fDis.serveurMegaLG_LG.unban( habitantInfecte.user )
+            
        
 ### Message Historique de la Nuit
             
@@ -1015,11 +1042,11 @@ class Village :
                     if gardeTue.estUnHomme : lui = "lui"
                     else                   : lui = "elle"
                     
-                    await habitant.user.send(f"On a cherché à vous tuer cette nuit, mais heureuseument vous avez été protégé par **{gardeTue.prenom} {gardeTue.nom}** !\n En revanche, {lui} n'a pas survécu...")
+                    await habitant.user.send(f"On a cherché à vous tuer cette nuit, mais heureuseument vous avez été protégé par **{gardeTue.pseudo}** !\n En revanche, {lui} n'a pas survécu...")
         
                     
 #### Message Historique de la Nuit
-                    msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> {habitant.user.mention} est un {fDis.Emo_Maire}, il a été protégé par {gardeTue.user.mention} | {gardeTue.prenom} {gardeTue.nom}\n> \n>  - ⬢⬢⬢ - ")
+                    msgResumNuit = await fDis.ajoutMsg(msgResumNuit, f"\n> \n> {habitant.user.mention} est un {fDis.Emo_Maire}, il a été protégé par {gardeTue.user.mention} | {gardeTue.pseudo}\n> \n>  - ⬢⬢⬢ - ")
         
         
         
@@ -1183,7 +1210,7 @@ class Village :
 
             nouvMaire = rd.choice( persDesignes )
             
-            contenuMsg_resultat_Maire  = f"Le village a élu comme maire : **{nouvMaire.prenom} {nouvMaire.nom}** ({nouvMaire.member.mention} - {nouvMaire.groupe})"
+            contenuMsg_resultat_Maire  = f"Le village a élu comme maire : **{nouvMaire.pseudo}** ({nouvMaire.member.mention} - {nouvMaire.groupe})"
             
         
         
@@ -1203,7 +1230,7 @@ class Village :
             else                    : le_nouveau = "La nouvelle"
             
             contenuMsg_resultat_Maire  =  "Comme personne n'a voté, c'est donc le hasard qui va décider !\n"
-            contenuMsg_resultat_Maire += f"> {le_nouveau} maire est **{nouvMaire.prenom} {nouvMaire.nom}** ({nouvMaire.member.mention} - {nouvMaire.groupe})"
+            contenuMsg_resultat_Maire += f"> {le_nouveau} maire est **{nouvMaire.pseudo}** ({nouvMaire.member.mention} - {nouvMaire.groupe})"
         
         
         await self.salonBucher.send( contenuMsg_resultat_Maire )
@@ -1258,7 +1285,7 @@ class Village :
                 hab = fHab.habitant_avec(matriCorb)
                 
                 if hab != None :
-                    contenuMsg_Corb_Hiron += f"\n> ⬢ {hab.user.mention}  |  {hab.prenom} {hab.nom}  ( {hab.groupe} )"
+                    contenuMsg_Corb_Hiron += f"\n> ⬢ {hab.user.mention}  |  {hab.pseudo}  ( {hab.groupe} )"
                     self.votesEnPlus.extend(2*[matriCorb])
             
             
@@ -1279,7 +1306,7 @@ class Village :
                 hab = fHab.habitant_avec(matriHiron)
                 
                 if hab != None :
-                    contenuMsg_Corb_Hiron += f"\n> ⬢ {hab.user.mention}  |  {hab.prenom} {hab.nom}  ( {hab.groupe} )"
+                    contenuMsg_Corb_Hiron += f"\n> ⬢ {hab.user.mention}  |  {hab.pseudo}  ( {hab.groupe} )"
                     hab.nbVote += 2
         
         
@@ -1338,7 +1365,7 @@ class Village :
 
             persTue = rd.choice(persDesignes)
             
-            contenuMsg_Sentence = f"Le village a choisi de tuer {persTue.prenom} {persTue.nom} ({persTue.member.mention} - {persTue.groupe})."
+            contenuMsg_Sentence = f"Le village a choisi de tuer {persTue.pseudo} ({persTue.member.mention} - {persTue.groupe})."
         
         
         
@@ -1354,7 +1381,7 @@ class Village :
                 persTue        = rd.choice( self.habitants )
                 
                 contenuMsg_Sentence  =  "Comme personne n'a voté, un habitant choisi au hasard partira sur le bûcher !\n"
-                contenuMsg_Sentence += f"> La personne choisie est {persTue.prenom} {persTue.nom} ({persTue.member.mention} - {persTue.groupe})"
+                contenuMsg_Sentence += f"> La personne choisie est {persTue.pseudo} ({persTue.member.mention} - {persTue.groupe})"
             
             
 #### ||| Variante 2 ||| Personne n'est tué
@@ -1404,7 +1431,7 @@ class Village :
                                                 fGoo.page1_InfoJoueurs                      ,
                                                 typeObjetCellule = int                        )   
                     
-                    await juge.member.send(f"Vous avez exilé {persTue.prenom} {persTue.nom}.")
+                    await juge.member.send(f"Vous avez exilé {persTue.pseudo}.")
                 
                 
                 self.habitants_qui_seront_exiler = [persTue]
@@ -1533,7 +1560,7 @@ class Village :
             await self.salonBucher.send("Les accusés désignés lors du 1er tour sont :\n")
                 
             for a in self.accuses :
-                msgDefense = await self.salonBucher.send(f"      ⬢ {a.user.mention}  |  {a.prenom} {a.nom}  ( {a.groupe} )")
+                msgDefense = await self.salonBucher.send(f"      ⬢ {a.user.mention}  |  {a.pseudo}  ( {a.groupe} )")
                 asyncio.Task(a.Defense_1erTour(v.envDefVote_hFin, msgDefense))
                 
                 
@@ -1574,6 +1601,8 @@ class Village :
 
 
 # %% Fonctions liés aux Villages
+
+# %%% Manipulation de villages
 
 TousLesVillages = []
 
@@ -1784,7 +1813,9 @@ def village_avec (info, type_dinfo):
     return None
 
 
-    
+
+
+# %%% Dissolutions, meurtres et exils
 
 async def exil_dans_nouvVillage(habitant, nouvVillage, ancienVillage = None):
     """
@@ -1878,6 +1909,11 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
                     
                     tous_les_habitants_a_tuer.append( [amant, habitant] )
 
+# Ici tous_les_habitants_a_tuer est une liste contenant :
+#  | Des habitants, qui seront directement tués
+#  | Des listes contenant deux objets habitant, dont le premier est l'amant qui se suicide suite à la mort du second
+
+
 
 
 # =============================================================================
@@ -1897,7 +1933,7 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
 
 
 #### Cas où tous les villages doivent être dissous
-#      --> Il village au hasard parmis ceux-ci n'est pas dissous
+#      --> Le dernier village non dissous est choisie au hasard parmis tout les villages à dissoudre
     
     if len(TousLesVillages) == len(tous_les_villages_a_dissoudre) :
         rd.shuffle(tous_les_villages_a_dissoudre)
@@ -1936,6 +1972,15 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
                                     premAmoureuxTue = amant_tue_en_premier          )
         
         
+#### Cas de la mort d'un modèle d'un enfant sauvage
+        
+        for hab in fHab.TousLesHabitants : 
+            if hab != habitant_a_tuer  and  hab.role == fRol.role_EnfantSauv  and  hab.pereProtecteur == habitant_a_tuer.matricule :
+                
+                await fDis.serveurMegaLG_LG.unban(hab.member)
+                await hab.user.send(f"Votre modèle est mort, vous devenez donc un loup-garou...\n*Vous pouvez rejoindre vos nouveaux compère sur ce serveur : {fDis.lien_serveurMegaLG_LG}*")
+        
+        
         
 # =============================================================================
 #### --- Exils des habitants à exiler ---
@@ -1953,7 +1998,7 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
             if habitant.estUnHomme : e, il = "" , "il"
             else                   : e, il = "e", "elle"
             
-            contenuMsg_Exil_Impossible  = f"Ce village est le seul restant, {habitant.prenom} ne peut être exilé{e}...\n"
+            contenuMsg_Exil_Impossible  = f"Ce village est le seul restant, {habitant.pseudo} ne peut être exilé{e}...\n"
             contenuMsg_Exil_Impossible += f"> *Donc, {il} reste en vie dans ce village.*"
                         
             await ancienVillage.salonBucher.send(contenuMsg_Exil_Impossible)
@@ -1974,12 +2019,99 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
             
 #### Message dans le nouveau Village
             
-            if habitant.estUnHomme : contenuMsg_AnnonceExil = f"Un petit nouveau vient d'arriver en ville, il s'agit de {habitant.member.mention}  |  {habitant.prenom} {habitant.nom}."
-            else                   : contenuMsg_AnnonceExil = f"Une petite nouvelle vient d'arriver en ville, il s'agit de {habitant.member.mention}  |  {habitant.prenom} {habitant.nom}."
+            if habitant.estUnHomme : contenuMsg_AnnonceExil = f"Un petit nouveau vient d'arriver en ville, il s'agit de {habitant.member.mention}  |  {habitant.pseudo}."
+            else                   : contenuMsg_AnnonceExil = f"Une petite nouvelle vient d'arriver en ville, il s'agit de {habitant.member.mention}  |  {habitant.pseudo}."
             
             await nouvVillage.salonDebat.send(contenuMsg_AnnonceExil)
         
+
+
+# %%% Gestion des permissions
+
+async def gestion_permission_serveurMegaLG_LG (membre_Discord) :
+    """
+    Gestion des permissions de membre_Discord dans le serveurMegaLG_LG
+    """
+    
+    hab = fHab.habitant_avec(membre_Discord.id)
+    vlg =       village_avec(hab.numVlg, "numero")
+    
+    verifLG_Camp = False
+    verifLG_Infe = False
+    verif_LGBlan = False
+    verif_EnfSau = False
+    
+    membre_serveurMLG = fDis.serveurMegaLG.get_member(membre_Discord.id)
+    
+    if hab != None :
+        verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG  and  hab.role != fRol.role_Traitre
+        verifLG_Infe =  hab.estInf
+        verif_LGBlan =  hab.role == fRol.role_LGBlanc
+        verif_EnfSau =  hab.role == fRol.role_EnfantSauv  and  fHab.habitant_avec(hab.pereProtecteur) == None
+
         
+        
+    
+    if verifLG_Camp or verifLG_Infe or verif_LGBlan or verif_EnfSau :
+        
+        await fDis.channelHistorique.send(f"{membre_serveurMLG.mention} vient d'arriver dans le serveur des {fDis.Emo_LoupGarou}. *(en tant que {fDis.Emo_LoupGarou})*")
+        
+        if v.nuit_hDeb < v.maintenant() < v.conseilLG_hFin :
+            asyncio.Task( fNct.participation_au_Conseil_LG(hab, vlg), name = f"Participation au Conseil des LG de {hab.pseudo} ({hab.matricule}) - {hab.role[fRol.clefNom]}")
+                
+        else : 
+            await vlg.salonVoteLG   .set_permissions( membre_Discord , read_messages = False , send_messages = False )
+            await vlg.salonConseilLG.set_permissions( membre_Discord , read_messages = True  , send_messages = v.LG_peuventParler_pdt_Journee )
+            await vlg.vocalConseilLG.set_permissions( membre_Discord , read_messages = v.LG_peuventParler_pdt_Journee                         )
+        
+        
+        
+    elif membre_serveurMLG == None  or  fDis.roleModerateur not in membre_serveurMLG.roles :
+        
+        await fDis.serveurMegaLG_FN.ban(membre_Discord)
+        
+        
+        
+    elif fDis.roleModerateur in membre_serveurMLG.roles :
+        
+        await fDis.channelHistorique.send(f"{membre_serveurMLG.mention} vient d'arriver dans le serveur des {fDis.Emo_LoupGarou}. *(en tant que modérateur)*")
+ 
+    
+
+
+
+async def gestion_permission_serveurMegaLG_FN (membre_Discord) :
+    """
+    Gestion des permissions de membre_Discord
+    """
+    
+    hab = fHab.habitant_avec(membre_Discord.id)
+    vlg =       village_avec(hab.numVlg, "numero")
+    
+    membre_serveurMLG = fDis.serveurMegaLG.get_member(membre_Discord.id)
+    
+    if hab != None  and  hab.role == fRol.role_FamilleNb :
+        
+        await fDis.channelHistorique.send(f"{membre_serveurMLG.mention} vient d'arriver dans le serveur des {fDis.Emo_FNSoeur}. *(en tant que {fDis.Emo_FNSoeur})*")
+        
+        if v.nuit_hDeb < v.maintenant() < v.nuit_hFin :
+            asyncio.Task( fNct.fctNoct_FamilleNombreuse(hab, vlg), name = f"Fonction Nocturne de {hab.pseudo} ({hab.matricule}) - {hab.role[fRol.clefNom]}" )
+    
+        else :
+            await vlg.salonFamilleNb  .set_permissions ( membre_Discord , read_messages = True , send_messages = v.FN_peuventParler_pdt_Journee )
+            await vlg.vocalFamilleNb  .set_permissions ( membre_Discord , read_messages = v.FN_peuventParler_pdt_Journee                        )
+            
+    
+    elif membre_serveurMLG == None  or  fDis.roleModerateur not in membre_serveurMLG.roles :
+        
+        await fDis.serveurMegaLG_FN.ban(membre_Discord)
+
+
+    elif fDis.roleModerateur in membre_serveurMLG.roles :
+        
+        await fDis.channelHistorique.send(f"{membre_serveurMLG.mention} vient d'arriver dans le serveur des {fDis.Emo_FNSoeur}. *(en tant que modérateur)*")
+
+
 
 
 
@@ -2044,17 +2176,20 @@ async def fct_vote(member, contenuMsg):
 async def message_voteVillage():
     
     def verifVoteVillage(message):
-        verifSalon, verifUser = (False, False)
+        
+        habVlg     = fHab.habitant_avec( message.author.id )
         
         verifPhase = v.phaseEnCours == v.phase3
+        verifUser  = habVlg != None
+        verifSalon = False
         
-        if fDis.verifServeur(message) :
-            verifUser  = fDis.roleJoueurs in message.author.roles
+        if verifPhase and verifUser :
             
-            if verifUser and verifPhase :
-                verifSalon = village_avec(message.channel.id, 'idSalon_Bucher') != None
+            village    = village_avec( habVlg.numVlg, "numero" )
+            verifSalon = message.channel == village.salonBucher
         
-        return verifUser  and  verifPhase and verifSalon
+        return verifUser and verifPhase and verifSalon
+
 
 
     while True :
@@ -2071,17 +2206,20 @@ async def message_voteVillage():
 async def message_voteLoupGarou():
     
     def verifVoteLG(message):
-        verifSalon, verifUser = (False, False)
+        
+        habVlg     = fHab.habitant_avec( message.author.id )
         
         verifPhase = v.phaseEnCours == v.phase3
+        verifUser  = habVlg != None
+        verifSalon = False
         
-        if fDis.verifServeur(message) :
-            verifUser  = fDis.roleJoueurs in message.author.roles
+        if verifPhase and verifUser :
             
-            if verifUser and verifPhase :
-                verifSalon = village_avec(message.channel.id, 'idSalon_VoteLG') != None
+            village    = village_avec( habVlg.numVlg, "numero" )
+            verifSalon = message.channel == village.salonVoteLG
         
-        return verifUser  and  verifPhase and verifSalon
+        return verifUser and verifPhase and verifSalon
+
 
 
     while True :
@@ -2219,6 +2357,8 @@ async def SupprTousVlg (ctx):
         await vlg.vocalFamilleNb .delete()
         
         await vlg.categorie      .delete()
+        await vlg.categorie_LG   .delete()
+        await vlg.categorie_FN   .delete()
         
         await vlg.roleDiscord    .delete()
         await vlg.roleDiscordMort.delete()
@@ -2238,7 +2378,7 @@ async def Meurtre (ctx, matricule_hab_tue):
         hab_tue = fHab.habitant_avec(int(matricule_hab_tue))
         
         await hab_tue.Tuer()
-        await fDis.channelHistorique.send(f"{hab_tue.user.mention}  |  {hab_tue.matricule} {hab_tue.prenom} {hab_tue.nom} - ( {hab_tue.groupe} ) vient d'être tué (meurtre ordonné par {ctx.author})")
+        await fDis.channelHistorique.send(f"{hab_tue.user.mention}  |  {hab_tue.matricule} {hab_tue.pseudo} - ( {hab_tue.groupe} ) vient d'être tué (meurtre ordonné par {ctx.author})")
 
 
 
@@ -2292,8 +2432,8 @@ async def Amoureux (ctx, matricule1, matricule2):
     pers1 = fHab.habitant_avec(mat_amour1)
     pers2 = fHab.habitant_avec(mat_amour2)
     
-    await pers1.user.send(f"Vous êtes amoureux de {pers2.matricule}  |  {pers2.prenom} {pers2.nom} {pers2.groupe}")
-    await pers2.user.send(f"Vous êtes amoureux de {pers1.matricule}  |  {pers1.prenom} {pers1.nom} {pers1.groupe}")
+    await pers1.user.send(f"Vous êtes amoureux de {pers2.matricule}  |  {pers2.pseudo} {pers2.groupe}")
+    await pers2.user.send(f"Vous êtes amoureux de {pers1.matricule}  |  {pers1.pseudo} {pers1.groupe}")
     
     await fHab.redef_TousLesHabitants()
     
@@ -2329,6 +2469,6 @@ async def AmoureuxAlea (ctx):
                                     pers2.matricule       , fGoo.clef_Matricule    ,
                                     fGoo.page1_InfoJoueurs                      )
     
-        await pers1.user.send(f"Vous êtes amoureux de {pers2.matricule}  |  {pers2.prenom} {pers2.nom} {pers2.groupe}")
-        await pers2.user.send(f"Vous êtes amoureux de {pers1.matricule}  |  {pers1.prenom} {pers1.nom} {pers1.groupe}")
+        await pers1.user.send(f"Vous êtes amoureux de {pers2.matricule}  |  {pers2.pseudo} {pers2.groupe}")
+        await pers2.user.send(f"Vous êtes amoureux de {pers1.matricule}  |  {pers1.pseudo} {pers1.groupe}")
 """

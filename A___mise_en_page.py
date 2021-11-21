@@ -56,7 +56,7 @@ def de_dApostrophe (mot, debutDePhrase = False):
     if debutDePhrase : dApost, de = "D'", "De "
     else             : dApost, de = "d'", "de "
     
-    if mot.lower()[0] in "aàâ" + "eéèêë" + "iïî" + "oôö" + "uûùü" + "h"  and  mot.lower() not in mots_avec_h_aspiré :
+    if mot[0].lower() in "aàâ" + "eéèêë" + "iïî" + "oôö" + "uûùü" + "h"  and  mot.lower() not in mots_avec_h_aspiré :
         return dApost + mot
     
     else :
@@ -91,6 +91,16 @@ def MeF_Prenom (texte) :
         if p != "" : listePrenoms_MeF.append( p[0].upper() + p[1:] )
     
     return "-".join( listePrenoms_MeF )
+
+
+
+
+
+def MeF_Pseudo (texte) :
+    
+    pseudo = " ".join( texte.split() )
+    
+    return pseudo[0].upper() + pseudo[1:]
 
 
 

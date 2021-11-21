@@ -79,8 +79,7 @@ clefs_Joueurs = page1_InfoJoueurs.get()[0]
 ( clef_Matricule    ,
  
   clef_Sexe         ,
-  clef_Prenom       ,
-  clef_Nom          ,
+  clef_Pseudo       ,
   
   clef_Groupe       ,
   clef_numVillage   ,
@@ -132,7 +131,7 @@ clefs_Villages = page_Villages.get()[0]
 
 
 
-#### Clefs de Villages
+#### Clefs de comptage des Messages
 
 clefs_Messages = page_CompteMsg.get()[0]
 

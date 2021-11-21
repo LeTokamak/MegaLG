@@ -61,13 +61,12 @@ async def numerotationHabitants():
     
     Joueurs = fGoo.donneeGoogleSheet( fGoo.page1_InfoJoueurs )
 
-#### Tri des Joueurs par nom de groupe, par nom de joueur et par prénom
+#### Tri des Joueurs par nom de groupe, par pseudo de joueur
 
     for j in Joueurs :
         
         habitant = fHab.Habitant( 0                         ,
-                                  j[fGoo.clef_Prenom      ] ,
-                                  j[fGoo.clef_Nom         ] ,
+                                  j[fGoo.clef_Pseudo      ] ,
                                   j[fGoo.clef_Groupe      ] ,
                                   0                         ,
                                   j[fGoo.clef_Sexe        ] ,
@@ -87,7 +86,7 @@ async def numerotationHabitants():
     
     
     dfJoueurs                      = DataFrame(Joueurs)
-    dfJoueurs                      = dfJoueurs.sort_values(by = ["strGroupe", fGoo.clef_Nom, fGoo.clef_Prenom])
+    dfJoueurs                      = dfJoueurs.sort_values(by = ["strGroupe", fGoo.clef_Pseudo])
     dfJoueurs                      = dfJoueurs.drop(["strGroupe"], axis = 1)
     dfJoueurs[fGoo.clef_Matricule] = range(1, len(Joueurs) + 1)
 
@@ -635,29 +634,31 @@ async def distributionRole(village):
     
     paquetRoles  = []
     
-    paquetRoles += v.prop_Villag     *[fRol.role_Villageois]
-    paquetRoles += v.prop_VillaVilla *[fRol.role_VillaVilla]
-    paquetRoles += v.prop_Cupido     *[fRol.role_Cupidon   ]
-    paquetRoles += v.prop_Ancien     *[fRol.role_Ancien    ]
+    paquetRoles.extend( v.prop_Villag        *[fRol.role_Villageois   ] )
+    paquetRoles.extend( v.prop_VillaVilla    *[fRol.role_VillaVilla   ] )
+    paquetRoles.extend( v.prop_Cupido        *[fRol.role_Cupidon      ] )
+    paquetRoles.extend( v.prop_Ancien        *[fRol.role_Ancien       ] )
     
-    paquetRoles += v.prop_Salvat     *[fRol.role_Salvateur ]
-    paquetRoles += v.prop_Sorcie     *[fRol.role_Sorciere  ]
-    paquetRoles += v.prop_Voyant     *[fRol.role_Voyante   ]
+    paquetRoles.extend( v.prop_Salvat        *[fRol.role_Salvateur    ] )
+    paquetRoles.extend( v.prop_Sorcie        *[fRol.role_Sorciere     ] )
+    paquetRoles.extend( v.prop_Voyant        *[fRol.role_Voyante      ] )
+    paquetRoles.extend( v.prop_Voyante_dAura *[fRol.role_Voyante_dAura] )
     
-    paquetRoles += v.prop_Corbea     *[fRol.role_Corbeau   ]
-    paquetRoles += v.prop_Hirond     *[fRol.role_Hirondelle]
-    paquetRoles += v.prop_Juge       *[fRol.role_Juge      ]
+    paquetRoles.extend( v.prop_Corbea        *[fRol.role_Corbeau      ] )
+    paquetRoles.extend( v.prop_Hirond        *[fRol.role_Hirondelle   ] )
+    paquetRoles.extend( v.prop_Juge          *[fRol.role_Juge         ] )
     
-    paquetRoles += v.prop_Famill     *[fRol.role_FamilleNb ]
+    paquetRoles.extend( v.prop_Famill        *[fRol.role_FamilleNb    ] )
     
     
     
-    paquetRoles += v.prop_LG         *[fRol.role_LG        ]
-    paquetRoles += v.prop_LGNoir     *[fRol.role_LGNoir    ]
-    paquetRoles += v.prop_LGBleu     *[fRol.role_LGBleu    ]
+    paquetRoles.extend( v.prop_LG            *[fRol.role_LG           ] )
+    paquetRoles.extend( v.prop_LGNoir        *[fRol.role_LGNoir       ] )
+    paquetRoles.extend( v.prop_LGBleu        *[fRol.role_LGBleu       ] )
+    paquetRoles.extend( v.prop_Traitre       *[fRol.role_Traitre      ] )
     
-    paquetRoles += v.prop_LGBlan     *[fRol.role_LGBlanc   ]
-    paquetRoles += v.prop_EnSauv     *[fRol.role_EnfantSauv]
+    paquetRoles.extend( v.prop_LGBlan        *[fRol.role_LGBlanc      ] )
+    paquetRoles.extend( v.prop_EnSauv        *[fRol.role_EnfantSauv   ] )
     
     
     
@@ -722,79 +723,112 @@ async def DebutPartie (ctx):
     
 #### DP_1
     
-    await fDis.channelHistorique.edit(topic = v.phase2)
-    
-    #await finInscription()
-    await numerotationHabitants()
+    await DP_1 (ctx)
     
     
     
 #### DP_2
     
-    await repartitionGroupes_Villages()
+    await DP_2 (ctx)
     
     
     
 #### DP_3
     
-    for vlg in fVlg.TousLesVillages :
-        await distributionRole(vlg)
-    
-    
-    await fHab.redef_TousLesHabitants()
-    fVlg.redef_villagesExistants()
-    
-    
-    
-    for vlg in fVlg.TousLesVillages :
-        await vlg.rapportMunicipal()
-    
-    v.nbTours = 0
-    await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
-    
-    await fP3.attente_lancementTour()
+    await DP_3 (ctx)
 
 
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def DP_1 (ctx):
+    """
+    Mise à Jour du topic du channelHistorique.
+    
+    Numération des joueurs en fonctions de (dans l'ordre) :
+        - Leur groupe
+        - Leur pseudo
+    """
     
     await fDis.channelHistorique.edit(topic = v.phase2)
     
     #await finInscription()
+    
     await numerotationHabitants()
+
+
 
 
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def DP_2 (ctx):
+    """
+    Répartitions des Joueurs dans différents Villages 
+    
+    Ces villages sont créés pour répartir le mieux possible les groupes sans les séparer.
+    Cette fonction est très complexe et à de grand risque de bugé, 
+        c'est d'ailleurs pour ça que la grande commande DebutPartie a été séparée en trois.
+    """
     
     await repartitionGroupes_Villages()
     
 
 
+
+
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def DP_3 (ctx):
-
+    """
+    Fin de la fonction de 
+    
+    Mise à Jour du topic du channelHistorique, pour compter les tour au fil de la partie.
+    """
+    
+#### Distribution des rôles
+    
     await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()    
-
+    
     for vlg in fVlg.TousLesVillages :
         await distributionRole(vlg)
-
+    
+    
+    
+#### Envoie des premiers rapports municipaux
     
     await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()
     
-    
-    
     for vlg in fVlg.TousLesVillages :
         await vlg.rapportMunicipal()
     
+    
+    
+#### Mise à Jour du topic du channelHistorique, pour compter les tours au fil de la partie.
+    
     v.nbTours = 0
     await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
+    
+    
+    
+#### Gestions des permitions d'accès aux salons des Loups-Garous et celui de la Famille Nombreuse
+    
+    await fDis.ban_tousLesMembres_de_MLG_LG_FN()
+    
+    for hab in fHab.TousLesHabitants :
+        verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG
+        verif_LGBlan =  hab.role == fRol.role_LGBlanc
+        
+        if verifLG_Camp or verif_LGBlan :
+            await fDis.serveurMegaLG_LG.unban(hab.user)
+        
+        elif hab.role == fRol.role_FamilleNb :
+            await fDis.serveurMegaLG_FN.unban(hab.user)
+    
+    
+    
+#### Attente avant le lancement de la première nuit
     
     await fP3.attente_lancementTour()

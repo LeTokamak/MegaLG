@@ -82,62 +82,36 @@ async def fct_Inscription (membre_aInscrire):
     
     
     
-#### Prénom
+#### Pseudo
     
-    if   choixSexe == "H" : deb_contenuMsg_Prenom = "Très bien *Monsieur*"
-    else                  : deb_contenuMsg_Prenom = "Compris *Madame*"
+    if   choixSexe == "H" : deb_contenuMsg_Pseudo = "Très bien *Monsieur*"
+    else                  : deb_contenuMsg_Pseudo = "Compris *Madame*"
     
-    contenuMsg_Prenom  = deb_contenuMsg_Prenom + ", maintenant quel est votre **Prénom** ?\n"
-    contenuMsg_Prenom +=  "> Le **prochain message** que vous enverrez sera votre **prénom** (après l'avoir confirmé, comme pour le sexe).\n"
-    contenuMsg_Prenom +=  "> Vous avez le droit aux espaces et aux tirets."
-    
-    await membre_aInscrire.send( contenuMsg_Prenom )
+    contenuMsg_Pseudo  = deb_contenuMsg_Pseudo + ", maintenant vous devez choisir votre **Pseudo** ?"
+
+    await membre_aInscrire.send( contenuMsg_Pseudo )
     
     choixConfirme = False
+    pseudo        = fMeP.MeF_Pseudo(membre_aInscrire.display_name)
     
     while not choixConfirme :
-    
-        msgReponsePrenom = await fDis.attente_Message( membre_aInscrire         )
-        prenom           = fMeP.MeF_Prenom(            msgReponsePrenom.content )
         
-        contenuMsg_VerifPrenom  = f"Est-ce bien votre prénom **{prenom}** ?\n"
-        contenuMsg_VerifPrenom +=  "> *Votre prénom a été mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
+        contenuMsg_VerifPseudo  = f"Est-ce ce pseudo vous convient : **{pseudo}** ?\n"
+        contenuMsg_VerifPseudo +=  "> *Votre pseudo a été mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
         
-        msgConfirmPrenom = await membre_aInscrire.send( contenuMsg_VerifPrenom )
-        choixConfirme    = await fDis.attente_Confirmation(msgConfirmPrenom, membre_aInscrire)
-        
-        await msgConfirmPrenom.delete()
+        msgConfirmPseudo = await membre_aInscrire.send( contenuMsg_VerifPseudo )
+        choixConfirme    = await fDis.attente_Confirmation(msgConfirmPseudo, membre_aInscrire)
         
         if not choixConfirme :
-            await membre_aInscrire.send( "*Vous pouvez taper un nouveau prénom !*" )
+            
+            await msgConfirmPseudo.delete()
+            await membre_aInscrire.send( "*Vous pouvez taper un nouveau pseudo !*" )
+            
+        msgReponsePseudo = await fDis.attente_Message( membre_aInscrire         )
+        pseudo           = fMeP.MeF_Pseudo(            msgReponsePseudo.content )
     
     
-    
-#### Nom
-    
-    contenuMsg_Nom  = f"Et c'est {prenom} comment ?\n"
-    contenuMsg_Nom +=  "> Le **prochain message** que vous enverrez sera votre **nom** (après l'avoir confirmé).\n"
-    contenuMsg_Nom +=  "> Vous avez le droit aux espaces et aux tirets."
-    
-    await membre_aInscrire.send( contenuMsg_Nom )
-    
-    choixConfirme = False
-    
-    while not choixConfirme :
-    
-        msgReponseNom = await fDis.attente_Message( membre_aInscrire )
-        nom           = " ".join( msgReponseNom.content.split() ).upper()
-        
-        contenuMsg_VerifNom  = f"Est-ce bien votre nom **{nom}** ?\n"
-        contenuMsg_VerifNom +=  "> *Votre nom est mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
-        
-        msgConfirmNom = await membre_aInscrire.send( contenuMsg_VerifNom )
-        choixConfirme = await fDis.attente_Confirmation(msgConfirmNom, membre_aInscrire)
-        
-        await msgConfirmNom.delete()
-        
-        if not choixConfirme :
-            await membre_aInscrire.send( "*Vous pouvez taper un nouveau nom !*" )
+
     
     
     
@@ -146,8 +120,7 @@ async def fct_Inscription (membre_aInscrire):
 # =============================================================================
     
     nvlLigne = { fGoo.clef_Sexe       : choixSexe                   , 
-                 fGoo.clef_Prenom     : prenom                      ,
-                 fGoo.clef_Nom        : nom                         , 
+                 fGoo.clef_Pseudo     : pseudo                      ,
                  fGoo.clef_Groupe     : fGrp.GroupeParDefaut.numero , 
                  fGoo.clef_numVillage : 0                           ,
                  fGoo.clef_idDiscord  : membre_aInscrire.id          }
@@ -173,8 +146,8 @@ async def fct_Inscription (membre_aInscrire):
     if   choixSexe == "H" : inscrit = "inscrit"
     else                  : inscrit = "inscrite"
     
-    await membre_aInscrire      .send(f"**C'est bon {prenom}, tu as bien été {inscrit} !**\nTu n'as plus qu'à attendre le début de la partie !" )
-    await fDis.channelHistorique.send(f"{fDis.Emo_BabyYellow}  |  Inscription de {membre_aInscrire.mention} : {prenom} {nom}   |   ({choixSexe})")
+    await membre_aInscrire      .send(f"**C'est bon {pseudo}, tu as bien été {inscrit} !**\nTu n'as plus qu'à attendre le début de la partie !" )
+    await fDis.channelHistorique.send(f"{fDis.Emo_BabyYellow}  |  Inscription de {membre_aInscrire.mention} : {pseudo}   |   ({choixSexe})")
     await msgAtt                .delete()    
     
     await fGrp.autorisation_SalonsGrp(membre_aInscrire, nvlLigne[fGoo.clef_Groupe])
@@ -196,6 +169,9 @@ async def ReInscription (membre_ReInscrit):
     
     nvlLigne, num_ligne = fGoo.ligne_avec(membre_ReInscrit.id, fGoo.clef_idDiscord, AnciensJoueurs) 
     
+    if nvlLigne[fGoo.clef_Pseudo] in ("None", None) :
+        nvlLigne[fGoo.clef_Pseudo] = membre_ReInscrit.display_name
+    
     fGoo.ajoutLigne(nvlLigne, fGoo.page1_InfoJoueurs)
     
     
@@ -206,8 +182,8 @@ async def ReInscription (membre_ReInscrit):
     await membre_ReInscrit.   add_roles(fDis.roleJoueurs                    )
     await membre_ReInscrit.remove_roles(fDis.roleSpectateurs, fDis.roleMorts) 
     
-    await membre_ReInscrit      .send(f"**Salut {nvlLigne[fGoo.clef_Prenom]}, tu as bien été reinscrit !**\nTu n'as plus qu'à attendre le début de la partie !")
-    await fDis.channelHistorique.send(f"{fDis.Emo_BabyOrange}  |  Ré-inscription de {membre_ReInscrit.mention} : {nvlLigne[fGoo.clef_Prenom]} {nvlLigne[fGoo.clef_Nom]}   |   {nvlLigne[fGoo.clef_Groupe]}")
+    await membre_ReInscrit      .send(f"**Salut {nvlLigne[fGoo.clef_Pseudo]}, tu as bien été reinscrit !**\nTu n'as plus qu'à attendre le début de la partie !")
+    await fDis.channelHistorique.send(f"{fDis.Emo_BabyOrange}  |  Ré-inscription de {membre_ReInscrit.mention} : {nvlLigne[fGoo.clef_Pseudo]}   |   {nvlLigne[fGoo.clef_Groupe]}")
 
     await fGrp.autorisation_SalonsGrp(membre_ReInscrit, nvlLigne[fGoo.clef_Groupe])
 
@@ -284,7 +260,7 @@ async def reaction_Inscription():
 
 async def fct_modif_infosPerso(user_a_maj):
     
-    contenuMsg_Inscription = f"MaJ des infos personnelles de {user_a_maj.mention} en cours..."
+    contenuMsg_Inscription = f"MàJ des infos personnelles de {user_a_maj.mention} en cours..."
     msgAtt = await fDis.channelAttente.send( contenuMsg_Inscription )
     
         
@@ -299,7 +275,7 @@ async def fct_modif_infosPerso(user_a_maj):
     else                                            : ancien_sexe = "une Femme"
     
     contenuMsg_Intro  =  "Bonjour, vous voulez changer vos infos personnelles, voilà ce que je sais sur vous :\n"
-    contenuMsg_Intro += f"> Vous êtes **{ancien_sexe}**, et vous vous appelez **{ancienne_ligne_joueur[fGoo.clef_Prenom]} {ancienne_ligne_joueur[fGoo.clef_Nom]}**.\n"
+    contenuMsg_Intro += f"> Vous êtes **{ancien_sexe}**, et je vous appele **{ancienne_ligne_joueur[fGoo.clef_Pseudo]}**.\n"
     contenuMsg_Intro +=  "\n\n_ _"
     
     await user_a_maj.send(contenuMsg_Intro)
@@ -322,7 +298,7 @@ async def fct_modif_infosPerso(user_a_maj):
     contenuMsg_Sexe +=  ">      *Alberte a été retrouvé·e mort·e chez lui/elle ce matin...* devient\n"
     contenuMsg_Sexe +=  ">      *Alberte a été retrouvée morte chez elle ce matin...*\n"
     contenuMsg_Sexe +=  "> \n"
-    contenuMsg_Sexe +=  "> *Évidemment, rien ne vous empèche de mentir.*\n"
+    contenuMsg_Sexe +=  "> *Évidemment, rien ne vous empèche de mentir.* 😈\n"
     contenuMsg_Sexe +=  "\n"
     contenuMsg_Sexe += f"Choisissez {Emo_eventuel_nouv_sexe} pour devenir {texte_eventuel_nouv_sexe}, ou la ❌ pour ne pas changer de sexe."
     
@@ -350,82 +326,46 @@ async def fct_modif_infosPerso(user_a_maj):
     
     
     
-#### Prénom
+#### Pseudo
     
-    if   choix_nouv_Sexe == "H" : deb_contenuMsg_Prenom = "Très bien *Monsieur*"
-    else                        : deb_contenuMsg_Prenom = "Compris *Madame*"
+    if   choix_nouv_Sexe == "H" : deb_contenuMsg_Pseudo = "Très bien *Monsieur*"
+    else                        : deb_contenuMsg_Pseudo = "Compris *Madame*"
     
     
-    contenuMsg_Modif_Prenom = deb_contenuMsg_Prenom + f", est-ce que vous voulez modifier votre ancien **Prénom** ({ancienne_ligne_joueur[fGoo.clef_Prenom]}) ?\n"
+    contenuMsg_Modif_Pseudo = deb_contenuMsg_Pseudo + f", est-ce que vous voulez modifier votre ancien **Pseudo** ({ancienne_ligne_joueur[fGoo.clef_Pseudo]}) ?\n"
     
-    msgConfirm_Modif_Prenom = await user_a_maj.send(           contenuMsg_Modif_Prenom             )
-    modif_prenom_demandee   = await fDis.attente_Confirmation( msgConfirm_Modif_Prenom, user_a_maj )
+    msgConfirm_Modif_Pseudo = await user_a_maj.send(           contenuMsg_Modif_Pseudo             )
+    modif_pseudo_demandee   = await fDis.attente_Confirmation( msgConfirm_Modif_Pseudo, user_a_maj )
     
-    if modif_prenom_demandee :
+    if modif_pseudo_demandee :
         
-        contenuMsg_Prenom  =  "Le **prochain message** que vous enverrez sera votre __nouveau__ **prénom** (après l'avoir confirmé, comme pour le sexe).\n"
-        contenuMsg_Prenom +=  "> Vous avez le droit aux espaces et aux tirets."
+        contenuMsg_Pseudo  =  "Le **prochain message** que vous enverrez sera votre __nouveau__ **pseudo** (après l'avoir confirmé, comme pour le sexe).\n"
         
-        await user_a_maj.send( contenuMsg_Prenom )
-        
-        choixConfirme = False
-        
-        while not choixConfirme :
-        
-            msgReponsePrenom = await fDis.attente_Message( user_a_maj               )
-            nouv_prenom      = fMeP.MeF_Prenom(            msgReponsePrenom.content )
-            
-            
-            contenuMsg_VerifPrenom  = f"Est-ce bien votre prénom **{nouv_prenom}** ?\n"
-            contenuMsg_VerifPrenom +=  "> *Votre prénom a été mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
-            
-            msgConfirmPrenom = await user_a_maj.send(           contenuMsg_VerifPrenom             )
-            choixConfirme    = await fDis.attente_Confirmation( msgConfirmPrenom      , user_a_maj )
-            
-            await msgConfirmPrenom.delete()
-            
-            if not choixConfirme :
-                await user_a_maj.send( "*Vous pouvez taper un nouveau prénom !*" )
-    
-    else :
-        nouv_prenom = ancienne_ligne_joueur[fGoo.clef_Prenom]
-    
-    
-    
-#### Nom
-        
-    contenuMsg_Modif_Nom = f"Et enfin, est-ce que vous voulez modifier votre ancien **Nom** ({ancienne_ligne_joueur[fGoo.clef_Nom]}) ?"
-    
-    msgConfirm_Modif_Nom = await user_a_maj.send(           contenuMsg_Modif_Nom             )
-    modif_nom_demandee   = await fDis.attente_Confirmation( msgConfirm_Modif_Nom, user_a_maj )
-    
-    if modif_nom_demandee :
-        
-        contenuMsg_Nom  =  " Le **prochain message** que vous enverrez sera votre __nouveau__ **nom** (après l'avoir confirmé).\n"
-        contenuMsg_Nom +=  "> Vous avez le droit aux espaces et aux tirets."
-        
-        await user_a_maj.send( contenuMsg_Nom )
+        await user_a_maj.send( contenuMsg_Pseudo )
         
         choixConfirme = False
         
         while not choixConfirme :
         
-            msgReponseNom = await fDis.attente_Message( user_a_maj )
-            nouv_nom      = " ".join( msgReponseNom.content.split() ).upper()
+            msgReponsePseudo = await fDis.attente_Message( user_a_maj               )
+            nouv_pseudo      = fMeP.MeF_Pseudo(            msgReponsePseudo.content )
             
-            contenuMsg_VerifNom  = f"Est-ce bien votre nom **{nouv_nom}** ?\n"
-            contenuMsg_VerifNom +=  "> *Votre nom est mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
             
-            msgConfirmNom = await user_a_maj.send(           contenuMsg_VerifNom             )
-            choixConfirme = await fDis.attente_Confirmation( msgConfirmNom      , user_a_maj )
+            contenuMsg_VerifPseudo  = f"Est-ce que ce pseudo vous convient **{nouv_pseudo}** ?\n"
+            contenuMsg_VerifPseudo +=  "> *Votre pseudo a été mis en forme, pour qu'il est la même tête que ceux des autres joueurs.*"
             
-            await msgConfirmNom.delete()
+            msgConfirmPseudo = await user_a_maj.send(           contenuMsg_VerifPseudo             )
+            choixConfirme    = await fDis.attente_Confirmation( msgConfirmPseudo      , user_a_maj )
+            
+            await msgConfirmPseudo.delete()
             
             if not choixConfirme :
-                await user_a_maj.send( "*Vous pouvez taper un nouveau nom !*" )
-            
+                await user_a_maj.send( "*Vous pouvez taper un nouveau pseudo !*" )
+    
     else :
-        nouv_nom = ancienne_ligne_joueur[fGoo.clef_Nom]
+        nouv_pseudo = ancienne_ligne_joueur[fGoo.clef_Pseudo]
+        
+    
     
     
     
@@ -436,8 +376,7 @@ async def fct_modif_infosPerso(user_a_maj):
     nvlLigne_InfoJoueurs = { fGoo.clef_Matricule    : ancienne_ligne_joueur[fGoo.clef_Matricule]    ,
                             
                              fGoo.clef_Sexe         : choix_nouv_Sexe                               ,
-                             fGoo.clef_Prenom       : nouv_prenom                                   ,
-                             fGoo.clef_Nom          : nouv_nom                                      ,
+                             fGoo.clef_Pseudo       : nouv_pseudo                                   ,
                              
                              fGoo.clef_Groupe       : ancienne_ligne_joueur[fGoo.clef_Groupe]       , 
                              fGoo.clef_numVillage   : ancienne_ligne_joueur[fGoo.clef_numVillage]   ,
@@ -459,8 +398,7 @@ async def fct_modif_infosPerso(user_a_maj):
     x, nb_ligne_Archives = fGoo.ligne_avec(user_a_maj.id, fGoo.clef_idDiscord, fGoo.donneeGoogleSheet(fGoo.page1_Archives))
     
     nvlLigne_Archives = { fGoo.clef_Sexe       : choix_nouv_Sexe             , 
-                          fGoo.clef_Prenom     : nouv_prenom                 ,
-                          fGoo.clef_Nom        : nouv_nom                    ,
+                          fGoo.clef_Pseudo     : nouv_pseudo                 ,
                           
                           fGoo.clef_Groupe     : fGrp.GroupeParDefaut.numero , 
                           fGoo.clef_numVillage : 0                           ,
@@ -477,7 +415,7 @@ async def fct_modif_infosPerso(user_a_maj):
 #### --- Message de confirmation de la modification ---
 # =============================================================================   
     
-    await user_a_maj.send(f"C'est bon {nouv_prenom}, tes infos personnelles ont bien été changées !" )
+    await user_a_maj.send(f"C'est bon {nouv_pseudo}, tes infos personnelles ont bien été changées !" )
     await msgAtt    .delete()    
 
 

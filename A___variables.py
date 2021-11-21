@@ -27,29 +27,32 @@ nbDigit_Matricule = 3
 
 tailleVlg_Ideal = 12
 
-prop_Villag     = 0
-prop_VillaVilla = 0
-prop_Cupido     = 0
-prop_Ancien     = 0
+prop_Villag        = 0
+prop_VillaVilla    = 0
+prop_Cupido        = 0
+prop_Ancien        = 0
 
-prop_Salvat     = 2
-prop_Sorcie     = 2
-prop_Voyant     = 2
+prop_Salvat        = 2
+prop_Sorcie        = 2
+prop_Voyant        = 2
+prop_Voyante_dAura = 0
 
-prop_Corbea     = 1
-prop_Hirond     = 1
-prop_Juge       = 1
+prop_Corbea        = 1
+prop_Hirond        = 1
+prop_Juge          = 1
 
-prop_Chasse     = 0
+prop_Chasse        = 0
       
-prop_Famill     = 0
+prop_Famill        = 0
 
-prop_LG         = 2
-prop_LGNoir     = 0
-prop_LGBleu     = 1
+prop_LG            = 2
+prop_LGNoir        = 0
+prop_LGBleu        = 1
+prop_Traitre       = 0
 
-prop_LGBlan     = 0
-prop_EnSauv     = 0
+prop_LGBlan        = 0
+prop_EnSauv        = 0
+
 
 
 #### Paramètres de ces rôles
@@ -59,6 +62,7 @@ Sorcie_nbPotVie  = 2
 Sorcie_nbPotMort = 1
 LGNoir_nbInfect  = 1
 Juge_nbExil      = 2
+
 
 
 #### Paramètre de la Partie
@@ -71,6 +75,83 @@ partiePdt_Weekend                = True
 FN_peuventParler_pdt_Journee     = True
 LG_peuventParler_pdt_Journee     = True
 
+
+
+#### Mode clair / flou et obscur
+
+choix_mode_clair  = "Mode Clair"
+choix_mode_obscur = "Mode Obscur"
+
+mode_choisi = choix_mode_clair
+
+mort_infecte_cachee   = False 
+mort_amoureux_cachee  = False
+
+mort_noct_role_cache  = False
+mort_soir_role_cachee = False
+
+tombe_affiche_role    = True
+
+rapportMunicipal_affichage_roles = True
+
+
+def passage_en_mode_clair () :
+    
+    global mort_infecte_cachee , mort_amoureux_cachee
+    global mort_noct_role_cache, mort_soir_role_cachee
+    
+    global tombe_affiche_role
+
+    global rapportMunicipal_affichage_roles
+    
+    global mode_choisi
+    
+    
+    
+    mode_choisi = choix_mode_clair
+    
+    mort_infecte_cachee   = False 
+    mort_amoureux_cachee  = False
+    
+    mort_noct_role_cache  = False
+    mort_soir_role_cachee = False
+    
+    tombe_affiche_role    = True
+    
+    rapportMunicipal_affichage_roles = True
+
+
+
+
+
+def passage_en_mode_obscur () :
+    
+    global mort_infecte_cachee , mort_amoureux_cachee
+    global mort_noct_role_cache, mort_soir_role_cachee
+    
+    global tombe_affiche_role
+
+    global rapportMunicipal_affichage_roles
+    
+    global mode_choisi
+    
+    
+    
+    mode_choisi = choix_mode_obscur
+    
+    mort_infecte_cachee   = True 
+    mort_amoureux_cachee  = True
+    
+    mort_noct_role_cache  = True
+    mort_soir_role_cachee = True
+    
+    tombe_affiche_role    = False
+    
+    rapportMunicipal_affichage_roles = False
+    
+    
+passage_en_mode_obscur()
+    
 
 # %% Variables de la Partie
 
@@ -127,7 +208,7 @@ if hInit > nuit_hDeb_Theo :
 #### Autres moments important de la nuit
 
 conseilLG_hFin = datetime( ajd.year, ajd.month, ajd.day, 14, 00, tzinfo = HParis )
-part3_hDeb     = conseilLG_hFin + timedelta(seconds = 30)
+part3_hDeb     = conseilLG_hFin + timedelta(seconds = 10)
 nuit_hFin      = datetime( ajd.year, ajd.month, ajd.day, 18, 00, tzinfo = HParis )
 
 
@@ -135,8 +216,10 @@ nuit_hFin      = datetime( ajd.year, ajd.month, ajd.day, 18, 00, tzinfo = HParis
 #### Durée des différentes phases
 
 nuit_duree  =  nuit_hFin -  nuit_hDeb
-avtP3_duree = part3_hDeb -  nuit_hDeb
-part3_duree =  nuit_hFin - part3_hDeb
+
+conseilLG_duree = conseilLG_hFin - nuit_hDeb
+avtP3_duree     =     part3_hDeb -  nuit_hDeb
+part3_duree     =      nuit_hFin - part3_hDeb
 
 
 

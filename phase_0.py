@@ -9,9 +9,16 @@
                                           v1                                29/05/2021
 """
 
+# Niveau F
+import F___tour       as fTou
+
+# Niveau E
+fVlg = fTou.fVlg
+
+# Niveau D
 
 # Niveau C
-import C___habitant       as fHab
+fHab = fVlg.fHab
 
 # Niveau B
 
@@ -32,13 +39,31 @@ asyncio = fHab.asyncio
 @fDis.bot.event
 async def on_member_join (member):
     """
-    Assigne le rôle de Spectateur aux nouveaux membres.
+    Fonction gérant l'arrivé de nouveau membre dans :
+        Méga Loups-Garous
+        Méga Loups-Garous (LG)
+        Méga Loups-Garous (Famille Nb)
     """
     
-    await member.add_roles(fDis.roleSpectateurs)
-    await fDis.channelHistorique.send(f"{fDis.Emo_BabyGreen}  |  {member.mention} vient d'arriver sur le serveur !")
-
-
+    if   member.guild == fDis.serveurMegaLG :
+    
+        await fDis.ban_MLG_LG_FN(member)
+        
+        await member.add_roles(fDis.roleSpectateurs)
+        await fDis.channelHistorique.send(f"{fDis.Emo_BabyGreen}  |  {member.mention} vient d'arriver sur le serveur !")
+        
+        
+        
+    elif member.guild == fDis.serveurMegaLG_LG :
+        
+        await fVlg.gestion_permission_serveurMegaLG_LG(member)
+        
+        
+        
+    elif member.guild == fDis.serveurMegaLG_FN :
+    
+        await fVlg.gestion_permission_serveurMegaLG_FN(member)
+    
 
 
 
@@ -48,17 +73,19 @@ async def on_member_remove(member):
     Tue les joueurs venants de quitter le serveur.
     """
     
-    await fDis.channelHistorique.send(f"{fDis.Emo_BabyBlack}  |  {member} vient de quitter le serveur !")
+    if   member.guild == fDis.serveurMegaLG :
     
-    if v.phaseEnCours == v.phase3  and  fDis.roleJoueurs in member.roles :
+        await fDis.channelHistorique.send(f"{fDis.Emo_BabyBlack}  |  {member} vient de quitter le serveur !")
         
-        fHab.redef_TousLesHabitants()
-        
-        persPartie = fHab.habitant_avec(member.id)
-        await fDis.channelHistorique.send(f"Il était un joueur : {persPartie.user.mention}  |  {persPartie.matricule} {persPartie.prenom} {persPartie.nom} - ( {persPartie.groupe} ) !")
-        
-        await persPartie.Tuer(departServeur = True)
-        await persPartie.user.send("Vous avez quitté le serveur, vous avez donc été tué...")
+        if v.phaseEnCours == v.phase3  and  fDis.roleJoueurs in member.roles :
+            
+            fHab.redef_TousLesHabitants()
+            
+            persPartie = fHab.habitant_avec(member.id)
+            await fDis.channelHistorique.send(f"Il était un joueur : {persPartie.user.mention}  |  {persPartie.matricule} {persPartie.pseudo} - ( {persPartie.groupe} ) !")
+            
+            await persPartie.Tuer(departServeur = True)
+            await persPartie.user.send("Vous avez quitté le serveur, vous avez donc été tué...")
 
 
 
@@ -343,6 +370,39 @@ async def ResetMatricules (ctx):
         
         membJou = fDis.serveurMegaLG.get_member( j[fGoo.clef_idDiscord] )
         await membJou.edit(nick = membJou.display_name[v.nbDigit_Matricule + 1 :])
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def BanTLM_LG_FN (ctx):
+    """
+    Ban tous les membres étant dans serveur_MegaLG des : 
+        serveur_MLG_LG 
+        serveur_MLG_FN
+        
+    Ces bans ne concernent pas les bots et les modérateurs.
+    """
+    
+    await fDis.ban_tousLesMembres_de_MLG_LG_FN()
+
+
+
+
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def UnbanTLM_LG_FN (ctx):
+    """
+    Unban tous les membres étant dans serveur_MegaLG des : 
+        serveur_MLG_LG 
+        serveur_MLG_FN
+        
+    """
+    
+    await fDis.unban_tousLesMembres_de_MLG_LG_FN()
 
 
 

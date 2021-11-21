@@ -33,28 +33,28 @@ inv = "invariable"
 
 
 mortPhrases_Matin = [
-    ("#PRENOM# ne s'est pas réveillé ce matin..."  ,
-     "#PRENOM# ne s'est pas réveillée ce matin..." ) ,
+    ("#PSEUDO# ne s'est pas réveillé ce matin..."  ,
+     "#PSEUDO# ne s'est pas réveillée ce matin..." ) ,
     
-    ("On a retrouvé plusieurs fois #PRENOM# dans la forêt", 
+    ("On a retrouvé plusieurs fois #PSEUDO# dans la forêt", 
      inv                                                  ) ,
     
-    ("""#PRENOM# a été retrouvé mort chez lui ce matin...\nD'après les voisins ses derniers mots avant de mourir étaient "Gaaaaarg ! Graaa... mnnmnmnmn......." """  ,
-     """#PRENOM# a été retrouvé morte chez elle ce matin...\nD'après les voisins ses derniers mots avant de mourir étaient "Gaaaaarg ! Graaa... mnnmnmnmn......." """) ,
+    ("""#PSEUDO# a été retrouvé mort chez lui ce matin...\nD'après les voisins ses derniers mots avant de mourir étaient "Gaaaaarg ! Graaa... mnnmnmnmn......." """  ,
+     """#PSEUDO# a été retrouvé morte chez elle ce matin...\nD'après les voisins ses derniers mots avant de mourir étaient "Gaaaaarg ! Graaa... mnnmnmnmn......." """) ,
     
-    ("Oh bah nooon, #PRENOM# a été décapité...\nQui est l'enflure qui a osé faire cela ?\nRetrouvez-le au plus vite avant qu'il ne sévisse de nouveau...", 
+    ("Oh bah nooon, #PSEUDO# a été décapité...\nQui est l'enflure qui a osé faire cela ?\nRetrouvez-le au plus vite avant qu'il ne sévisse de nouveau...", 
      inv                                                                                                                                                 ) ,
     
     ("Il est mort, **cheh** !"   ,
      "Elle est morte, **cheh** !") ,
     
-    ("Rip, #PRENOM# a été assassiné, il serait mort dans le capitole du village, en tentant de protéger le pupitre sacré..."    , 
-     "Rip, #PRENOM# a été assassinée, elle serait morte dans le capitole du village, en tentant de protéger le pupitre sacré..." ) ,
+    ("Rip, #PSEUDO# a été assassiné, il serait mort dans le capitole du village, en tentant de protéger le pupitre sacré..."    , 
+     "Rip, #PSEUDO# a été assassinée, elle serait morte dans le capitole du village, en tentant de protéger le pupitre sacré..." ) ,
     
-    ("Après avoir entendu un bruit inquiétant dans sa grange cette nuit, #PRENOM# est allé voir ce qu'il s'y passait...\nLe lendemain, ce **tocard** fut retrouvé en plusieurs morceaux, éparpillés dans la cour..."      , 
-     "Après avoir entendu un bruit inquiétant dans sa grange cette nuit, #PRENOM# est allée voir ce qu'il s'y passait...\nLe lendemain, cette **idiote** fut retrouvée en plusieurs morceaux, éparpillés dans la cour..." ) ,
+    ("Après avoir entendu un bruit inquiétant dans sa grange cette nuit, #PSEUDO# est allé voir ce qu'il s'y passait...\nLe lendemain, ce **tocard** fut retrouvé en plusieurs morceaux, éparpillés dans la cour..."      , 
+     "Après avoir entendu un bruit inquiétant dans sa grange cette nuit, #PSEUDO# est allée voir ce qu'il s'y passait...\nLe lendemain, cette **idiote** fut retrouvée en plusieurs morceaux, éparpillés dans la cour..." ) ,
     
-    ("#PRENOM# adorait son cheval, maintenant c'est lui qui l'adore !" , 
+    ("#PSEUDO# adorait son cheval, maintenant c'est lui qui l'adore !" , 
      inv                                                               ) ,
     
     ("""*"Il a vécu comme un sage... Et il est mort comme un con"*\n__Tycho Brahé__"""        ,
@@ -63,19 +63,19 @@ mortPhrases_Matin = [
 
 
 mortPhrases_Soir  = [
-    ("#PRENOM# finira sa journée sur le bûcher..." , 
+    ("#PSEUDO# finira sa journée sur le bûcher..." , 
      inv                                           ) ,
     
-    ("#PRENOM# s'est tu bien avant de s'éteindre"  ,
-     "#PRENOM# s'est tue bien avant de s'éteindre" ) ,
+    ("#PSEUDO# s'est tu bien avant de s'éteindre"  ,
+     "#PSEUDO# s'est tue bien avant de s'éteindre" ) ,
     
-    ("""#PRENOM# a dit sur le bûcher "Je veux descendre !"...\nLe bourreau a répondu "Des **cendres** ? Ok" """ ,
+    ("""#PSEUDO# a dit sur le bûcher "Je veux descendre !"...\nLe bourreau a répondu "Des **cendres** ? Ok" """ ,
      inv                                                                                                        ) ,
     
-    ("Hoo, zut, #PRENOM# est mort, quel domage !\n(¬‿¬) "  ,
-     "Hoo, zut, #PRENOM# est morte, quel domage !\n(¬‿¬) " ) ,
+    ("Hoo, zut, #PSEUDO# est mort, quel domage !\n(¬‿¬) "  ,
+     "Hoo, zut, #PSEUDO# est morte, quel domage !\n(¬‿¬) " ) ,
     
-    ("Alors que le bûcher n'était pas allumé, #PRENOM# se prit **une enclume** en pleine tête !\nUne mesure écologique selon certain, un défouloir pour d'autres... Enfin dans tous les cas, il va falloir la nettoyer maintenant, l'enclume !" , 
+    ("Alors que le bûcher n'était pas allumé, #PSEUDO# se prit **une enclume** en pleine tête !\nUne mesure écologique selon certain, un défouloir pour d'autres... Enfin dans tous les cas, il va falloir la nettoyer maintenant, l'enclume !" , 
      inv                                                                                                                                                                                                                                        )
     ]
 
@@ -84,31 +84,32 @@ mortPhrases_Soir  = [
 
 
 mortPhrases_Homme_AmourDe_Hom = [
-    "#PRENOM# est parti se perdre dans la forêt après la mort de son merveilleux #aPRENOM#...", 
-    "*#aPRENOM# #aPRENOM# #aPRENOM#, je n'aime pas te savoir seul*\nC'est ce que disait la lettre qu'on a trouvée chez #PRENOM# en revanche lui, on ne l'a jamais retrouvé...",
-    "Durant leur séance de coït, #aMENTION# est mort...\nNous avons également retrouvé #PRENOM# en pls à coté de son amant.\nLes rumeurs disent qu'il s'est suicidé à l'aide d'une bouteille de poison..."
+    "#PSEUDO# est parti se perdre dans la forêt après la mort de son merveilleux #aPSEUDO#...", 
+    "*#aPSEUDO# #aPSEUDO# #aPSEUDO#, je n'aime pas te savoir seul*\nC'est ce que disait la lettre qu'on a trouvée chez #PSEUDO# en revanche lui, on ne l'a jamais retrouvé...",
+    "Durant leur séance de coït, #aMENTION# est mort...\nNous avons également retrouvé #PSEUDO# en pls à coté de son amant.\nLes rumeurs disent qu'il s'est suicidé à l'aide d'une bouteille de poison..."
     ]
 
 
 mortPhrases_Homme_AmourDe_Fem = [
-    "#PRENOM# est parti se perdre dans la forêt après la mort de sa merveilleuse #aPRENOM#...", 
-    "*#aPRENOM# #aPRENOM# #aPRENOM#, je n'aime pas te savoir seule*\nC'est ce que disait la lettre qu'on a trouvée chez #PRENOM#, en revanche lui, on ne l'a jamais retrouvé...",
-    "Durant leur séance de coït, #aMENTION# est morte...\nNous avons également retrouvé #PRENOM# en pls à coté de son amant.\nLes rumeurs disent qu'il s'est suicidé à l'aide d'une bouteille de poison..."
+    "#PSEUDO# est parti se perdre dans la forêt après la mort de sa merveilleuse #aPSEUDO#...", 
+    "*#aPSEUDO# #aPSEUDO# #aPSEUDO#, je n'aime pas te savoir seule*\nC'est ce que disait la lettre qu'on a trouvée chez #PSEUDO#, en revanche lui, on ne l'a jamais retrouvé...",
+    "Durant leur séance de coït, #aMENTION# est morte...\nNous avons également retrouvé #PSEUDO# en pls à coté de son amant.\nLes rumeurs disent qu'il s'est suicidé à l'aide d'une bouteille de poison..."
     ]
 
 
 mortPhrases_Femme_AmourDe_Hom = [
-    "#PRENOM# est partie se perdre dans la forêt après la mort de son merveilleux #aPRENOM#...", 
-    "*#aPRENOM# #aPRENOM# #aPRENOM#, je n'aime pas te savoir seul*\nC'est ce que disait la lettre qu'on a trouvée chez #PRENOM#, en revanche elle, on ne l'a jamais retrouvée...",
-    "Durant leur séance de coït, #aMENTION# est mort...\nNous avons également retrouvé #PRENOM# en pls à coté de son amant.\nLes rumeurs disent qu'elle s'est suicidée à l'aide d'une bouteille de poison..."
+    "#PSEUDO# est partie se perdre dans la forêt après la mort de son merveilleux #aPSEUDO#...", 
+    "*#aPSEUDO# #aPSEUDO# #aPSEUDO#, je n'aime pas te savoir seul*\nC'est ce que disait la lettre qu'on a trouvée chez #PSEUDO#, en revanche elle, on ne l'a jamais retrouvée...",
+    "Durant leur séance de coït, #aMENTION# est mort...\nNous avons également retrouvé #PSEUDO# en pls à coté de son amant.\nLes rumeurs disent qu'elle s'est suicidée à l'aide d'une bouteille de poison..."
     ]
 
 
 mortPhrases_Femme_AmourDe_Fem = [
-    "#PRENOM# est partie se perdre dans la forêt après la mort de sa merveilleuse #aPRENOM#...", 
-    "*#aPRENOM# #aPRENOM# #aPRENOM#, je n'aime pas te savoir seule*\nC'est ce que disait la lettre qu'on a trouvée chez #PRENOM#, en revanche elle, on ne l'a jamais retrouvée...",
-    "Durant leur séance de coït, #aMENTION# est morte...\nNous avons également retrouvé #PRENOM# en pls à coté de son amant.\nLes rumeurs disent qu'elle s'est suicidée à l'aide d'une bouteille de poison..."
+    "#PSEUDO# est partie se perdre dans la forêt après la mort de sa merveilleuse #aPSEUDO#...", 
+    "*#aPSEUDO# #aPSEUDO# #aPSEUDO#, je n'aime pas te savoir seule*\nC'est ce que disait la lettre qu'on a trouvée chez #PSEUDO#, en revanche elle, on ne l'a jamais retrouvée...",
+    "Durant leur séance de coït, #aMENTION# est morte...\nNous avons également retrouvé #PSEUDO# en pls à coté de son amant.\nLes rumeurs disent qu'elle s'est suicidée à l'aide d'une bouteille de poison..."
     ]
+
 
 
 
@@ -117,22 +118,23 @@ mortPhrases_Femme_AmourDe_Fem = [
 
 class Habitant :
     
-    def __init__ (self, matricule, prenom, nom, numeroGroupe, numeroVillage, sexe, idDiscord, nomRole, caractRole, caractPers) :
+    def __init__ (self, matricule, pseudo, numeroGroupe, numeroVillage, sexe, idDiscord, nomRole, caractRole, caractPers) :
 
 #### Constantes Personnelles
         
         self.matricule = matricule
         
-        self.prenom    = prenom
-        self.nom       = nom
+        self.pseudo    = pseudo
         
         self.numGrp    = numeroGroupe
         self.groupe    = None
         
         self.numVlg    = numeroVillage 
         
-        self.user      = fDis.bot          .get_user  (idDiscord)
-        self.member    = fDis.serveurMegaLG.get_member(idDiscord)
+        self.user      = fDis.bot             .get_user  (idDiscord)
+        self.member    = fDis.serveurMegaLG   .get_member(idDiscord)
+        self.member_LG = fDis.serveurMegaLG_LG.get_member(idDiscord)
+        self.member_FN = fDis.serveurMegaLG_FN.get_member(idDiscord)
         self.idDis     = idDiscord
         
         self.role      = fRol.role_avec(nomRole, "nom")
@@ -240,7 +242,7 @@ class Habitant :
     async def Tuer (self, village, meurtreNocturne = True, suicideAmoureux = False, premAmoureuxTue = None, departServeur = False):
 
         self.estMorte = True
-        await fDis.channelHistorique.send(f"Tentative de meurtre de {self.matricule} {self.prenom} {self.nom} {self.groupe}  |  {self.user.mention} {self.user}")
+        await fDis.channelHistorique.send(f"Tentative de meurtre de {self.matricule} {self.pseudo} {self.groupe}  |  {self.user.mention} {self.user}")
 
 
 # -----------------------------------------------
@@ -261,27 +263,27 @@ class Habitant :
 
 ### Titre de l'embed
 
-        titreEmbed = f"**{self.prenom} {self.nom}** en {self.groupe}"
+        titreEmbed = f"**{self.pseudo}** en {self.groupe}"
 
 
 ### Détails de l'embed
         
         Details = ""
         
-        if   self.estInf  and  self.estAmoureux :
+        if   self.estInf       and  not v.mort_infecte_cachee  and  self.estAmoureux and not v.mort_amoureux_cachee:
             Details = f"{Il} était infecté{e} et {amoureux} de "
             
-        elif self.estInf :
+        elif self.estInf       and  not v.mort_infecte_cachee :
             Details = f"{Il} était infecté{e}"
             
-        elif self.estAmoureux :
+        elif self.estAmoureux  and  not v.mort_amoureux_cachee:
             Details = f"{Il} était {amoureux} de "
             
         
-        if self.estAmoureux :
+        if self.estAmoureux  and  not v.mort_amoureux_cachee:
             for matri in self.amants :
                 amoureux = habitant_avec(matri, autorisationMort = True)
-                Details += f"{amoureux.prenom} {amoureux.nom} en {amoureux.groupe}"
+                Details += f"{amoureux.pseudo} en {amoureux.groupe}"
                 
                 if len(self.amants) >= 2  and  matri != self.amants[-1] :
                     Details += " et de "
@@ -302,7 +304,7 @@ class Habitant :
         if   departServeur :
             couleurEmbed = 0x000000
         
-        elif suicideAmoureux :
+        elif suicideAmoureux  and  not v.suicide_amoureux_cachee :
             couleurEmbed = fMeP.couleurRandom("amour")
         
         elif meurtreNocturne :
@@ -320,7 +322,7 @@ class Habitant :
         
         else :
             
-            if suicideAmoureux :
+            if suicideAmoureux  and  not v.mort_amoureux_cachee :
                 if     self.estUnHomme and     premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Homme_AmourDe_Hom
                 if     self.estUnHomme and not premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Homme_AmourDe_Fem
                 if not self.estUnHomme and     premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Femme_AmourDe_Hom
@@ -328,8 +330,7 @@ class Habitant :
                 
                 descripEmbed = rd.choice(finsDePhrases)
                 
-                descripEmbed = descripEmbed.replace( "#aPRENOM#" , premAmoureuxTue.prenom                                          )
-                descripEmbed = descripEmbed.replace( "#aNOM#"    , premAmoureuxTue.nom                                             )
+                descripEmbed = descripEmbed.replace( "#aPSEUDO#" , premAmoureuxTue.pseudo                                          )
                 descripEmbed = descripEmbed.replace( "#aGROUPE#" , str(premAmoureuxTue.groupe)                                     )
                 descripEmbed = descripEmbed.replace( "#aROLE#"   , premAmoureuxTue.role[fRol.clefNom]                              )
                 descripEmbed = descripEmbed.replace( "#aEMOJI#"  , fRol.emojiRole(premAmoureuxTue.role,premAmoureuxTue.estUnHomme) )
@@ -347,8 +348,7 @@ class Habitant :
                 if descripEmbed == inv : descripEmbed = Phrases[0]
             
             
-            descripEmbed = descripEmbed.replace    (  "#PRENOM#" , self.prenom                                                     )
-            descripEmbed = descripEmbed.replace    (  "#NOM#"    , self.nom                                                        )
+            descripEmbed = descripEmbed.replace    (  "#PSEUDO#" , self.pseudo                                                     )
             descripEmbed = descripEmbed.replace    (  "#GROUPE#" , str(self.groupe)                                                )
             descripEmbed = descripEmbed.replace    (  "#ROLE#"   , self.role[fRol.clefNom]                                         )
             descripEmbed = descripEmbed.replace    (  "#EMOJI#"  , fRol.emojiRole(self.role, self.estUnHomme)                      )
@@ -359,7 +359,9 @@ class Habitant :
 ### Réalisation de l'embed
         
         AnnonceMort = fDis.discord.Embed( title = titreEmbed  , description = descripEmbed, color = couleurEmbed )
-        AnnonceMort.set_thumbnail       (   url = urlImageRole                                                   )
+        
+        if not v.mort_noct_role_cachee  and  meurtreNocturne  or  not v.mort_soir_role_cachee  and  not meurtreNocturne :
+            AnnonceMort.set_thumbnail   (   url = urlImageRole                                                   )
         
         if Details != "" :
             AnnonceMort.set_footer(text = Details)
@@ -376,6 +378,11 @@ class Habitant :
         
         if not departServeur :
             
+##  Bannissement des Serveurs des LG et de la Famille Nombreuse
+            
+            await fDis.ban_MLG_LG_FN(self.member)
+            
+            
 ##  Changement des Roles
             
             await self.member.remove_roles( fDis.roleJoueurs, village.roleDiscord     )
@@ -383,11 +390,12 @@ class Habitant :
             
             await self.member.edit( nick = self.member.nick[v.nbDigit_Matricule + 1 : ] )
             
+            
 ##  Lancement de la fonction Cimetiere
             
             coroutine_cimetiere = cimetiere(village = village, habitant = self)
 
-            asyncio.create_task( coroutine_cimetiere, name = f"Lancement cimetière de {self.prenom} {self.nom}." )
+            asyncio.create_task( coroutine_cimetiere, name = f"Lancement cimetière de {self.pseudo}." )
 
 
 
@@ -425,14 +433,14 @@ class Habitant :
 
 #### Attente de Réponse
 
-        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_BabyOrange} en tant que {fRol.emojiRole(self.role,self.estUnHomme)}   - {self.user.mention}  |  {self.prenom} {self.nom}")
+        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_BabyOrange} en tant que {fRol.emojiRole(self.role,self.estUnHomme)}   - {self.user.mention}  |  {self.pseudo}")
         defenseRecu, aRepondu = await self.attenteMessage(heureFinAttente, self.verif_Msg_DMChannel)
 
 
 #### Si une réponse à été reçu
 
         if aRepondu :
-            Defense = fDis.discord.Embed(title = f"Défense de {self.prenom}", description = defenseRecu.content, color = fMeP.couleurRandom("a"))
+            Defense = fDis.discord.Embed(title = f"Défense de {self.pseudo}", description = defenseRecu.content, color = fMeP.couleurRandom("a"))
         
             await msgDefense.edit(embed = Defense)
 
@@ -451,7 +459,7 @@ class Habitant :
         """tempsAtt est en secondes"""
 
 ### Début de l'attente
-        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_BabyRed} en tant que {fRol.emojiRole(self.role, self.estUnHomme)}   - {self.user.mention}  |  {self.prenom} {self.nom}")
+        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_BabyRed} en tant que {fRol.emojiRole(self.role, self.estUnHomme)}   - {self.user.mention}  |  {self.pseudo}")
         await asyncio.sleep(tempsAtt)
         
 ### Fin de l'attente
@@ -566,7 +574,7 @@ class Habitant :
                 
                 nbMinutesAttente_Max = 5
                 
-                msgVerif = await self.user.send(f"Vous avez choisi **{persChoisie.prenom} {persChoisie.nom}** en {persChoisie.groupe}, est-ce que vous êtes certains de ce choix ?```\nSi oui, régissez avec ✅.\nSinon choisissez ❌, vous pourrez ensuite retaper le matricule.\n - Vous avez moins de {nbMinutesAttente_Max} mins pour réagir, sinon votre choix sera validé.```")
+                msgVerif = await self.user.send(f"Vous avez choisi **{persChoisie.pseudo}** en {persChoisie.groupe}, est-ce que vous êtes certains de ce choix ?```\nSi oui, régissez avec ✅.\nSinon choisissez ❌, vous pourrez ensuite retaper le matricule.\n - Vous avez moins de {nbMinutesAttente_Max} mins pour réagir, sinon votre choix sera validé.```")
                 messagesEnvoyes.append( msgVerif )
                 
                 
@@ -602,7 +610,7 @@ class Habitant :
         if   persChoisie.estUnHomme : e = ""
         else                        : e = "e"
         
-        await self.user.send(f"**{persChoisie.prenom} {persChoisie.nom}** a bien été choisi{e} !")        
+        await self.user.send(f"**{persChoisie.pseudo}** a bien été choisi{e} !")        
         
         return habitant_avec(matricule), aRepondu
 
@@ -626,8 +634,7 @@ async def redef_TousLesHabitants():
     for j in Joueurs :
         
         nouvelHab = Habitant( j[fGoo.clef_Matricule   ] ,
-                              j[fGoo.clef_Prenom      ] ,
-                              j[fGoo.clef_Nom         ] ,
+                              j[fGoo.clef_Pseudo      ] ,
                               j[fGoo.clef_Groupe      ] ,
                               j[fGoo.clef_numVillage  ] ,
                               j[fGoo.clef_Sexe        ] ,
@@ -727,14 +734,13 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 
     if not rappelDeFonction :
         HDeces = v.maintenant()
-        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.prenom} {habitant.nom}\n> `<| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.prenom.replace(' ','_')} {habitant.nom.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} |>`")
+        msgAtt = await fDis.channelAttente.send(f"{fDis.Emo_Red} en tant que {fRol.emojiRole(habitant.role, habitant.estUnHomme)}   - {habitant.user.mention}  |  {habitant.pseudo}\n> `<| {HDeces.year} {HDeces.month} {HDeces.day} {HDeces.hour} {HDeces.minute} {int(habitant.estUnHomme)} {habitant.pseudo.replace(' ','_')} {str(habitant.groupe).replace(' ','_')} {habitant.role[fRol.clefNom].replace(' ','_')} {habitant.idDis} {village.salonCimetiere.id} |>`")
         await msgAtt.add_reaction(emoji_EpiPasRecue)
         
 ## Définition des variables utilisées ensuite
 
         EstUnHomme = habitant.estUnHomme
-        Prenom     = habitant.prenom
-        Nom        = habitant.nom
+        Pseudo     = habitant.pseudo
         Groupe     = str(habitant.groupe)
         Role       = habitant.role[fRol.clefNom]
         User       = habitant.user
@@ -746,7 +752,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
         if HDeces.hour < 17 : Bonjour = "Bonjour"
         else                : Bonjour = "Bonsoir"
         
-        Annonce = f"{Bonjour} {Prenom}, il va falloir inscrire quelque chose sur votre tombe, quel sera votre épitaphe ?\n```\nPetits détails : - Le prochain message que vous enverrez ici partira directement sur votre tombe.\n                 - Votre épitaphe sera lu avant d'être publiée et pourra être censurée, et vous ne pourrez pas en choisir de nouvelle.\n                 - Vous pouvez indiquer les soupçons que vous avez sur les autres joueurs.```"#\n                 - Travaillez votre épitaphe, la plus mémorable sera récompensée !
+        Annonce = f"{Bonjour} {Pseudo}, il va falloir inscrire quelque chose sur votre tombe, quel sera votre épitaphe ?\n```\nPetits détails : - Le prochain message que vous enverrez ici partira directement sur votre tombe.\n                 - Votre épitaphe sera lu avant d'être publiée et pourra être censurée, et vous ne pourrez pas en choisir de nouvelle.\n                 - Vous pouvez indiquer les soupçons que vous avez sur les autres joueurs.```"#\n                 - Travaillez votre épitaphe, la plus mémorable sera récompensée !
     
         await habitant.user.send(Annonce)
 
@@ -765,12 +771,11 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 
         HDeces     = v.datetime(int(infos[0]), int(infos[1]), int(infos[2]), int(infos[3]), int(infos[4]), tzinfo = v.HParis)
         EstUnHomme = bool(int(infos[5]))
-        Prenom     = infos[6].replace('_',' ')
-        Nom        = infos[7].replace('_',' ')
-        Groupe     = infos[8].replace('_',' ')
-        Role       = infos[9].replace('_',' ')
-        User       = fDis.bot.get_user   (int(infos[10]))
-        SalonCimet = fDis.bot.get_channel(int(infos[11]))
+        Pseudo     = infos[6].replace('_',' ')
+        Groupe     = infos[7].replace('_',' ')
+        Role       = infos[8].replace('_',' ')
+        User       = fDis.bot.get_user   (int(infos[ 9]))
+        SalonCimet = fDis.bot.get_channel(int(infos[10]))
         EpiRecue   = str(msgAtt.reactions[0].emoji) == emoji_EpiRecue
 
 
@@ -799,7 +804,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 ### Vérification de l'épitaphe ###
 ##################################
 
-        msgAutorisation   = await fDis.userCamp.send(f"Voici l'épitaphe choisie par {Prenom} {Nom} {Groupe} {User.mention}, qui était {Role}, est-ce qu'elle convient ?\n>>> {msgEpitaphe.content}")
+        msgAutorisation   = await fDis.userCamp.send(f"Voici l'épitaphe choisie par {Pseudo} {Groupe} {User.mention}, qui était {Role}, est-ce qu'elle convient ?\n>>> {msgEpitaphe.content}")
   
         epitapheAutorisee = await fDis.attente_Confirmation(msgAutorisation, fDis.userCamp)
 
@@ -813,7 +818,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
   ### L'épitaphe ne convient pas, correction de l'épitaphe et enventuelle censure
 
         else :
-            await fDis.userCamp.send(f"La première épitaphe envoyée ne convenait pas...\nLe prochain message envoyée sera l'épitaphe de {Prenom} {Nom}, si ce message est dans ('C','c'), alors l'épitaphe sera entièrement censurée.")
+            await fDis.userCamp.send(f"La première épitaphe envoyée ne convenait pas...\nLe prochain message envoyée sera l'épitaphe de {Pseudo}, si ce message est dans ('C','c'), alors l'épitaphe sera entièrement censurée.")
             
             msgEpitaphe_corrigee = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
             
@@ -838,7 +843,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 ### Attente de la réaction de fDis.userCamp ###
 ###############################################
 
-        msgAttCamp = await fDis.userCamp.send(f"Attente de l'épitaphe de {Prenom} {Nom} {Groupe} étant {Role}. Réagi avec ✅ pour envoyer son épitaphe. (toujours 'c' pour censurer)")
+        msgAttCamp = await fDis.userCamp.send(f"Attente de l'épitaphe de {Pseudo} {Groupe} étant {Role}. Réagi avec ✅ pour envoyer son épitaphe. (toujours 'c' pour censurer)")
         await msgAttCamp.add_reaction("✅")
         
         def checkEmoji(reaction, user):
@@ -854,7 +859,7 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
 ### Attente de l'épitaphe ###
 #############################
         
-        nouvMsgAtt  = await fDis.userCamp.send(f"Envoie l'épitaphe de {Prenom} {Nom}.")
+        nouvMsgAtt  = await fDis.userCamp.send(f"Envoie l'épitaphe de {Pseudo}.")
         
         msgEpitaphe = await fDis.attente_Message(fDis.userCamp, accuseReception = True)
         
@@ -880,9 +885,11 @@ async def cimetiere (village = None, habitant = None, message = None, rappelDeFo
     
     urlImageRole = fRol.imageRole(Role, EstUnHomme)
     
-    Tombe = fDis.discord.Embed(title = f"**{Prenom} {Nom} **", description = epitaphe, color = fMeP.couleurRandom('t'))
+    Tombe = fDis.discord.Embed(title = f"**{Pseudo} **", description = epitaphe, color = fMeP.couleurRandom('t'))
     Tombe.set_footer(text = f"{Il} était en {Groupe} et {Il.lower()} est {Decede} le {HDeces.day} {fMeP.mois(HDeces.month)} {HDeces.year} à {fMeP.AjoutZerosAvant(HDeces.hour,2)} : {fMeP.AjoutZerosAvant(HDeces.minute,2)}")
-    Tombe.set_thumbnail(url = urlImageRole)
+    
+    if v.tombe_affiche_role :
+        Tombe.set_thumbnail(url = urlImageRole)
     
     await SalonCimet.send(embed = Tombe)
     

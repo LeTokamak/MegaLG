@@ -204,6 +204,11 @@ messagIns_reInscript = "**Vous avez déjà participer à une ancienne partie.**\
 
 async def evt_Inscription (membre_voulant_sIncrire):
     
+    nom_taches = [ tache.get_name() for tache in asyncio.all_tasks() ]
+    
+    nomTache_ReInscription = f"ReInscription de {membre_voulant_sIncrire}"
+    nomTache_Inscription   = f"Inscription de {membre_voulant_sIncrire}"
+    
 #### Cas 1 : Est on en phase d'Inscription ?
     
     if   v.phaseEnCours != v.phase1 :
@@ -218,18 +223,25 @@ async def evt_Inscription (membre_voulant_sIncrire):
     
     
     
-#### Cas 3 : A-t-il déjà participé à une partie ?
+#### Cas 3 : La fonction est-elle déjà lancée ?
+    
+    elif nomTache_ReInscription in nom_taches  or  nomTache_Inscription in nom_taches :
+        pass
+    
+    
+    
+#### Cas 4 : A-t-il déjà participé à une partie ?
     
     elif membre_voulant_sIncrire.id in listeidDisConnus :
         await membre_voulant_sIncrire.send( messagIns_reInscript )
-        asyncio.create_task( ReInscription( membre_voulant_sIncrire ), name = "ReInscription de {membre_voulant_sIncrire}" )
+        asyncio.create_task( ReInscription( membre_voulant_sIncrire ), name = nomTache_ReInscription )
     
     
     
 #### Sinon à tous ces cas : Inscription
     
     else :
-        asyncio.create_task( fct_Inscription( membre_voulant_sIncrire ), name = "Inscription de {membre_voulant_sIncrire}" )
+        asyncio.create_task( fct_Inscription( membre_voulant_sIncrire ), name = nomTache_Inscription )
 
 
 

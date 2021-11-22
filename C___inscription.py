@@ -19,6 +19,7 @@ fGoo = fGrp.fGoo
 fMeP = fGrp.fMeP
 v    = fGrp.v
 
+asyncio = fGrp.asyncio
 
 
 Emo_Homme = "♂️"
@@ -221,14 +222,14 @@ async def evt_Inscription (membre_voulant_sIncrire):
     
     elif membre_voulant_sIncrire.id in listeidDisConnus :
         await membre_voulant_sIncrire.send( messagIns_reInscript )
-        await ReInscription( membre_voulant_sIncrire )
+        asyncio.create_task( ReInscription( membre_voulant_sIncrire ), name = "ReInscription de {membre_voulant_sIncrire}" )
     
     
     
 #### Sinon à tous ces cas : Inscription
     
     else :
-        await fct_Inscription( membre_voulant_sIncrire )
+        asyncio.create_task( fct_Inscription( membre_voulant_sIncrire ), name = "Inscription de {membre_voulant_sIncrire}" )
 
 
 

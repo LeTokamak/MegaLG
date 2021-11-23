@@ -108,8 +108,8 @@ async def fct_Inscription (membre_aInscrire):
             await msgConfirmPseudo.delete()
             await membre_aInscrire.send( "*Vous pouvez taper un nouveau pseudo !*" )
             
-        msgReponsePseudo = await fDis.attente_Message( membre_aInscrire         )
-        pseudo           = fMeP.MeF_Pseudo(            msgReponsePseudo.content )
+            msgReponsePseudo = await fDis.attente_Message( membre_aInscrire         )
+            pseudo           = fMeP.MeF_Pseudo(            msgReponsePseudo.content )
     
     
 

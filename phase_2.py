@@ -785,7 +785,7 @@ async def DP_2 (ctx):
 @fDis.commands.has_permissions(ban_members = True)
 async def creationVlgs (ctx, nbVlg):
     
-    await creationVillages(nbVlg)
+    await creationVillages(int(nbVlg))
 
 
 @fDis.bot.command()

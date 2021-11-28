@@ -619,11 +619,13 @@ async def repartitionGroupes_Villages() :
     
     
     
+async def creationVillages (nbVlg) :
+    
 #### Création des villages
 
     await fHab.redef_TousLesHabitants()
     
-    for i in range(len(liste_VlgValides_Habs)) :
+    for i in range(nbVlg) :
     
         await fVlg.creationVillage( numNouvVillage = i+1 )
         await asyncio.sleep(0.5)
@@ -779,8 +781,11 @@ async def DP_2 (ctx):
     
     await repartitionGroupes_Villages()
     
-
-
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def creationVlgs (ctx, nbVlg):
+    
+    await creationVillages(nbVlg)
 
 
 @fDis.bot.command()

@@ -710,7 +710,7 @@ async def distributionRole(village):
         fGoo.remplacerVal_ligne( habRole[fRol.clefNom], fGoo.clef_Role       , numLigne, fGoo.page1_InfoJoueurs)
         fGoo.remplacerVal_ligne( caractRole           , fGoo.clef_caractRoles, numLigne, fGoo.page1_InfoJoueurs)
         
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.2)
         
         
         
@@ -781,11 +781,18 @@ async def DP_2 (ctx):
     
     await repartitionGroupes_Villages()
     
+    
+    
+    
+    
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def creationVlgs (ctx, nbVlg):
     
     await creationVillages(int(nbVlg))
+
+
+
 
 
 @fDis.bot.command()
@@ -804,6 +811,7 @@ async def DP_3 (ctx):
     
     for vlg in fVlg.TousLesVillages :
         await distributionRole(vlg)
+        await asyncio.sleep(1)
     
     
     

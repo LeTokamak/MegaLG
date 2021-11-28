@@ -498,8 +498,10 @@ async def ban_tousLesMembres_de(serveur_ban, serveur_devant_etre_ban) :
     """
     
     for membre in serveur_devant_etre_ban.members :
-        if roleModerateur not in membre.roles  and  roleBot not in membre.roles :
+        try :
             await serveur_ban.ban(membre)
+        except :
+            pass
     
     
     

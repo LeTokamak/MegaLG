@@ -831,7 +831,11 @@ async def DP_3 (ctx):
     await fDis.channelHistorique.edit(topic = f"{v.phase3} - Tour n°{v.nbTours}")
     
     
-    
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def gestion_ban (ctx, nbVlg):
+
 #### Gestions des permitions d'accès aux salons des Loups-Garous et celui de la Famille Nombreuse
     
     await fDis.ban_tousLesMembres_de_MLG_LG_FN()

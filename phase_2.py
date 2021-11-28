@@ -287,7 +287,7 @@ async def repartitionGroupes_Villages() :
 
     listeVillages_Valides.extend([ (grp,)  for grp in listeGroupes   if (grp.nbPersonne >  nbHab_parVlg_Max  and  not estUnSurGroupe(grp))])
     
-    listeGroupes_nonValides =    [  grp    for grp in listeGroupes   if  grp.nbPersonne <= nbHab_parVlg_Max ]
+    listeGroupes_nonValides =    [  grp    for grp in listeGroupes   if  grp.nbPersonne >= nbHab_parVlg_Max ]
     
     
     

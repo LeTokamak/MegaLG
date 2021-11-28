@@ -65,15 +65,17 @@ async def numerotationHabitants():
 
     for j in Joueurs :
         
-        habitant = fHab.Habitant( 0                         ,
-                                  j[fGoo.clef_Pseudo      ] ,
-                                  j[fGoo.clef_Groupe      ] ,
-                                  0                         ,
-                                  j[fGoo.clef_Sexe        ] ,
-                                  j[fGoo.clef_idDiscord   ] ,
-                                  ""                        ,
-                                  ""                        ,
-                                  ""                          )
+        print(f"TEST - {j[fGoo.clef_Pseudo]} / {int(j[fGoo.clef_Groupe])} / {j[fGoo.clef_Sexe]} / {j[fGoo.clef_idDiscord]}")
+        
+        habitant = fHab.Habitant( 0                          ,
+                                  j[fGoo.clef_Pseudo      ]  ,
+                                  int(j[fGoo.clef_Groupe  ]) ,
+                                  0                          ,
+                                  j[fGoo.clef_Sexe        ]  ,
+                                  j[fGoo.clef_idDiscord   ]  ,
+                                  ""                         ,
+                                  ""                         ,
+                                  ""                           )
         
         await habitant.init_groupe()
         

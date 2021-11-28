@@ -403,7 +403,7 @@ async def repartitionGroupes_Villages() :
                 nb_hab_nv_Vlg +=   grp.nbPersonne
                 nv_Vlg        += ( grp ,)
                 
-                if nb_hab_nv_Vlg >= nbHab_parVlg_Min :
+                if nb_hab_nv_Vlg >= nbHab_parVlg_Min  or  True :
                     
                     liste_VlgPossibles.append(nv_Vlg)
                     
@@ -530,6 +530,10 @@ async def repartitionGroupes_Villages() :
             
             try    : listeJoueursRestants.remove(hab)
             except : await fDis.channelHistorique.send(f"ERREUR - Cette personne a déjà été supprimmé : {hab.member.display_name} ({hab_vlg})")
+    
+    
+# Cas ou aucun village n'a été créer 
+
     
     
     

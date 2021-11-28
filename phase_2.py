@@ -838,6 +838,9 @@ async def gestion_ban (ctx, nbVlg):
 
 #### Gestions des permitions d'accès aux salons des Loups-Garous et celui de la Famille Nombreuse
     
+    await fHab.redef_TousLesHabitants()
+    fVlg.redef_villagesExistants()  
+
     await fDis.ban_tousLesMembres_de_MLG_LG_FN()
     
     for hab in fHab.TousLesHabitants :

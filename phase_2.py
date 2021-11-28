@@ -98,11 +98,11 @@ async def numerotationHabitants():
     
     for j in listeJoueurs[1:] :
         
-#   j = ['', H, Clément, CAMPANA, 27, 0, 269051521272905728, '', '', '']
+#   j = ['', H, Tokamak, 27, 0, 269051521272905728, '', '', '']
                 
-        membJou = fDis.serveurMegaLG.get_member(int(j[6]))
+        membJou = fDis.serveurMegaLG.get_member(int(j[5]))
                 
-        surnom  = membJou.display_name
+        surnom  = j[2]
         
         while len(surnom) + (v.nbDigit_Matricule + 1) > 32 :
             surnom = surnom[ :-1]

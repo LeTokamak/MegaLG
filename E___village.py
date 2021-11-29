@@ -721,7 +721,7 @@ class Village :
 
         self.voteLG_EnCours = True
         
-        await asyncio.sleep(v.conseilLG_duree)
+        await asyncio.sleep(v.conseilLG_duree.seconds)
             
         self.voteLG_EnCours = False
         

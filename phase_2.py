@@ -834,7 +834,7 @@ async def DP_3 (ctx):
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
-async def gestion_ban (ctx, nbVlg):
+async def gestion_ban (ctx):
 
 #### Gestions des permitions d'accès aux salons des Loups-Garous et celui de la Famille Nombreuse
     

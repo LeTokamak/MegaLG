@@ -780,7 +780,7 @@ async def participation_au_Conseil_LG (LoupGarou, village):
         contenuMsg_Attente = f"**Pas sur le serveur** | {fDis.Emo_LoupGarou} en tant que {fRol.emojiRole(LoupGarou.role, LoupGarou.estUnHomme)}   - {LoupGarou.user.mention}  |  {LoupGarou.pseudo}"
         msgAtt = await fDis.channelAttente.send( contenuMsg_Attente )
 
-        await asyncio.sleep(v.conseilLG_duree)
+        await asyncio.sleep(v.conseilLG_duree.seconds)
         
         await msgAtt.delete()
 

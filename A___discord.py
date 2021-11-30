@@ -13,6 +13,10 @@
 import discord
 from   discord.ext import commands
 
+import os
+
+
+
 # %% Constantes des serveurs
 
 def def_constantes_discord ():
@@ -22,7 +26,7 @@ def def_constantes_discord ():
     
     print("Redef des Constantes liées à Discord")
     
-    def_serveur   ()
+    def_serveurs  ()
     def_userAdmins()
     def_categories()
     def_salons    ()
@@ -37,7 +41,8 @@ def def_constantes_discord ():
 intentions = discord.Intents.all()
 bot        = commands.Bot(command_prefix = '!', description = "Maître du Jeu", intents = intentions)
 
-tokenMJ    = "NzM3NzE3MTkxNTI0NDgzMTIy.XyBarA.A83hDJo-1XCRMatEUxAWIlcmaI0" # Maitre du Jeu
+tokenMJ    = os.environ["TOKEN_BOT_DISCORD"]
+
 
 
 
@@ -51,7 +56,7 @@ serveurMegaLG_FN = None
 lien_serveurMegaLG_LG = "https://discord.gg/ch8rTdQXcb"
 lien_serveurMegaLG_FN = "https://discord.gg/r6b6g7fpY3"
 
-def def_serveur ():
+def def_serveurs ():
     """
     Cette Fonction ne renvoie rien
     

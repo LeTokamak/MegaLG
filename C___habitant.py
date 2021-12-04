@@ -249,7 +249,7 @@ class Habitant :
 # ---  Retire le joueur de Infos Joueurs      ---
 # -----------------------------------------------
 
-        fGoo.suppressionLigne_avec( self.matricule                         , 
+        fGoo.suppressionLigne_avec( self.matricule                     , 
                                     fGoo.clef_Matricule                ,
                                     fGoo.page_fichier(fGoo.InfoJoueurs) )
 
@@ -270,17 +270,17 @@ class Habitant :
         
         Details = ""
         
-        if   self.estInf       and  not v.mort_infecte_cachee  and  self.estAmoureux and not v.mort_amoureux_cachee:
+        if   self.estInf       and  not v.mort_infecte_cache  and  self.estAmoureux and not v.mort_amoureux_cache:
             Details = f"{Il} était infecté{e} et {amoureux} de "
             
-        elif self.estInf       and  not v.mort_infecte_cachee :
+        elif self.estInf       and  not v.mort_infecte_cache :
             Details = f"{Il} était infecté{e}"
             
-        elif self.estAmoureux  and  not v.mort_amoureux_cachee:
+        elif self.estAmoureux  and  not v.mort_amoureux_cache:
             Details = f"{Il} était {amoureux} de "
             
         
-        if self.estAmoureux  and  not v.mort_amoureux_cachee:
+        if self.estAmoureux  and  not v.mort_amoureux_cache:
             for matri in self.amants :
                 amoureux = habitant_avec(matri, autorisationMort = True)
                 Details += f"{amoureux.pseudo} en {amoureux.groupe}"
@@ -304,7 +304,7 @@ class Habitant :
         if   departServeur :
             couleurEmbed = 0x000000
         
-        elif suicideAmoureux  and  not v.suicide_amoureux_cachee :
+        elif suicideAmoureux  and  not v.mort_amoureux_cache :
             couleurEmbed = fMeP.couleurRandom("amour")
         
         elif meurtreNocturne :
@@ -322,7 +322,7 @@ class Habitant :
         
         else :
             
-            if suicideAmoureux  and  not v.mort_amoureux_cachee :
+            if suicideAmoureux  and  not v.mort_amoureux_cache :
                 if     self.estUnHomme and     premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Homme_AmourDe_Hom
                 if     self.estUnHomme and not premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Homme_AmourDe_Fem
                 if not self.estUnHomme and     premAmoureuxTue.estUnHomme : finsDePhrases = mortPhrases_Femme_AmourDe_Hom
@@ -360,7 +360,7 @@ class Habitant :
         
         AnnonceMort = fDis.discord.Embed( title = titreEmbed  , description = descripEmbed, color = couleurEmbed )
         
-        if not v.mort_noct_role_cachee  and  meurtreNocturne  or  not v.mort_soir_role_cachee  and  not meurtreNocturne :
+        if not v.mort_noct_role_cache  and  meurtreNocturne  or  not v.mort_soir_role_cache  and  not meurtreNocturne :
             AnnonceMort.set_thumbnail   (   url = urlImageRole                                                   )
         
         if Details != "" :

@@ -687,7 +687,7 @@ class Village :
         await self.salonVoteLG   .send(f"```Conseil des Loups-Garous n°{v.nbTours} - {fMeP.strDate(v.ajd)}```")
         await self.salonConseilLG.send(f"```Conseil des Loups-Garous n°{v.nbTours} - {fMeP.strDate(v.ajd)}```")
         
-        self.msgResultatLG = await self.salonVoteLG.send("Personne n'a encore voté.")
+        self.msgResultatLG = await self.salonVoteLG.send("```Personne n'a voté```")
         
         
         
@@ -707,7 +707,7 @@ class Village :
             
             if verifLG_Camp  or  verifLG_Infe  or  verif_LGBlan  or  verif_EnfSau :
                 asyncio.Task( fNct.participation_au_Conseil_LG(hab, self), name = f"Participation au Conseil des LG de {hab.pseudo} ({hab.matricule}) - {hab.role[fRol.clefNom]}")
-                
+            
 #### Nomination des gardes mayoraux
             
             if hab.estMaire  and  len(hab.gardesMaire) == 0 :
@@ -2115,11 +2115,17 @@ async def gestion_permission_serveurMegaLG_FN (membre_Discord) :
 
 
 
-# %% === Event - Village ===
+# %% === Event - Vote ===
 
 async def fct_vote(member, contenuMsg):
     """
-    Fonction prenant gérant le vote 
+    Fonction prenant en argument le :
+        - Membre ayant envoyé un message 
+        - Le contenu du message envoyé
+        
+    Cette fonction gère le vote lors de tous les scrutins ! (Election / Elimination / Loups-Garous)
+    
+    Le membre qui a lancé cette fonction à bien le droit de voter (cette condition a été vérifié avant)
     """
     
     habVlg  = fHab.habitant_avec( member.id            )

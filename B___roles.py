@@ -448,7 +448,7 @@ def emojiRole (info, estUnHomme):
 
 def imageRole (info, estUnHomme):
     """
-    Renvoie l'url correspondant à info (en prenant en compte le sexe)
+    Renvoie l'url correspondant à info (en prenant en compte le sexe) 
     
     Info peut être un dictionnaire (cad le role recherché) ou un str (cad le nom du role recherché)
     """

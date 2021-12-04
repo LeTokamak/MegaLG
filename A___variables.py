@@ -75,7 +75,7 @@ Juge_nbExil      = 2
 vote_aucunHabChoisi_meurtreHasard = False
 vote_maire_voixBonus             = 1
 
-partiePdt_Weekend                = True
+partiePdt_Weekend                = False
 
 FN_peuventParler_pdt_Journee     = True
 LG_peuventParler_pdt_Journee     = True
@@ -89,11 +89,11 @@ choix_mode_obscur = "Mode Obscur"
 
 mode_choisi = choix_mode_clair
 
-mort_infecte_cachee   = False 
-mort_amoureux_cachee  = False
+mort_infecte_cache   = False 
+mort_amoureux_cache  = False
 
 mort_noct_role_cache  = False
-mort_soir_role_cachee = False
+mort_soir_role_cache  = False
 
 tombe_affiche_role    = True
 
@@ -102,8 +102,8 @@ rapportMunicipal_affichage_roles = True
 
 def passage_en_mode_clair () :
     
-    global mort_infecte_cachee , mort_amoureux_cachee
-    global mort_noct_role_cache, mort_soir_role_cachee
+    global mort_infecte_cache , mort_amoureux_cache
+    global mort_noct_role_cache, mort_soir_role_cache
     
     global tombe_affiche_role
 
@@ -115,11 +115,11 @@ def passage_en_mode_clair () :
     
     mode_choisi = choix_mode_clair
     
-    mort_infecte_cachee   = False 
-    mort_amoureux_cachee  = False
+    mort_infecte_cache   = False 
+    mort_amoureux_cache  = False
     
     mort_noct_role_cache  = False
-    mort_soir_role_cachee = False
+    mort_soir_role_cache = False
     
     tombe_affiche_role    = True
     
@@ -131,8 +131,8 @@ def passage_en_mode_clair () :
 
 def passage_en_mode_obscur () :
     
-    global mort_infecte_cachee , mort_amoureux_cachee
-    global mort_noct_role_cache, mort_soir_role_cachee
+    global mort_infecte_cache , mort_amoureux_cache
+    global mort_noct_role_cache, mort_soir_role_cache
     
     global tombe_affiche_role
 
@@ -144,11 +144,11 @@ def passage_en_mode_obscur () :
     
     mode_choisi = choix_mode_obscur
     
-    mort_infecte_cachee   = True 
-    mort_amoureux_cachee  = True
+    mort_infecte_cache   = True 
+    mort_amoureux_cache  = True
     
     mort_noct_role_cache  = True
-    mort_soir_role_cachee = True
+    mort_soir_role_cache = True
     
     tombe_affiche_role    = False
     

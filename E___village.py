@@ -2032,7 +2032,8 @@ async def gestion_permission_serveurMegaLG_LG (membre_Discord) :
     """
     Gestion des permissions de membre_Discord dans le serveurMegaLG_LG
     """
-    
+    pass
+    """
     hab = fHab.habitant_avec(membre_Discord.id)
     vlg =       village_avec(hab.numVlg, "numero")
     
@@ -2075,7 +2076,7 @@ async def gestion_permission_serveurMegaLG_LG (membre_Discord) :
     elif fDis.roleModerateur in membre_serveurMLG.roles :
         
         await fDis.channelHistorique.send(f"{membre_serveurMLG.mention} vient d'arriver dans le serveur des {fDis.Emo_LoupGarou}. *(en tant que modérateur)*")
- 
+    """
     
 
 

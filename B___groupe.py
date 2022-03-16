@@ -511,26 +511,26 @@ async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
         fDis.create_option(
             name        = "nom_groupe",
             description = "Quel est le nom du groupe que vous voulez rejoindre ?",
-            option_type = 4,
+            option_type = 6,
             required    = True,
             choices = [
                 fDis.create_choice(
-                    value = 1, 
+                    value = "Grp 1", 
                     name  = "Groupe 1 - Le LG c'est Bien"
                 ),
                 fDis.create_choice(
-                    value = 2,
+                    value = "Grp 2",
                     name  = "Groupe 2 - Les Vlg c'est mieux !"
                 ),
                 fDis.create_choice(
-                    value = 3,
+                    value = "Grp 3",
                     name  = "Groupe 3 - Moi celui que je prefère, c'est toi ❤️❤️🌌🌌")
             ]
         )
     ]
 )
-async def slash_changement_groupe(ctx: fDis.SlashCommand, nom_groupe: int):
-    await ctx.send(f"{nom_groupe}")
+async def slash_changement_groupe(ctx, nom_groupe):
+    await ctx.send(nom_groupe)
     
     
 

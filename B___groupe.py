@@ -511,7 +511,7 @@ async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
         fDis.create_option(
             name        = "nom_groupe",
             description = "Quel est le nom du groupe que vous voulez rejoindre ?",
-            option_type = 3,
+            option_type = 4,
             required    = True,
             choices = [
                 fDis.create_choice(

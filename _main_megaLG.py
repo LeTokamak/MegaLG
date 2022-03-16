@@ -74,7 +74,7 @@ async def on_ready():
     
 #### Ajout du role ISEN Nantes aux membres du club étant sur le serveur
 
-    await fP0.gestion_role_iseniens()
+    # await fP0.gestion_role_iseniens()
     
     
     

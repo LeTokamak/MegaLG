@@ -12,8 +12,12 @@
 
 import discord
 from   discord.ext import commands
+from   discord_slash import SlashCommand, SlashContext
+from   discord_slash.utils.manage_commands import create_choice, create_option
 
 import os
+
+
 
 
 
@@ -40,6 +44,7 @@ def def_constantes_discord ():
 
 intentions = discord.Intents.all()
 bot        = commands.Bot(command_prefix = '!', description = "Maître du Jeu", intents = intentions)
+slash      = SlashCommand(bot, sync_commands = True)
 
 tokenMJ    = os.environ["TOKEN_BOT_DISCORD"]
 
@@ -48,6 +53,10 @@ tokenMJ    = os.environ["TOKEN_BOT_DISCORD"]
 
 
 # %%% Serveur
+
+serveurMegaLG_idDis    = 769495045308940288
+serveurMegaLG_LG_idDis = 899230046286385152
+serveurMegaLG_FN_idDis = 905945526950838273
 
 serveurMegaLG    = None
 serveurMegaLG_LG = None
@@ -64,9 +73,9 @@ def def_serveurs ():
     """
     global serveurMegaLG, serveurMegaLG_LG, serveurMegaLG_FN
     
-    serveurMegaLG    = bot.get_guild (769495045308940288)
-    serveurMegaLG_LG = bot.get_guild (899230046286385152)
-    serveurMegaLG_FN = bot.get_guild (905945526950838273)
+    serveurMegaLG    = bot.get_guild (serveurMegaLG_idDis   )
+    serveurMegaLG_LG = bot.get_guild (serveurMegaLG_LG_idDis)
+    serveurMegaLG_FN = bot.get_guild (serveurMegaLG_FN_idDis)
 
 
 
@@ -648,6 +657,31 @@ async def attente_Message(expediteur_msgAttendu, salon_msgAttendu = "DMChannel",
 # %% Commandes
 
 # %%% Nettoyage
+
+@slash.slash(name = "Nettoyage", guild_ids = [serveurMegaLG_idDis, serveurMegaLG_LG_idDis, serveurMegaLG_FN_idDis], description = "Supprime les messages envoyés par le bot.", 
+             options = [ create_option(name = "nb_messages", description = "Nombre de message à supprimer.", option_type = 4, required = False) ])
+async def slash_Nettoyage (ctx, nb_messages = 10**9):
+    """
+    Efface tout les messages que le @Maître du Jeu vous a envoyé 
+    Vous pouvez y ajouter un paramètre optionnel, le nombre de message
+
+    !Nettoyage     ==> Efface tout les messages qu'il vous a envoyé
+    !Nettoyage 3   ==> Efface les 3 derniers messages qu'il vous a envoyé 
+    """
+    
+    await ctx.send("...")
+    
+    if ctx.guild != None :
+        
+        await effacerMsg( ctx )
+        
+        if ctx.author.guild_permissions.manage_messages == True :
+            await effacerMsg(ctx, nb_messages)
+            
+    else :
+        await effacerMsg(ctx, nb_messages)
+
+
 
 @bot.command(aliases = ["nettoyage", "Net", "net", "N", "n"])
 async def Nettoyage (ctx, nbMessages = 10**9):

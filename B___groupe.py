@@ -501,6 +501,39 @@ async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
 
 # %% Events et commandes liés aux groupes
 
+# %%% Slashs Commands
+
+@fDis.slash.slash(
+    name = "Groupe_Changement",
+    description = "ENCORE EN CHANTIER - Vous permet d'entrer dans un autre groupe.",
+    guild_ids = [fDis.serveurMegaLG_idDis],
+    options = [
+        fDis.create_option(
+            name        = "nom_groupe",
+            description = "Quel est le nom du groupe que vous voulez rejoindre ?",
+            option_type = 3,
+            required    = True,
+            choices = [
+                fDis.create_choice(
+                    value = 1, 
+                    name  = "Groupe 1 - Le LG c'est Bien"
+                ),
+                fDis.create_choice(
+                    value = 2,
+                    name  = "Groupe 2 - Les Vlg c'est mieux !"
+                ),
+                fDis.create_choice(
+                    value = 3,
+                    name  = "Groupe 3 - Moi celui que je prefère, c'est toi ❤️❤️🌌🌌")
+            ]
+        )
+    ]
+)
+async def slash_changement_groupe(ctx: fDis.SlashCommand, nom_groupe: int):
+    await ctx.send(f"{nom_groupe}")
+    
+    
+
 # %%% Commande de Création de Groupe / Sous-Groupe
 
 

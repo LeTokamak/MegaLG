@@ -502,7 +502,7 @@ async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
 # %% Events et commandes liés aux groupes
 
 # %%% Slashs Commands
-
+"""
 @fDis.slash.slash(
     name = "Groupe_Changement",
     description = "ENCORE EN CHANTIER - Vous permet d'entrer dans un autre groupe.",
@@ -524,14 +524,14 @@ async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
                 ),
                 fDis.create_choice(
                     value = "Grp 3",
-                    name  = "Groupe 3 - Moi celui que je prefère, c'est toi ❤️❤️🌌🌌")
+                    name  = "Groupe 3 - Moi celui que je prefère, c'est toi")
             ]
         )
     ]
 )
 async def slash_changement_groupe(ctx, nom_groupe):
     await ctx.send(nom_groupe)
-    
+"""    
     
 
 # %%% Commande de Création de Groupe / Sous-Groupe

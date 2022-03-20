@@ -420,10 +420,10 @@ async def effacerMsg (ctx_channel, nbMessage = 1):
     Efface les nbMessage derniers messages du channel ctx_channel
     """
        
-    if   type(ctx_channel) in (discord.channel.TextChannel, discord.channel.DMChannel) :
+    if   type(ctx_channel) in (discord.channel.TextChannel, discord.channel.DMChannel, SlashContext) :
         channelEnQ = ctx_channel
         
-    elif type(ctx_channel) == commands.context.Context                                 :
+    elif type(ctx_channel) ==  commands.context.Context                                              :
         channelEnQ = ctx_channel.channel
         
     messagesAEff = await channelEnQ.history(limit = 10**9).flatten()

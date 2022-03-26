@@ -14,7 +14,7 @@ Créé par Clément Campana
 Version Epsilon                              ε1                             30/11/2021
 """
 
-version = "ε1"
+version = "ε1.4"
 
 
 # import MegaLG_Test

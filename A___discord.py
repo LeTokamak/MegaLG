@@ -743,3 +743,17 @@ async def Nettoyage (ctx, nbMessages = 10**9):
             
     else :
         await effacerMsg(ctx, nbMessages)
+        
+
+@bot.command()
+@commands.has_permissions(ban_members = True)
+async def Test (ctx):
+    """
+    Efface tout les messages que le @Maître du Jeu vous a envoyé 
+    Vous pouvez y ajouter un paramètre optionnel, le nombre de message
+
+    !Nettoyage     ==> Efface tout les messages qu'il vous a envoyé
+    !Nettoyage 3   ==> Efface les 3 derniers messages qu'il vous a envoyé 
+    """
+        
+    await invitation_MegaLG_FN (ctx.author.user, "COUOCUCCILCJKCJ :\n")

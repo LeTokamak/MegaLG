@@ -837,8 +837,6 @@ class Village :
             
 ##  Messages d'infections
             
-            await habitantInfecte.user.send(f"Vous avez été infecté par un Loup-Garou Noir, vous rencontrerez vos nouveaux camarades ce soir !\n> **Lien du serveur des Loups-Garous :** {fDis.lien_serveurMegaLG_LG}")
-                
             if habitantInfecte.estUnHomme : e = ""
             else                          : e = "e"
 
@@ -854,7 +852,9 @@ class Village :
             
 ##  Accès au serveur des Loups-Garous
             
-            await fDis.serveurMegaLG_LG.unban( habitantInfecte.user )
+            msg_invitation_inf = "Vous avez été infecté par un Loup-Garou Noir, vous rencontrerez vos nouveaux camarades ce soir !\n> **Vous pouvez rejoindre le serveur des Loups-Garous avec ce lien :**"
+
+            await fDis.invitation_MegaLG_LG( habitantInfecte.user, msg_invitation_inf)
             
        
 ### Message Historique de la Nuit
@@ -1977,8 +1977,7 @@ async def gestion_dissolutions_meurtres_exils (meurtre_nocturne):
         for hab in fHab.TousLesHabitants : 
             if hab != habitant_a_tuer  and  hab.role == fRol.role_EnfantSauv  and  hab.pereProtecteur == habitant_a_tuer.matricule :
                 
-                await fDis.serveurMegaLG_LG.unban(hab.member)
-                await hab.user.send(f"Votre modèle est mort, vous devenez donc un loup-garou...\n*Vous pouvez rejoindre vos nouveaux compère sur ce serveur : {fDis.lien_serveurMegaLG_LG}*")
+                await fDis.invitation_MegaLG_LG(hab.user, f"Votre modèle est mort, vous devenez donc un loup-garou...\n*Vous pouvez rejoindre vos nouveaux compère sur ce serveur :*")
         
         
         
@@ -2032,8 +2031,7 @@ async def gestion_permission_serveurMegaLG_LG (membre_Discord) :
     """
     Gestion des permissions de membre_Discord dans le serveurMegaLG_LG
     """
-    pass
-    """
+    
     hab = fHab.habitant_avec(membre_Discord.id)
     vlg =       village_avec(hab.numVlg, "numero")
     
@@ -2069,14 +2067,14 @@ async def gestion_permission_serveurMegaLG_LG (membre_Discord) :
         
     elif membre_serveurMLG == None  or  fDis.roleModerateur not in membre_serveurMLG.roles :
         
-        await fDis.serveurMegaLG_FN.ban(membre_Discord)
+        await fDis.serveurMegaLG_FN.kick(membre_Discord)
         
         
         
     elif fDis.roleModerateur in membre_serveurMLG.roles :
         
         await fDis.channelHistorique.send(f"{membre_serveurMLG.mention} vient d'arriver dans le serveur des {fDis.Emo_LoupGarou}. *(en tant que modérateur)*")
-    """
+    
     
 
 
@@ -2105,7 +2103,7 @@ async def gestion_permission_serveurMegaLG_FN (membre_Discord) :
     
     elif membre_serveurMLG == None  or  fDis.roleModerateur not in membre_serveurMLG.roles :
         
-        await fDis.serveurMegaLG_FN.ban(membre_Discord)
+        await fDis.serveurMegaLG_FN.kick(membre_Discord)
 
 
     elif fDis.roleModerateur in membre_serveurMLG.roles :

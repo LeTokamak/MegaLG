@@ -834,25 +834,33 @@ async def DP_3 (ctx):
 
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
-async def gestion_ban (ctx):
+async def DP_4 (ctx):
 
 #### Gestions des permitions d'accès aux salons des Loups-Garous et celui de la Famille Nombreuse
     
+    message_invitation_LG = "Vous êtes Loups-Garous, vous pouvez donc rejoindre leur serveur avec ce lien :\n"
+    message_invitation_FN = "Vous êtes un membre de la Famille Nombreuse, vous pouvez donc rejoindre le serveur familiale avec ce lien :\n"
+
     await fHab.redef_TousLesHabitants()
     fVlg.redef_villagesExistants()  
 
-    await fDis.ban_tousLesMembres_de_MLG_LG_FN()
-    
     for hab in fHab.TousLesHabitants :
         verifLG_Camp =  hab.role[fRol.clefCamp] == fRol.campLG
         verif_LGBlan =  hab.role == fRol.role_LGBlanc
         
+        if   verifLG_Camp or verif_LGBlan :
+            await fDis.invitation_MegaLG_LG(hab.user, message_invitation_LG)
+            
+        elif hab.role == fRol.role_FamilleNb :
+            await fDis.invitation_MegaLG_FN(hab.user, message_invitation_FN)
+        
+        """
         if verifLG_Camp or verif_LGBlan :
             await fDis.serveurMegaLG_LG.unban(hab.user)
         
         elif hab.role == fRol.role_FamilleNb :
             await fDis.serveurMegaLG_FN.unban(hab.user)
-    
+        """
     
     
 #### Attente avant le lancement de la première nuit

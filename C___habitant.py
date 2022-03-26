@@ -378,9 +378,13 @@ class Habitant :
         
         if not departServeur :
             
-##  Bannissement des Serveurs des LG et de la Famille Nombreuse
+##  Ejection des Serveurs des LG et de la Famille Nombreuse
             
-            await fDis.ban_MLG_LG_FN(self.member)
+            try    : await fDis.serveurMegaLG_LG.kick(self.member)
+            except : pass 
+        
+            try    : await fDis.serveurMegaLG_FN.kick(self.member)
+            except : pass
             
             
 ##  Changement des Roles

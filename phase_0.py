@@ -47,8 +47,6 @@ async def on_member_join (member):
     
     if   member.guild == fDis.serveurMegaLG :
     
-        await fDis.ban_MLG_LG_FN(member)
-        
         await member.add_roles(fDis.roleSpectateurs)
         await fDis.channelHistorique.send(f"{fDis.Emo_BabyGreen}  |  {member.mention} vient d'arriver sur le serveur !")
         

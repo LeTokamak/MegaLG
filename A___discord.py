@@ -149,6 +149,9 @@ channelEtoile         = None
 channelPlanete        = None
 channelLune           = None
 
+channelLG_General     = None
+channelFN_General     = None
+
 
 
 def def_salons ():
@@ -211,7 +214,16 @@ def def_salons ():
     channelPlanete        = bot.get_channel        (818580935380303903)
     channelLune           = bot.get_channel        (818581474856140841)
     
+
+
+#### Serveur Loups-Garous et Famille Nombreuse
+
+    global channelLG_General, channelFN_General
     
+    channelLG_General     = bot.get_channel        (909396741453905920)
+    channelFN_General     = bot.get_channel        (905945526950838277)
+
+
 
 
 
@@ -529,17 +541,46 @@ async def unban_tousLesMembres_de(serveur_unban, serveur_devant_etre_unban) :
         await serveur_unban.unban(membre)
     
     
+    
 async def ban_tousLesMembres_de_MLG_LG_FN() :
     
     await ban_tousLesMembres_de(serveurMegaLG_LG, serveurMegaLG)
     await ban_tousLesMembres_de(serveurMegaLG_FN, serveurMegaLG)
     
     
+    
 async def unban_tousLesMembres_de_MLG_LG_FN() :
     
-    await unban_tousLesMembres_de(serveurMegaLG_LG, serveurMegaLG)
-    await unban_tousLesMembres_de(serveurMegaLG_FN, serveurMegaLG)
+    bannis_LG = await serveurMegaLG_LG.bans()
+    bannis_FN = await serveurMegaLG_FN.bans()
+    
+    for ban in bannis_LG :
+        await serveurMegaLG_LG.unban(ban.user)
+        
+    for ban in bannis_FN :
+        await serveurMegaLG_FN.unban(ban.user)
 
+
+
+# %%% Invitation serveur
+
+async def invitation_MegaLG_LG (userDiscord, message_invitation = "") :
+
+    await invitation_serveur_perso(channelLG_General, userDiscord, message_invitation)
+
+
+
+async def invitation_MegaLG_FN (userDiscord, message_invitation = "") :
+
+    await invitation_serveur_perso(channelFN_General, userDiscord, message_invitation)
+
+
+
+async def invitation_serveur_perso (salon, userDiscord, message_invitation = "") :
+    
+    invitation = await salon.create_invite(max_uses = 1, reason = f"Invitation personel de {userDiscord.name}#{userDiscord.discriminator}")
+    
+    await userDiscord.send(message_invitation + str(invitation))
 
 
 # %%% Attente de réponses

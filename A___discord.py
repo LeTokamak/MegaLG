@@ -756,4 +756,4 @@ async def Test (ctx):
     !Nettoyage 3   ==> Efface les 3 derniers messages qu'il vous a envoyé 
     """
         
-    await invitation_MegaLG_FN (ctx.author.user, "COUOCUCCILCJKCJ :\n")
+    await invitation_MegaLG_FN (ctx.author, "COUOCUCCILCJKCJ :\n")

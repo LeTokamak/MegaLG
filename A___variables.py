@@ -25,7 +25,7 @@ nbDigit_Matricule = 3
 
 #### Nombre des rôles (pour une partie à 30)
 
-tailleVlg_Ideal = 13
+tailleVlg_Ideal = 12
 
 prop_Villag        = 0
 prop_VillaVilla    = 1
@@ -34,27 +34,32 @@ prop_Ancien        = 0
 
 prop_Salvat        = 2
 prop_Sorcie        = 2
-prop_Voyant        = 1
-prop_Voyante_dAura = 2
+prop_Voyant        = 2
+prop_Voyante_dAura = 0
 
 prop_Corbea        = 1
-prop_Hirond        = 0
+prop_Hirond        = 1
 prop_Juge          = 0
 
 prop_Chasse        = 0
       
 prop_Famill        = 0
 
-prop_LG            = 0
+prop_LG            = 1
 prop_LGNoir        = 1
-prop_LGBleu        = 1
-prop_Traitre       = 1
+prop_LGBleu        = 0
+prop_Traitre       = 0
 
 prop_LGBlan        = 0
 prop_EnSauv        = 0
 
 
-somme_roles   = prop_Villag + prop_VillaVilla + prop_Cupido + prop_Ancien + prop_Salvat + prop_Sorcie + prop_Voyant + prop_Voyante_dAura + prop_Corbea + prop_Hirond + prop_Juge + prop_Chasse + prop_Famill + prop_LG + prop_LGNoir + prop_LGBleu + prop_Traitre + prop_LGBlan + prop_EnSauv 
+somme_roles   = prop_Villag + prop_VillaVilla + prop_Cupido + prop_Ancien
+somme_roles  += prop_Salvat + prop_Sorcie     + prop_Voyant + prop_Voyante_dAura
+somme_roles  += prop_Corbea + prop_Hirond     + prop_Juge
+somme_roles  += prop_Chasse + prop_Famill
+somme_roles  += prop_LG     + prop_LGNoir     + prop_LGBleu + prop_Traitre
+somme_roles  += prop_LGBlan + prop_EnSauv 
 
 #print(somme_roles)
 
@@ -258,7 +263,8 @@ def dans_dernierTour() :
 
 def plantage():
     """
-    L'objectif est de saturer la ram (512 Mo) du serveur heroku, pour qu'il plante, et redémarre automatiquement le programme  
+    L'objectif est de saturer la ram (512 Mo) du serveur heroku, pour qu'il plante,
+    et redémarre automatiquement le programme  
     """
     
     erreur = []

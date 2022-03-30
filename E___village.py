@@ -2375,6 +2375,13 @@ async def SupprTousVlg (ctx):
 
 # %%% Maintenance
      
+
+@fDis.bot.command()
+@fDis.commands.has_permissions(ban_members = True)
+async def RedefAll (ctx) :
+    redef_villagesExistants()
+    await fHab.redef_TousLesHabitants()
+
 @fDis.bot.command()
 @fDis.commands.has_permissions(ban_members = True)
 async def Meurtre (ctx, matricule_hab_tue):

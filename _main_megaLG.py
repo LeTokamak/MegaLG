@@ -84,6 +84,9 @@ async def on_ready():
     
     await fGrp.redef_groupesExistants()
     
+    fVlg.redef_villagesExistants()
+    await fHab.redef_TousLesHabitants()
+    
     
     
     

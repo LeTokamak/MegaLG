@@ -831,7 +831,8 @@ class Village :
             habitantInfecte        = fHab.habitant_avec(self.matriculeHab_choixConseilLG)
             
             if habitantInfecte.estMaire :
-                habitantInfecte = rd.choice(habitantInfecte.gardesMaire)
+                mat_habitantInfecte = rd.choice(habitantInfecte.gardesMaire)
+                habitantInfecte = fHab.habitant_avec( mat_habitantInfecte )
             
             habitantInfecte.estInf = True
             
@@ -2382,7 +2383,7 @@ async def Meurtre (ctx, matricule_hab_tue):
 
         hab_tue = fHab.habitant_avec(int(matricule_hab_tue))
         
-        await hab_tue.Tuer()
+        await hab_tue.Tuer(village_avec(hab_tue.numVlg, "numero"))
         await fDis.channelHistorique.send(f"{hab_tue.user.mention}  |  {hab_tue.matricule} {hab_tue.pseudo} - ( {hab_tue.groupe} ) vient d'être tué (meurtre ordonné par {ctx.author})")
 
 

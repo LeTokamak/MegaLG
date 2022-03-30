@@ -2380,7 +2380,10 @@ async def SupprTousVlg (ctx):
 async def Meurtre (ctx, matricule_hab_tue):
 
     if v.phaseEnCours == v.phase3 :
-
+        
+        redef_villagesExistants()
+        await fHab.redef_TousLesHabitants()
+        
         hab_tue = fHab.habitant_avec(int(matricule_hab_tue))
         
         await hab_tue.Tuer(village_avec(hab_tue.numVlg, "numero"))

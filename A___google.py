@@ -95,14 +95,16 @@ clefs_Joueurs = page1_InfoJoueurs.get()[0]
 
 clefs_Groupes = page_Groupes.get()[0]
 
-( clefGrp_numGroupe  ,
-  clefGrp_CheminBrut ,
+( clefGrp_numGroupe ,
+  clefGrp_nomGroupe ,
  
-  clefGrp_idSalon    ,
+  clefGrp_idSalon   ,
 
-  clefGrp_MsgSortie  ,
-  clefGrp_MsgEntree  ,
-  clefGrp_EmoEntree   ) = clefs_Groupes
+  clefGrp_msgGroupe ,
+  
+  clefGrp_idChef    ,
+  clefGrp_estPublic ,
+  clefGrp_motDePasse ) = clefs_Groupes
 
 
 
@@ -308,9 +310,9 @@ def suppressionLigne_avec(info, clefColonne, page_fichier) :
 
 def remplacerVal_ligne(nouvelleVal, clefColonne_aRemplacer, numero_ligne, page_fichier, donnee = None):
     
-    clefs  = clefs_de_page(page_fichier)
+    clefs          = clefs_de_page(page_fichier)
     
-    numero_colonne      = clefs.index(clefColonne_aRemplacer) + 1
+    numero_colonne = clefs.index(clefColonne_aRemplacer) + 1
     
     page_fichier.update_cell(numero_ligne, numero_colonne, str(nouvelleVal))
     

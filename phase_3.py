@@ -38,8 +38,8 @@ async def attente_lancementTour() :
     
 #### ||| Variable ||| Si on est dans le WE on ne lance pas la fonction Tour
     
-    if not v.partiePdt_Weekend  and  m.weekday() in (4,5) :
-        await fDis.channelHistorique.send("Nous somme Vendredi ou Samedi, la fonction Lancement à été stoppée dans son élan !")
+    if not v.partiePdt_Weekend  and  m.weekday() in (5,6) :
+        await fDis.channelHistorique.send("Nous somme Samedi ou Dimanche, la fonction Lancement à été stoppée dans son élan !")
         return None
     
     

@@ -23,7 +23,7 @@ fHab = fVlg.fHab
 # Niveau B
 
 # Niveua A
-fGoo = fHab.fGoo
+fSQL = fHab.fSQL
 fDis = fHab.fDis
 v    = fHab.v
 
@@ -88,12 +88,12 @@ async def on_member_remove(member):
 
 
 
-
+"""
 @fDis.bot.event
 async def on_typing(salon, user, quand):
-    """
+    "
     Ajoute un message tapé dans page_CompteMsg à la colonne et à la ligne correspondante.
-    """
+    "
     
 #### Recherche de la bonne colonne
 
@@ -124,7 +124,7 @@ async def on_typing(salon, user, quand):
                    }
         
         fGoo.ajoutLigne(nvlLigne, fGoo.page_CompteMsg)
-
+"""
 
 
 
@@ -148,7 +148,7 @@ async def ajout_roleArtisans():
 
 
 
-
+"""
 async def gestion_role_iseniens():
     
     listeMembre = fGoo.donneeGoogleSheet(fGoo.page_compta)
@@ -162,7 +162,7 @@ async def gestion_role_iseniens():
         
         if membre_discord != None  and  membre_verif :
             await membre_discord.add_roles( fDis.roleISEN_Nantes )
-
+"""
 
 
 

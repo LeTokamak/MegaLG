@@ -11,9 +11,9 @@
 
 
 import discord
-from   discord.ext import commands
-from   discord_slash import SlashCommand, SlashContext
-from   discord_slash.utils.manage_commands import create_choice, create_option
+from   discord.ext   import commands
+#from   discord_slash import SlashCommand, SlashContext
+#from   discord_slash.utils.manage_commands import create_choice, create_option
 
 import os
 
@@ -44,11 +44,12 @@ def def_constantes_discord ():
 
 intentions = discord.Intents.all()
 bot        = commands.Bot(command_prefix = '!', description = "Maître du Jeu", intents = intentions)
-slash      = SlashCommand(bot, sync_commands = True)
+#slash      = SlashCommand(bot, sync_commands = True)
 
-tokenMJ    = os.environ["TOKEN_BOT_DISCORD"]
+#tokenMJ    = os.environ["TOKEN_BOT_DISCORD"]
 
-
+tokenMJ = "NzM3NzE3MTkxNTI0NDgzMTIy.XyBarA.A83hDJo-1XCRMatEUxAWIlcmaI0" # Maitre du Jeu
+tokenMJ = "NzgzMjc2ODU4NjIzMDAwNTc3.X8YZaw.xR034aqv4lQyYsPuNjgAeZ9UAWg" # Assistant
 
 
 
@@ -113,7 +114,7 @@ CategoryChannel_GestionGrp = None
 def def_categories ():
     """
     Cette Fonction ne renvoie rien
-       
+    
     Elle doit être appelé lors du on_ready() pour définir les categoryChannels du serveur, une fois que le bot est connecté 
     """
     
@@ -144,10 +145,10 @@ channelGifBug_Petit   = None
 channelGifBug_Gros    = None
 
 channelFctmentGrp     = None
-channelGalaxie        = None
-channelEtoile         = None
+# channelGalaxie      = None
+# channelEtoile       = None
 channelPlanete        = None
-channelLune           = None
+# channelLune         = None
 
 channelLG_General     = None
 channelFN_General     = None
@@ -206,13 +207,13 @@ def def_salons ():
     
 #### Gestion des Groupes
     
-    global channelFctmentGrp, channelGalaxie, channelEtoile, channelPlanete, channelLune
+    global channelFctmentGrp, channelPlanete #, channelGalaxie, channelEtoile, channelLune
     
     channelFctmentGrp     = bot.get_channel        (820420551931068436)
-    channelGalaxie        = bot.get_channel        (823477780142489661)
-    channelEtoile         = bot.get_channel        (818580520765751296)
+    # channelGalaxie      = bot.get_channel        (823477780142489661)
+    # channelEtoile       = bot.get_channel        (818580520765751296)
     channelPlanete        = bot.get_channel        (818580935380303903)
-    channelLune           = bot.get_channel        (818581474856140841)
+    # channelLune         = bot.get_channel        (818581474856140841)
     
 
 
@@ -236,26 +237,28 @@ roleEveryone_LG, roleEveryone_FN          = (None, None      )
 roleMdJ        , roleAssistant            = (None, None      )
 roleArtisans   , roleSpectateurs          = (None, None      )
 roleJoueurs    , roleMorts                = (None, None      )
+roleProchainePartComm                     =  None
 roleISEN_Nantes                           =  None
 
 
-id_roleEveryone    = 769495045308940288
-id_roleModerateur  = 782627464530755604
-id_roleBot         = 783283411833978901
+id_roleEveryone          =  769495045308940288
+id_roleModerateur        =  782627464530755604
+id_roleBot               =  783283411833978901
 
-id_roleEveryone_LG = 899230046286385152
-id_roleEveryone_FN = 905945526950838273
+id_roleEveryone_LG       =  899230046286385152
+id_roleEveryone_FN       =  905945526950838273
 
-id_roleMdJ         = 769496917797109771
-id_roleAssistant   = 783281237481619467
+id_roleMdJ               =  769496917797109771
+id_roleAssistant         =  783281237481619467
 
-id_roleArtisans    = 769985455470018620
-id_roleSpectateurs = 795550455224205312
+id_roleArtisans          =  769985455470018620
+id_roleSpectateurs       =  795550455224205312
 
-id_roleJoueurs     = 782625030123159562
-id_roleMorts       = 790158481634099250
+id_roleJoueurs           =  782625030123159562
+id_roleMorts             =  790158481634099250
+id_roleProchainePartComm = 1026423276911726622
 
-id_roleISEN_Nantes = 848145158561202227
+id_roleISEN_Nantes       =  848145158561202227
 
 
 def def_roles ():
@@ -285,13 +288,14 @@ def def_roles ():
     roleAssistant         = serveurMegaLG.get_role (id_roleAssistant)
     
     
-    global roleArtisans, roleSpectateurs, roleJoueurs, roleMorts
+    global roleArtisans, roleSpectateurs, roleJoueurs, roleMorts, roleProchainePartComm
     
     roleArtisans          = serveurMegaLG.get_role (id_roleArtisans)
     roleSpectateurs       = serveurMegaLG.get_role (id_roleSpectateurs)
     
     roleJoueurs           = serveurMegaLG.get_role (id_roleJoueurs)
     roleMorts             = serveurMegaLG.get_role (id_roleMorts)
+    roleProchainePartComm = serveurMegaLG.get_role (id_roleProchainePartComm)
     
     
     global roleISEN_Nantes
@@ -432,7 +436,7 @@ async def effacerMsg (ctx_channel, nbMessage = 1):
     Efface les nbMessage derniers messages du channel ctx_channel
     """
        
-    if   type(ctx_channel) in (discord.channel.TextChannel, discord.channel.DMChannel, SlashContext) :
+    if   type(ctx_channel) in (discord.channel.TextChannel, discord.channel.DMChannel) :#, SlashContext) :
         channelEnQ = ctx_channel
         
     elif type(ctx_channel) ==  commands.context.Context                                              :
@@ -589,7 +593,7 @@ async def invitation_serveur_perso (salon, userDiscord, message_invitation = "")
 
 async def attente_Reaction(message_surLequelReagir, reacteur, emojisEtReturns, timeout = None, reponseParDefaut = None):
     """
-    Ajoute des réaction sur le message_surLequelReagir et attend que le reacteur réagisse sur le message
+    Ajoute des réaction sur le message_surLequelReagir et attend que le reacteur réagisse au message
     Reacteur peut être un Member ou un User
     
     emojisEtReturns est une liste de liste :
@@ -698,17 +702,17 @@ async def attente_Message(expediteur_msgAttendu, salon_msgAttendu = "DMChannel",
 # %% Commandes
 
 # %%% Nettoyage
-
+"""
 @slash.slash(name = "Nettoyage", guild_ids = [serveurMegaLG_idDis, serveurMegaLG_LG_idDis, serveurMegaLG_FN_idDis], description = "Supprime les messages envoyés par le bot.", 
              options = [ create_option(name = "nb_messages", description = "Nombre de message à supprimer.", option_type = 4, required = False) ])
 async def slash_Nettoyage (ctx, nb_messages = 10**9):
-    """
+    
     Efface tout les messages que le @Maître du Jeu vous a envoyé 
     Vous pouvez y ajouter un paramètre optionnel, le nombre de message
 
     !Nettoyage     ==> Efface tout les messages qu'il vous a envoyé
     !Nettoyage 3   ==> Efface les 3 derniers messages qu'il vous a envoyé 
-    """
+    "
     
     await ctx.send("...")
     
@@ -722,7 +726,7 @@ async def slash_Nettoyage (ctx, nb_messages = 10**9):
     else :
         await effacerMsg(ctx, nb_messages)
 
-
+"""
 
 @bot.command(aliases = ["nettoyage", "Net", "net", "N", "n"])
 async def Nettoyage (ctx, nbMessages = 10**9):

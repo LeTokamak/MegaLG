@@ -76,6 +76,76 @@ role_EnfantSauv   [clefNom] = "Enfant Sauvage"
 
 
 
+
+
+clefNom_pluriel = "nom_au_pluriel"
+
+role_Villageois   [clefNom_pluriel] = "Villageois"
+role_Cupidon      [clefNom_pluriel] = "Cupidons"
+role_Ancien       [clefNom_pluriel] = "Anciens"
+
+role_Salvateur    [clefNom_pluriel] = "Salvateurs"
+role_Sorciere     [clefNom_pluriel] = "Sorcières"
+role_Voyante      [clefNom_pluriel] = "Voyantes"
+role_Voyante_dAura[clefNom_pluriel] = "Voyantes d'Aura"
+
+role_Chasseur     [clefNom_pluriel] = "Chasseurs"
+role_Corbeau      [clefNom_pluriel] = "Corbeaux"
+role_Hirondelle   [clefNom_pluriel] = "Hirondelles"
+      
+role_FamilleNb    [clefNom_pluriel] = "Membres de la Famille Nombreuse"
+
+role_VillaVilla   [clefNom_pluriel] = "Villageois-Villageois"
+role_Juge         [clefNom_pluriel] = "Juges"
+
+
+
+role_LG           [clefNom_pluriel] = "Loups-Garous"
+role_LGNoir       [clefNom_pluriel] = "Loups-Garous Noirs"
+role_LGBleu       [clefNom_pluriel] = "Loups-Garous Bleus"
+role_Traitre      [clefNom_pluriel] = "Traitres"
+
+role_LGBlanc      [clefNom_pluriel] = "Loups-Garous Blancs"
+role_EnfantSauv   [clefNom_pluriel] = "Enfants Sauvages"
+
+
+
+
+# %%% Surnoms des rôles
+
+clefSurnoms = "surnoms"
+
+role_Villageois   [clefSurnoms] = ["Villageois"                    , "vlg"     , "🙂"]
+role_Cupidon      [clefSurnoms] = ["Cupidon"                       , "cpd"     , "💘"]
+role_Ancien       [clefSurnoms] = ["Ancien"                        , "anc"     , "👴"]
+
+role_Salvateur    [clefSurnoms] = ["Salvateur"            , "salva", "slvt"    , "🛡️"]
+role_Sorciere     [clefSurnoms] = ["Sorcière"                      , "sorc"    , "🧹"]
+role_Voyante      [clefSurnoms] = ["Voyante"                       , "voy"     , "🔮"]
+role_Voyante_dAura[clefSurnoms] = ["Voyante d'Aura"                , "voy_aura", "🪩"]
+
+role_Chasseur     [clefSurnoms] = ["Chasseur"                      , "chas"    , "🔫"]
+role_Corbeau      [clefSurnoms] = ["Corbeau"                       , "crb"     , "🦉"]
+role_Hirondelle   [clefSurnoms] = ["Hirondelle"                    , "hrd"     , "🕊️"]
+      
+role_FamilleNb    [clefSurnoms] = ["Membre de la Famille Nombreuse", "fn"      , "👨‍👩‍👧‍👦"]
+
+role_VillaVilla   [clefSurnoms] = ["Villageois-Villageois"         , "vlg-vlg" , "🙃"]
+role_Juge         [clefSurnoms] = ["Juge"                                      , "⚖️"]
+
+
+
+role_LG           [clefSurnoms] = ["Loup-Garou"                    , "lg"      , "😺"]
+role_LGNoir       [clefSurnoms] = ["Loup-Garou Noir"               , "lgn"     , "🐺"]
+role_LGBleu       [clefSurnoms] = ["Loup-Garou Bleu"               , "lg_bleu" , "🦝"]
+role_Traitre      [clefSurnoms] = ["Traitre"                       , "trt"     , "😈"]
+
+role_LGBlanc      [clefSurnoms] = ["Loup-Garou Blanc"              , "lg_blc"  , "🐻‍❄️"]
+role_EnfantSauv   [clefSurnoms] = ["Enfant Sauvage"                , "enf_sauv", "🤠"]
+
+
+
+
 # %%% Proportion de chaque rôle dans la compo
 
 clefProp = "proportion"
@@ -210,7 +280,41 @@ role_Traitre      [clefCamp] = campLG
 
 role_LGBlanc      [clefCamp] = campSolo
 role_EnfantSauv   [clefCamp] = campVilLG
-    
+
+
+
+# %%% Pouvoir du rôle
+
+peutTuer    = "Ce rôle peut Tuer"
+peutSauver  = "Ce rôle peut Sauver / Protéger"
+
+clefPouvoir = "pouvoir"
+
+role_Villageois   [clefPouvoir] = ()
+role_Cupidon      [clefPouvoir] = ()
+role_Ancien       [clefPouvoir] = (peutSauver)
+
+role_Salvateur    [clefPouvoir] = (peutSauver)
+role_Sorciere     [clefPouvoir] = (peutSauver, peutTuer)
+role_Voyante      [clefPouvoir] = ()
+role_Voyante_dAura[clefPouvoir] = ()
+
+role_Chasseur     [clefPouvoir] = (peutTuer)
+role_Corbeau      [clefPouvoir] = ()
+role_Hirondelle   [clefPouvoir] = ()
+      
+role_FamilleNb    [clefPouvoir] = ()
+
+role_VillaVilla   [clefPouvoir] = ()
+role_Juge         [clefPouvoir] = ()
+
+role_LG           [clefPouvoir] = ()
+role_LGNoir       [clefPouvoir] = ()
+role_LGBleu       [clefPouvoir] = ()
+role_Traitre      [clefPouvoir] = ()
+
+role_LGBlanc      [clefPouvoir] = (peutTuer)
+role_EnfantSauv   [clefPouvoir] = ()
 
 
 # %%% URL des Images de chaque rôle

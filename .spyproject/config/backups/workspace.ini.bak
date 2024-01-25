@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['A___discord.py', 'A___google.py', 'A___mise_en_page.py', 'A___variables.py', 'B___groupe.py', 'B___roles.py', 'C___habitant.py', 'C___inscription.py', 'D___fcts_nocturnes.py', 'E___village.py', 'F___tour.py', 'phase_0.py', 'phase_1.py', 'phase_2.py', 'phase_3.py', '_main_megaLG.py']
+recent_files = ['A___sql.py', 'B___groupe.py', 'F___village.py', 'G___lancement.py', 'G___tour.py', 'phase_0.py', 'phase_2.py', '_main_megaLG.py', 'test.py', '..\\__ARCHIVE\\20 12 18 - SAUVEGARDE - Mega LG\\Mega LG - Prg 1 - Synchro.py', '..\\__ARCHIVE\\21 03 29 - Jeu - Mega Loups-Garoux\\Test Assitant.py', 'D___habitant.py']
 
 [main]
 version = 0.2.0

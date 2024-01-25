@@ -11,10 +11,10 @@ Créé par Clément Campana
 ######################################################################################
 ######################################################################################
 
-Version Epsilon                              ε1                             30/11/2021
+Version F-rond                               𝓯1                             03/09/2022
 """
 
-version = "ε1.4"
+version = "𝓯1.0"
 
 
 # import MegaLG_Test
@@ -47,7 +47,7 @@ fDis = fHab.fDis
 v    = fHab.v
 
 
-asyncio = fHab.asyncio
+asyncio = v.asyncio
 
 
 

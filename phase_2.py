@@ -30,7 +30,7 @@ fRol = fHab.fRol
 
 
 # Niveau A
-fGoo = fHab.fGoo
+fSQL = fHab.fSQL
 fDis = fHab.fDis
 fMeP = fHab.fMeP
 v    = fHab.v

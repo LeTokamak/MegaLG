@@ -14,6 +14,8 @@
 from   datetime import datetime, timedelta
 from   dateutil import tz
 
+import asyncio
+
 separation  = "_ _\n_ _\n_ _"
 
 
@@ -165,20 +167,6 @@ passage_en_mode_obscur()
 
 # %% Variables de la Partie
 
-phase0       = "Phase 0" # Entre Partie
-
-phase1       = "Phase 1" # Inscription
-phase2       = "Phase 2" # Début de Partie
-phase3       = "Phase 3" # Partie
-phase4       = "Phase 4" # Fin de Partie
-
-phaseEnCours = None
-
-nbTours = 0
-
-
-
-
 # %%% Variables horaires
 
 HParis = tz.gettz("Europe/Paris")
@@ -255,6 +243,10 @@ def dans_dernierTour() :
     
     return maintenant() < tour2Vote_hFin
 
+async def attente_du_moment_x (moment_fin_attente):
+    
+    while maintenant() < moment_fin_attente :
+        await asyncio.sleep(1)
 
 
 

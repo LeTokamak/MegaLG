@@ -11,81 +11,39 @@
 
 # Niveau A
 import A___variables          as v
-import A___google             as fGoo
+import A___sql                as fSQL
 import A___discord            as fDis
 import A___mise_en_page       as fMeP
 
 
 rd = fMeP.rd
 
-import asyncio
+groupe_en_attente_de_deb_de_partie = 0
 
 
-
-Emo_departGroupe = "❌"
-
-separateur = "↘"
-
-class GroupeParDefaut :
-
-    numero      = 0    
-
-    cheminBrut  =  ""
-    chemin      = [""]
-    rang        = 0
-    nom         = "*Aucun Groupe*"
-    
-    sur_Groupes = []
-    salon       = None
-    
-    
-    def __str__(self):
-        return self.nom
 
 
 
 class Groupe :
         
-    def __init__ (self, numGroupe, cheminBrut):
+    def __init__ (self, num_groupe, nom_groupe, chef, date_dern_act, groupeEstPublic = True, mdp_groupe = None):
         
-        self.numero      = numGroupe
+        self.numero     = num_groupe
+        self.nom        = nom_groupe
         
-        self.cheminBrut  = cheminBrut
-        self.chemin      = cheminBrut.split(separateur)
-        self.rang        = len(self.chemin)
-        self.nom         = self.chemin[-1]
+        self.estPublic  = groupeEstPublic
+        self.motDePasse = mdp_groupe
         
-        self.sur_Groupes = []
+        self.salon      = None
+        self.chef       = chef
         
-        self.salon       = None
+        self.date_derniere_activite    = date_dern_act
         
-        self.MsgSortie   = None
-        self.MsgEntree   = None
-        self.Emo_Entree  = None
-    
-    
-    
-    
-    
-    async def init_surGroupes(self, creation_si_existe_pas = True):
+        self.type_de_partie_a_lancee   = groupe_en_attente_de_deb_de_partie
+        self.date_deb_prochaine_partie = None
+        self.numero_compo_choisie      = None
         
-        for i in range(1, self.rang) :
-            g_cheminBrut = separateur.join( self.chemin[:i] )
-            
-            groupe = await groupe_avec( g_cheminBrut, "chemin", creation_si_existe_pas )
-            
-            self.sur_Groupes.append( groupe )
-            
-            
-#### Définition du salon du groupe supérieur 
-    
-        if   self.rang == 1 :
-            self.salon_GroupeSup = fDis.channelFctmentGrp
-                
-        elif self.rang in [2,3,4]:
-            self.salon_GroupeSup = self.sur_Groupes[-1].salon        
-    
-    
+        
     
     
     
@@ -97,45 +55,45 @@ class Groupe :
 
 ### Clonage d'un des salons de référence, pour créer le salon
 
-        if self.rang == 1 : 
-            self.salon = await fDis.channelGalaxie.clone( name = fDis.channelGalaxie.name[:2] + self.nom )
-            await self.salon.edit(position = fDis.channelGalaxie.position + 1, topic = str(self))
-                
-        if self.rang == 2 : 
-            self.salon = await fDis.channelEtoile .clone( name = fDis.channelEtoile .name[:2] + self.nom )
-            await self.salon.edit(position = fDis.channelEtoile .position + 1, topic = str(self))
-                
-        if self.rang == 3 : 
-            self.salon = await fDis.channelPlanete.clone( name = fDis.channelPlanete.name[:2] + self.nom )
-            await self.salon.edit(position = fDis.channelPlanete.position + 1, topic = str(self))
-                
-        if self.rang == 4 : 
-            self.salon = await fDis.channelLune   .clone( name = fDis.channelLune   .name[:2] + self.nom )
-            await self.salon.edit(position = fDis.channelLune   .position + 1, topic = str(self))
+        if self.estPublic : intro_salon = f"🔓┃{self.numero}┃"
+        else              : intro_salon = f"🔒┃{self.numero}┃"
 
+        self.salon = await fDis.channelPlanete.clone( name = intro_salon + self.nom )
+        await self.salon.edit(position = fDis.channelPlanete.position + 1, topic = f"Groupe créé par {self.chef.display_name}, c'est lui qui peut lancer la partie !")
         
         
+                
 # =============================================================================
 #### Création du Message de Sortir sur lequel réagir pour quitter le groupe
 # =============================================================================
         
-        contenu_MsgSortie = f"**Bonjour et bienvenue dans le groupe _{self}_**\n> Si vous souhaiter le quiter, réagisez à ce message avec {Emo_departGroupe}..."
+        contenu_MsgGroupe  = f"**Bienvenue dans le groupe _{self.nom}_**\n"
+        contenu_MsgGroupe += f"Pour lancer la partie le **chef** du groupe ({self.chef.mention}) doit réagir à ce message, vous pouvez lancer 2 types de partie :\n"
+        contenu_MsgGroupe += f"> {fDis.Emo_BabyOrange} - Une Partie **personnelle**, avec uniquement les personnes dans ce groupe, elle se lancera à 20h, après que le chef ai réagis.\n"
+        contenu_MsgGroupe += f"> {fDis.Emo_BabyCyan} - Une Partie **commune**, avec les autres groupes du serveur, elle se lancera dimanche prochain à 20h, après que le chef ai réagis.\n"
+        contenu_MsgGroupe +=  "> Les autres membres du groupe peuvent aussi réagir, pour que le chef sâche qu'elle est l'envie majoritaire du groupe.\n"
+        contenu_MsgGroupe +=  "\n"
         
-        self.MsgSortie = await self.salon.send(contenu_MsgSortie)
-        await self.MsgSortie.add_reaction(Emo_departGroupe)
+        if not self.estPublic : contenu_MsgGroupe += f"Comme votre groupe est privé, pour que de nouveaux membres y rentre, ils devront entrer ce mot de passe : ||{self.motDePasse}||\n"
+        
+        contenu_MsgGroupe +=  f"Pour rentrer dans **ce** groupe, n'importe qui doit taper la commande suivante (en l'envoyant directement au {fDis.userMdJ.mention}) :\n"
+        
+        if self.estPublic     : contenu_MsgGroupe += f"> `!rejoindreGroupe {self.numero}`\n"
+        else                  : contenu_MsgGroupe += f"> `!rejoindreGroupe {self.numero} `||`{self.motDePasse}`||\n"
+        
+        contenu_MsgGroupe += "\n"
+        
+        self.msgGroupe = await self.salon.send(contenu_MsgGroupe)
+        await self.msgGroupe.add_reaction(fDis.Emo_BabyOrange)
+        await self.msgGroupe.add_reaction(fDis.Emo_BabyCyan)
         
         
         
 # =============================================================================
-#### Création du Message d'Entrée sur lequel réagir pour rejoindre le groupe
+#### Mise à jour de la liste des groupes publics
 # =============================================================================
         
-        self.Emo_Entree = rd.choice(fDis.Emos_Babys)
-            
-        contenu_MsgEntree = f"Pour rentrer dans le groupe {self} :\n> Réagissez à ce message avec {self.Emo_Entree} !"
-        
-        self.MsgEntree  = await self.salon_GroupeSup.send(contenu_MsgEntree)
-        await self.MsgEntree.add_reaction(self.Emo_Entree)
+        await majMsg_listeGroupes()
         
         
         
@@ -149,50 +107,36 @@ class Groupe :
     
     
     
-    def ecriture_GoogleSheet(self):
+    def ecriture_BdD_SQL(self):
         
 #### Création du dictionnaire correspondant à la ligne du Groupe
         
-        ligneGroupe = {fGoo.clefGrp_numGroupe  : self.numero,
-                       fGoo.clefGrp_CheminBrut : self.cheminBrut}
+        ligneGroupe = {fSQL.clef_numGroupe   : self.numero        ,
+                       fSQL.clef_nomGroupe   : self.nom           ,
+                       
+                       fSQL.clef_idSalon_Grp : self.salon    .id  ,
+                       fSQL.clef_idChef_Grp  : self.chef     .id  ,
+                       fSQL.clef_grp_public  : int(self.estPublic),
+                       fSQL.clef_code_groupe : self.code          ,
+                       
+                       fSQL.clef_date_activi_grp : self.date_derniere_activite,
+                       
+                       fSQL.clef_partie_lance : self.type_de_partie_a_lancee ,
+                       fSQL.clef_deb_partie   : self.date_deb_prochaine_partie,
+                       fSQL.clef_numCompo     : self.numero_compo_choisie}
+        
+        
+        
+#### Remplacement (ou ecriture si inexistant) de la ligne du groupe
+        
+        fSQL.remplacer_ligne_avec(fSQL.nom_table_groupes,
+                                  fSQL.clef_numGroupe, self.numero,
+                                  ligneGroupe)
 
-        if v.phaseEnCours == v.phase1 :
-            
-            ligneGroupe[fGoo.clefGrp_idSalon  ] = self.salon     .id
-            ligneGroupe[fGoo.clefGrp_MsgSortie] = self.MsgSortie .id
-            ligneGroupe[fGoo.clefGrp_MsgEntree] = self.MsgEntree .id
-            ligneGroupe[fGoo.clefGrp_EmoEntree] = self.Emo_Entree
-        
-        
-        
-        
-        
-#### Recherche du numéro de ligne
-        
-        ligne, numeroLigne = fGoo.ligne_avec(self.numero,
-                                             fGoo.clefGrp_numGroupe,
-                                             fGoo.donneeGoogleSheet(fGoo.page_Groupes))
-        
-#### --- Cas 1 : Le groupe viens d'être créé ---
-
-#### Ajout d'une nouvelle ligne à fGoo.page_Groupe
-
-        if ligne == None :
-            fGoo.ajoutLigne(ligneGroupe, fGoo.page_Groupes, numero_nvlLigne = "fin")
-
-
-
-#### --- Cas 2 : Le groupe à déjà été noté dans le Google Sheet ---
-                    
-        else :
-            fGoo.remplacerLigne(ligneGroupe, numeroLigne, fGoo.page_Groupes)
     
     
-    
-    
-
-    def __str__(self):
-        return " > ".join( self.chemin )
+    def __str__ (self) :
+        return f"[{self.numero} / {self.nom}]"
 
 
 
@@ -205,21 +149,121 @@ class Groupe :
 
 
 
-
-
     async def expulsion_Salon(self, membre):
         await self.salon.set_permissions(membre, read_messages = False, send_messages = False)  
-
-
-
-    
-    
-    async def autorisation_SalonsDuChemin(self, membre):
         
-        for g in self.sur_Groupes :
-            await g.autorisation_Salon(membre)
         
+        
+    async def changementGroupe_entree(self, membre) :
+        
+        lignes = fSQL.lignes_avec (fSQL.nom_table_joueurs, fSQL.clef_idDiscord, membre.id)
+        
+        if len(lignes) == 0 :
+            
+            lignes = [ {fSQL.clef_pseudo    : membre.display_name,
+                        fSQL.clef_idDiscord : membre.id           } ]
+        
+        lignes[0][fSQL.clef_groupe] = self.numero
+        
+        fSQL.remplacer_ligne_avec(fSQL.nom_table_joueurs,
+                                  fSQL.clef_idDiscord, membre.id,
+                                  lignes[0])
+        
+        await expulsion_TousLesGroupes(membre)
         await self.autorisation_Salon(membre)
+    
+    
+    
+    async def changementGroupe_sortie(self, membre_partant_du_groupe) :
+        
+        liste_membres = [ membre   for membre in self.salon.members   if  fDis.roleBot not in membre.roles  and  fDis.roleModerateur not in membre.roles ]
+
+        if self.chef.id == membre_partant_du_groupe.id :
+            
+            if len(liste_membres) == 0 :
+                await self.suppression_Groupe()
+                
+            else :
+                await self.changementChef_alea()
+        
+        
+        
+        
+        
+# %% Changement du chef
+    
+    async def changementChef_alea(self):
+#### Sélection du nouveau chef        
+
+        liste_membres = self.salon.members
+        liste_membres = [ membre   for membre in liste_membres   if  fDis.roleBot not in membre.roles  and  fDis.roleModerateur not in membre.roles ]
+
+        nouvChef = fMeP.rd.choice( liste_membres )
+        
+#### Redef du chef
+        
+        self.chef = nouvChef
+                
+        fSQL.remplacer_val_lignes_avec(fSQL.nom_table_groupes,
+                                       fSQL.clef_numGroupe, self.numero,
+                                       fSQL.clef_idChef_Grp, nouvChef.id )
+        
+#### Publication du choix
+        
+        contenuMsg_infoChangementChef  =  "**L'ancien chef du Groupe vient de partir...**\n"
+        contenuMsg_infoChangementChef += f"> *Le hasard a choisi {nouvChef.mention} comme nouveau chef du groupe !*"
+        
+        await self.salon.send(contenuMsg_infoChangementChef)
+        
+        await self.salon.edit( topic = f"Groupe dirigé par {self.chef.display_name}, c'est lui qui peut lancer la partie !" )
+        
+        
+        
+    
+    
+    async def suppression_Groupe(self):
+        
+        global TousLesGroupes
+        
+#### Suppresion du salon du Groupe
+        
+        await self.salon.delete()
+        
+        
+        
+#### Suppresion des références au groupe dans la table des joueurs
+        
+        lignes = fSQL.lignes_avec(fSQL.nom_table_joueurs,
+                                  fSQL.clef_numGroupe, self.numero)
+        
+        for ligne in lignes :
+            
+            ligne[fSQL.clef_numGroupe] = None
+            
+            fSQL.remplacer_ligne_avec(fSQL.nom_table_joueurs,
+                                      fSQL.clef_idDiscord, ligne[fSQL.clef_idDiscord],
+                                      ligne)
+        
+        
+        
+#### Suppresion des références au groupe dans la table des joueurs
+        
+        fSQL.suppression_lignes_avec(fSQL.nom_table_groupes,
+                                     fSQL.clef_numGroupe, self.numero)
+        
+        
+        
+#### Suppresion du Groupe de la liste de TousLesGroupes
+        
+        TousLesGroupes.remove(self)
+        
+        
+        
+#### MaJ de la Liste des Groupes
+        
+        await majMsg_listeGroupes()
+        
+        
         
 
 
@@ -229,23 +273,23 @@ class Groupe :
 
 TousLesGroupes = []
 
-async def creationGroupe (cheminBrut, ajout_A_TousLesGroupes = True):
+async def creationGroupe (chef, nom_groupe, groupeEstPublic = True, mdp_groupe = None, ajout_A_TousLesGroupes = True) :
     """
     Créée un nouveau groupe, ajoute ce groupe à TousLesGroupes si ajout_A_TousLesGroupes == True
     """
-
+    
 # =============================================================================
 #### Recherche d'un numéro disponible pour le nouveau groupe
 # =============================================================================
-
+    
     numTrouve       = False
     numNouvGroupe   = 0
-
-    numDejaUtilises = fGoo.colonne_avec(fGoo.page_Groupes, fGoo.clefGrp_numGroupe)
-
+    
+    numDejaUtilises = fSQL.colonne_avec(fSQL.nom_table_groupes, fSQL.clef_numGroupe)
+    
     while not numTrouve :
         numNouvGroupe += 1
-        if numNouvGroupe not in numDejaUtilises:
+        if numNouvGroupe not in numDejaUtilises :
             numTrouve = True
     
     
@@ -254,14 +298,8 @@ async def creationGroupe (cheminBrut, ajout_A_TousLesGroupes = True):
 #### Création du nouveau Groupe
 # =============================================================================
     
-    nouvGroupe = Groupe(numNouvGroupe, cheminBrut)
-    await nouvGroupe.init_surGroupes()
-    
-    if v.phaseEnCours == v.phase1 :
-        await nouvGroupe.creation_salonEtMessages()
-        
-    else :
-        nouvGroupe.ecriture_GoogleSheet()
+    nouvGroupe = Groupe(numNouvGroupe, nom_groupe, chef, groupeEstPublic, mdp_groupe)
+    await nouvGroupe.creation_salonEtMessages()
     
     
     
@@ -278,14 +316,14 @@ async def creationGroupe (cheminBrut, ajout_A_TousLesGroupes = True):
 
 
 
-async def groupe_avec (info, type_dinfo, creation_si_existe_pas = False):
+def groupe_avec (info, type_dinfo):
     """
     Cette Fonction renvoie le groupe correspondant à l'info donnée en argument.
     Si aucun groupe ne correspond, elle renvoie None.
     Sauf si creation_si_existe_pas où dans ce cas elle le créera si elle le peut.
     
     Voici les types d'information pris en charge : 
-        'numero'  'chemin'  'idMsg_Depart'  'idMsg_Entree'
+        'numero'  'nom'  'idMsg_Groupe'
     """
     
     if   type_dinfo == "numero" :
@@ -294,39 +332,19 @@ async def groupe_avec (info, type_dinfo, creation_si_existe_pas = False):
             if g.numero == info :
                 return g
     
-    
-    
-    elif type_dinfo == "chemin" :
+    elif type_dinfo == "nom" :
         
         for g in TousLesGroupes :
-            if g.cheminBrut == info :
+            if g.nom == info :
                 return g
-            
-        if creation_si_existe_pas :
-            nouvGroupe = await creationGroupe(info)
-            return nouvGroupe
         
-        if GroupeParDefaut.cheminBrut == info :
-            return GroupeParDefaut()
-    
-        
-        
-    elif type_dinfo == "idMsg_Depart" :
+    elif type_dinfo == "idMsg_Groupe" :
         
         for g in TousLesGroupes :
-            if g.MsgSortie.id == info :
+            if g.msgGroupe.id == info :
                 return g
     
-    
-    
-    elif type_dinfo == "idMsg_Entree" :
-        
-        for g in TousLesGroupes :
-            if g.MsgEntree.id == info :
-                return g
-            
-    
-    return GroupeParDefaut()
+    return None
 
 
 
@@ -337,11 +355,11 @@ async def redef_groupesExistants():
     Fonction re-définissant les groupes créés précédemment
     """
     
-    print(f"Redef des Groupes ({v.phaseEnCours})")
+    print( "Redef des Groupes" )
     
     global TousLesGroupes
     
-    donneeGroupes  = fGoo.donneeGoogleSheet(fGoo.page_Groupes)
+    donneeGroupes  = fSQL.donnees_de_la_table(fSQL.nom_table_groupes)
     TousLesGroupes = []
     
     
@@ -352,154 +370,89 @@ async def redef_groupesExistants():
     
     for ligneGrp in donneeGroupes :
         
-        nouvGroupe = Groupe(ligneGrp[fGoo.clefGrp_numGroupe], ligneGrp[fGoo.clefGrp_CheminBrut])
+        nouvGroupe = Groupe(num_groupe      = ligneGrp[fSQL.clef_numGroupe], 
+                            nom_groupe      = ligneGrp[fSQL.clef_nomGroupe],
+                            chef            = fDis.serveurMegaLG.get_member(ligneGrp[fSQL.clef_idChef_Grp]),
+                            
+                            date_dern_act   = ligneGrp[fSQL.clef_date_activi_grp],
+                            
+                            groupeEstPublic = bool( ligneGrp[fSQL.clef_grp_public] ),
+                            mdp_groupe      = ligneGrp[fSQL.clef_code_groupe]                                )
         
-        if type(ligneGrp[fGoo.clefGrp_idSalon]) == int :
-            
-            nouvGroupe.salon      = fDis.bot.get_channel(ligneGrp[fGoo.clefGrp_idSalon])
-            nouvGroupe.MsgSortie  = await nouvGroupe.salon.fetch_message(ligneGrp[fGoo.clefGrp_MsgSortie])   
-            nouvGroupe.Emo_Entree = ligneGrp[fGoo.clefGrp_EmoEntree]
+        nouvGroupe.salon      = fDis.bot.get_channel(ligneGrp[fSQL.clef_idSalon_Grp])
+        #nouvGroupe.msgGroupe = await nouvGroupe.salon.fetch_message(ligneGrp[fGoo.clefGrp_msgGroupe])
             
         TousLesGroupes.append(nouvGroupe)
-            
+    
+
+
+
+
+# %%% Liste des Groupes
+
+msg_listeGroupes   = None
+idMsg_listeGroupes = None
+
+
+
+def contenuMsg_listeGroupes() :
+
+    contenuMsg = "__**Liste des Groupes publics :**__\n"
+    
+    taille_nombre = len( str(TousLesGroupes[-1].numero) ) 
+    
+    for groupe in TousLesGroupes :
+        if groupe.estPublic :
+            contenuMsg += f"> `{fMeP.AjoutZerosAvant(groupe.numero, taille_nombre, espace = True)}` // {groupe.nom}\n"
+    
+    contenuMsg += "\n"
+    contenuMsg += "Pour rejoindre un groupe, vous pouvez utiliser la commande : `!rejoindreGroupe` *numero_du_groupe* *mot_de_passe_du_groupe (seulement si le groupe est privé)*"
+    contenuMsg += "Pour en créer un nouveau, vous pouver utiliser la commande : `!creation_nouvGroupe`"
+    
+    return contenuMsg
+    
+
+    
+async def envoieMsg_listeGroupes():
+    
+    global msg_listeGroupes, idMsg_listeGroupes
+    
+    msg_listeGroupes   = await fDis.channelFctmentGrp.send(contenuMsg_listeGroupes())
+    idMsg_listeGroupes = msg_listeGroupes.id
+
+    return
+
     
     
-# =============================================================================
-#### Initialisation des surGroupes de chacun des groupes préalablement redéfinit
-# =============================================================================
+async def majMsg_listeGroupes():
     
-#    (Création éventuelle de groupe n'étant pas inscrit dans le Google Sheet)        
+    global msg_listeGroupes, idMsg_listeGroupes
+    
+    if   msg_listeGroupes == None  and  idMsg_listeGroupes != None :
+        msg_listeGroupes = await fDis.channelFctmentGrp.fetch_message(idMsg_listeGroupes)
+    
+    elif idMsg_listeGroupes == None :
+        envoieMsg_listeGroupes()
+        return
+    
+    await msg_listeGroupes.edit(content = contenuMsg_listeGroupes())
+    
+    return
+    
+
+
+# %%% Autorisation du Salon du Groupe
+
+async def expulsion_TousLesGroupes(membre):
     
     for grp in TousLesGroupes :
-        await grp.init_surGroupes()
-
-
-
-# =============================================================================
-#### Vérification lors de la phase 1, que tous les salons ont été créés
-# =============================================================================
-
-#    (Cette vérif est placé après l'init des surGroupes car 
-#        la méthode creation_salonEtMessages a besoin des surGroupes)   
-
-    if v.phaseEnCours == v.phase1 :
-        
-        for grp in TousLesGroupes :
-            await grp.init_surGroupes()
-            
-            if grp.salon != None :
-                ligneGrp, numLigneGrp = fGoo.ligne_avec( grp.numero, fGoo.clefGrp_numGroupe, donneeGroupes)
-                grp.MsgEntree = await grp.salon_GroupeSup.fetch_message(ligneGrp[fGoo.clefGrp_MsgEntree])
-            
-            else :
-                await asyncio.sleep(1)
-                await grp.creation_salonEtMessages()
-
-
-
-
-
-async def autorisation_SalonsGrp(membre, numeroGroupe):
-    """
-    Donne l'accès aux salons des sur-groupes et du groupe du membre
-    """
-
-    if v.phaseEnCours == v.phase1 :
-
-# =============================================================================
-#### Définition des tous les salons de groupe
-# =============================================================================
-
-        TousLesSalonsGroupes = []
-        
-        for grp in TousLesGroupes :
-            TousLesSalonsGroupes.append(grp.salon)
-    
-    
-    
-# =============================================================================
-#### Définition des salons de groupe / sur-groupes
-# =============================================================================
-
-        salons_autorises = []   
-        
-        if numeroGroupe != GroupeParDefaut.numero :
-            
-            groupe = await groupe_avec( numeroGroupe, "numero" )
-            
-            salons_autorises.append(groupe.salon)
-            
-            for surGrp in groupe.sur_Groupes :
-                salons_autorises.append(surGrp.salon)
-
-
-
-# =============================================================================
-#### Autorisation des salons auxquels le membre à accès
-# =============================================================================
-
-            await groupe.autorisation_SalonsDuChemin(membre)
-    
-
-
-# =============================================================================
-#### Envoie d'un message dans le cas où le joueur n'a accès a aucun salon
-# =============================================================================
-    
-        else :
-            await membre.send("_**Tu n'es inscrit dans aucun groupe...**_\n> Le fonctionnement et l'utilité des groupes sont expliqués dans `#  ┃ ⅱ ┃ groupes`, va y faire un tour !")
-    
-           
-    
-# =============================================================================
-#### Expulsion des salons auxquels le membre n'a pas accès
-# =============================================================================
-           
-        for salonGrp in TousLesSalonsGroupes :
-            if salonGrp not in salons_autorises :
-               await salonGrp.set_permissions(membre, read_messages = False)
+        await grp.expulsion_Salon(membre)
     
     
 
 
-@fDis.bot.command(aliases = ["supprTousLesGroupes"])
-@fDis.commands.has_permissions(ban_members = True)
-async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
-    """
-    Cette commande supprime :
-        - Les salons de Groupes 
-        - Les messages d'entrée des groupes de rang n°1
-        - Les id des salons, des msgs d'entrées et de sortie des groupes contenu dans fGoo.page_Groupes
-    """
-    
-# Suppression des salons des groupes
 
-    for grp in TousLesGroupes :
-        try :
-            await grp.salon.delete()
-        except :
-            pass
-
-
-# Suppression des messages d'entrées des groupes de rang 1
-
-        if grp.rang == 1 :
-            try :
-                await grp.MsgEntree.delete()
-            except :
-                pass
-
-
-# Suppression des idDiscord dans fGoo.page_Groupes
-    
-    fGoo.modif_groupe_cellules(2, 3, fGoo.page_Groupes.row_count, 6, fGoo.page_Groupes)
-
-
-
-
-
-
-# %% Events et commandes liés aux groupes
+# %% Commandes liés aux groupes
 
 # %%% Slashs Commands
 """
@@ -534,16 +487,21 @@ async def slash_changement_groupe(ctx, nom_groupe):
 """    
     
 
-# %%% Commande de Création de Groupe / Sous-Groupe
+# %%% Commande de Création de Groupe
 
 
-Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes pas un Joueur...\n> Si vous voulez vous inscrire (ou vous ré-inscrire), ça se passe dans ` ┃ⅰ┃ inscription`",
-                   "**ERREUR** - Le groupe que vous essayer de créer existe déjà !",
-                   "**ERREUR** - Vous ne pouvez pas créer un sous-groupe à votre groupe, vous êtes déjà dans le plus petit type de groupe possible.\n> Vous ne pouvez pas créer le groupe : #NOUVGRP#"]
+Erreurs_NouvGrp = ["**ERREUR** - Vous ne pouvez pas utiliser cette commande car vous n'êtes plus un Spectateur...\n> Vous ne pouvez pas créer de groupe ou en changer lorsque vous êtes en pleine partie !",
+                   "**ERREUR** - Un groupe porte déjà ce nom !"]
 
 
 
-@fDis.bot.command(aliases = ["creation_nouvgroupe", "CreationNouvGroupe", "CNG", "cng"])
+@fDis.bot.command(aliases = ["Creation_Nouvgroupe", "Creation_nouvGroupe", "creation_NouvGroupe",
+                             "Creation_nouvgroupe", "creation_nouvGroupe", "creation_Nouvgroupe", "creation_nouvgroupe"
+                             
+                             "CreationNouvGroupe" ,  "creationNouvGroupe",  "CreationnouvGroupe", "CreationNouvgroupe",
+                             "Creationnouvgroupe" ,  "creationNouvgroupe",  "creationnouvGroupe", "creationnouvgroupe",
+                             
+                             "CNG", "cng"])
 async def Creation_NouvGroupe(ctx):
     """
     Cette commande gère la création d'un groupe ou d'un sous-groupe.
@@ -551,29 +509,30 @@ async def Creation_NouvGroupe(ctx):
     
     """
     
-    auteur           = fDis.serveurMegaLG.get_member( ctx.message.author.id                          )
-    ligne, num_ligne = fGoo.ligne_avec              ( auteur.id            , fGoo.clef_idDiscord,
-                                                      fGoo.donneeGoogleSheet(fGoo.page1_InfoJoueurs) )
+    auteur = fDis.serveurMegaLG.get_member( ctx.message.author.id )
+    
+    ligne  = fSQL.lignes_avec(fSQL.nom_table_joueurs,
+                              fSQL.clef_idDiscord, auteur.id)[0]
+    
     
 # =============================================================================
-#### --- 1ère Verif - L'auteur de la commande est-il un Joueur ? ---
+#### --- 1ère Verif - L'auteur de la commande est-il un Spectateur ? ---
 # =============================================================================
     
-    if ligne == None :
+    if fDis.roleSpectateurs not in auteur.roles :
         await auteur.send(Erreurs_NouvGrp[0])
         return 
-            
+    
+    
+
 
 
 # =============================================================================
 #### Attente du nom du groupe
 # =============================================================================
 
-    AncienGrp = await groupe_avec( ligne[fGoo.clef_Groupe], "numero" )
-
-    contenuMsg_nomGroupe  = f"Vous êtes actuellement dans {AncienGrp}, quel sera le nom de votre **nouveau groupe** ?\n"
-    contenuMsg_nomGroupe +=  "> Le **prochain message** que vous enverrez sera le nom de votre nouveau groupe (après l'avoir confirmé).\n"
-    contenuMsg_nomGroupe +=  "> Vous avez le droit à tous les caractères spéciaux."
+    contenuMsg_nomGroupe  = "Bonjour ! Quel sera le nom de votre **nouveau groupe** ?\n"
+    contenuMsg_nomGroupe += "> Le **prochain message** que vous enverrez sera le nom de votre nouveau groupe (après l'avoir confirmé).\n"
     
     await auteur.send( contenuMsg_nomGroupe )
     
@@ -584,136 +543,83 @@ async def Creation_NouvGroupe(ctx):
         msgReponseNomGrp = await fDis.attente_Message( auteur )
         nom_groupe       = msgReponseNomGrp.content
         
-        contenuMsg_VerifNom  = f"Est-ce bien le nom de votre futur groupe : **{nom_groupe}** ?\n"
+        contenuMsg_VerifNom  = f"Êtes-vous certain de choisir ce nom : **{nom_groupe}** ?\n"
         
         msgConfirmNom    = await auteur.send              ( contenuMsg_VerifNom         )
         choixConfirme    = await fDis.attente_Confirmation( msgConfirmNom      , auteur )
         
         await msgConfirmNom.delete()
         
-        if not choixConfirme :
+#### --- 2ème Verif - Le groupe existe-t-il déjà ? ---
+            
+        grp_ACreer = groupe_avec( nom_groupe, "nom" )
+            
+        if type(grp_ACreer) == Groupe :
+            await auteur.send(Erreurs_NouvGrp[1])
+            choixConfirme = False
+        
+        if not choixConfirme:
             await auteur.send( "*Vous pouvez taper un nouveau nom de groupe !*" )
     
-
-
+    
+    
+    
+    
 # =============================================================================
-#### Choix du type de groupe
+#### Choix du type de groupe (privé/public)
 # =============================================================================
     
-    if   AncienGrp.rang == 0 :
-        choixGrpPrincipal = True
+    contenuMsg_typeGroupe  = "Quel est le type du groupe que voulez-vous créer ?\n"
+    contenuMsg_typeGroupe += "> 🔓 - Un groupe public, qui sera affiché et accessible par tout le monde.\n"
+    contenuMsg_typeGroupe += "> 🔒 - Un groupe privé, qui ne sera accessible qu'en connaissant le **mot de passe** que vous aurez choisi.\n"
+    contenuMsg_typeGroupe += "> \n"
+    contenuMsg_typeGroupe += "> Si vous ne voulez plus créer de groupe, réagissez avec 🛑."
     
+    emojisEtReturns = [["🔓", True], ["🔒", False], ["🛑", "Stop"]]
+        
+    msgTypeGrp          = await auteur.send          ( contenuMsg_typeGroupe                          )
+    choixGoupeEstPublic = await fDis.attente_Reaction( msgTypeGrp           , auteur, emojisEtReturns )
     
+    mdp_groupe = None
     
+    if choixGoupeEstPublic == "Stop" :
+        return
+        
+#### Définition du Mot de Passe si le groupe est privé
     
-    
-    elif AncienGrp.rang in [1,2,3] :
-        if   AncienGrp.rang == 1 : type_nouvSousGrp = "✨"
-        elif AncienGrp.rang == 2 : type_nouvSousGrp = "🪐"
-        elif AncienGrp.rang == 3 : type_nouvSousGrp = "🌙"
+    if not choixGoupeEstPublic :
+
+        contenuMsg_mdpGroupe  = "🔒 - Vous allez créer un groupe privé, quel sera son **mot de passe** ?\n"
+        contenuMsg_mdpGroupe += "> Le **prochain message** que vous enverrez sera votre mot de passe, une fois que vous l'aurez confirmé.\n"
         
-        contenuMsg_typeGroupe  =  "Quel est le type du groupe que vous voulez créer ?\n"
-        contenuMsg_typeGroupe += f">  1️⃣ - Je veux créer un groupe principal, de type `🌌`, qui aurait comme salon `# 🌌┃{nom_groupe}`.\n"
-        contenuMsg_typeGroupe += f">  2️⃣ - Je veux créer un sous-groupe de {AncienGrp}, de type `{type_nouvSousGrp}`, qui aurait comme salon `# {type_nouvSousGrp}┃{nom_groupe}`.\n"
-        contenuMsg_typeGroupe +=  "> Si aucune de ces propositions ne vous conviennent, réagissez avec 🛑."
-        
-        emojisEtReturns = [["1️⃣", True], ["2️⃣", False], ["🛑", "Stop"]]
-        
-        msgTypeGrp        = await auteur.send          ( contenuMsg_typeGroupe                          )
-        choixGrpPrincipal = await fDis.attente_Reaction( msgTypeGrp           , auteur, emojisEtReturns )
-        
-        if choixGrpPrincipal == "Stop" :
-            return
-        
-        
+        await auteur.send( contenuMsg_mdpGroupe )
         
         choixConfirme = False
         
         while not choixConfirme :
-            
-            emojisEtReturns = [ ["✅", True], ["❌", False], ["🛑", "Stop"] ]
-            
-            if choixGrpPrincipal : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
-            else                 : contenuMsg_VerifType = f"Vous souhaitez bien créer `# {type_nouvSousGrp}┃{nom_groupe}` ?"
-                
-            msgConfirmType = await auteur.send          ( contenuMsg_VerifType                          )
-            choixConfirme  = await fDis.attente_Reaction( msgConfirmType      , auteur, emojisEtReturns )
-            
-            if choixConfirme == "Stop" :
-                return
-            
-            await msgConfirmType.delete()
-            
-            if not choixConfirme : 
-                choixGrpPrincipal = not choixGrpPrincipal
-    
-    
-    
-    
-    
-    else :
-        contenuMsg_typeGroupe  =  "Quel est le type du groupe que vous voulez créer ?\n"
-        contenuMsg_typeGroupe += f">  1️⃣ - Je veux créer un groupe principal, de type `🌌`, qui aurait comme salon `# 🌌┃{nom_groupe}`.\n"
-        contenuMsg_typeGroupe += f">  2️⃣ - Je veux créer un sous-groupe de {AncienGrp.sur_Groupes[-1]}, de type `🌙`, qui aurait comme salon `# 🌙┃{nom_groupe}`.\n"
-        contenuMsg_typeGroupe +=  "> Si aucune de ces propositions ne vous conviennent, réagissez avec 🛑."
         
-        emojisEtReturns = [["1️⃣", True], ["2️⃣", False], ["🛑", "Stop"]]
-        
-        msgTypeGrp        = await auteur.send          ( contenuMsg_typeGroupe                          )
-        choixGrpPrincipal = await fDis.attente_Reaction( msgTypeGrp           , auteur, emojisEtReturns )
-        
-        if choixGrpPrincipal == "Stop" :
-            return
-        
-        
-        
-        choixConfirme = False
-        
-        while not choixConfirme :
+            msgReponseNomGrp = await fDis.attente_Message( auteur )
+            mdp_groupe       = msgReponseNomGrp.content
             
-            emojisEtReturns = [ ["✅", True], ["❌", False], ["🛑", "Stop"] ]
+            contenuMsg_VerifNom  = f"Êtes-vous certain de choisir ce mot de passe : **{mdp_groupe}** ?\n"
             
-            if choixGrpPrincipal : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌌┃{nom_groupe}` ?"
-            else                 : contenuMsg_VerifType = f"Vous souhaitez bien créer `# 🌙┃{nom_groupe}` ?"
+            msgConfirmNom    = await auteur.send              ( contenuMsg_VerifNom         )
+            choixConfirme    = await fDis.attente_Confirmation( msgConfirmNom      , auteur )
             
-            msgConfirmType = await auteur.send          ( contenuMsg_VerifType                          )
-            choixConfirme  = await fDis.attente_Reaction( msgConfirmType      , auteur, emojisEtReturns )
+            await msgConfirmNom.delete()
             
-            if choixConfirme == "Stop" :
-                return
-            
-            await msgConfirmType.delete()
-            
-            if not choixConfirme : 
-                choixGrpPrincipal = not choixGrpPrincipal
-            
-            
-        if not choixGrpPrincipal :
-            AncienGrp = AncienGrp.sur_Groupes[-1]
-    
-    
-    
-    
-    
-# =============================================================================
-#### --- 2ème Verif - Le groupe existe-t-il déjà ? ---
-# =============================================================================
-    
-    if choixGrpPrincipal : grp_ACreer = await groupe_avec(                                      nom_groupe  , "chemin" )
-    else                 : grp_ACreer = await groupe_avec( f"{AncienGrp.cheminBrut}{separateur}{nom_groupe}", "chemin" )
-    
-    if type(grp_ACreer) == Groupe :
-        await auteur.send(Erreurs_NouvGrp[1])
-        return 
-    
+            if not choixConfirme :
+                await auteur.send( "*Vous pouvez taper un nouveau mot de passe !*" )
     
 
+
+
+
 # =============================================================================
-#### === Création du Groupe / Sous-Groupe ===
+#### === Création du Nouveau Groupe ===
 # =============================================================================
     
-    if choixGrpPrincipal : nouvGroupe = await creationGroupe(                                      nom_groupe   )
-    else                 : nouvGroupe = await creationGroupe( f"{AncienGrp.cheminBrut}{separateur}{nom_groupe}" )
+    nouvGroupe = await creationGroupe( auteur, nom_groupe, choixGoupeEstPublic, mdp_groupe )
 
 
 
@@ -721,79 +627,131 @@ async def Creation_NouvGroupe(ctx):
 #### Gestion des autorisations personnelles
 # =============================================================================
     
-    fGoo.remplacerVal_ligne( nouvGroupe.numero, fGoo.clef_Groupe, 
-                             num_ligne                          , 
-                             fGoo.page1_InfoJoueurs              )
+    anciGroupe = groupe_avec(ligne[fSQL.clef_numGroupe], "numero")
     
-    await autorisation_SalonsGrp(auteur, nouvGroupe.numero)
+    if anciGroupe != None :
+        await anciGroupe.changementGroupe_sortie(auteur)
     
-    await auteur.send( "**C'est bon !** Le groupe a été créé !" )
+    await nouvGroupe.changementGroupe_entree(auteur)
 
 
 
 
 
-# %%% Event de Changement de Groupe
+# %%% Commande de Changement de Groupe
 
-async def evt_ChangementGroupe(membre, message_id, strEmoji):
+Erreurs_ChangGrp = ["**ERREUR** - Le groupe que vous avez choisi n'existe pas !",
+                    "**ERREUR** - Vous ne pouvez changer de groupe que lorsque vous n'êtes pas en partie !"]
+
+
+@fDis.bot.command(aliases = [                   "changement_Groupe", "changement_groupe", "ChangementGroupe", "changementGroupe", 
+                             "Rejoindre_Groupe", "rejoindre_Groupe",  "rejoindre_groupe",  "RejoindreGroupe",  "rejoindreGroupe",
+                             
+                             "Rejoindre", "rejoindre", "Groupe", "groupe", "GRP", "Grp", "grp"])
+async def Changement_Groupe(ctx, numero_str, code = None):
+    """
+    Cette commande gère le changement de groupe, il permet à n'importe quel joueur d'aller dans un groupe public ou privé.
+    """
     
-#### Départ d'un ancien groupe
+    auteur = fDis.serveurMegaLG.get_member( ctx.message.author.id )
     
-    futur_AncienGrp = await groupe_avec( message_id, "idMsg_Depart" )
+    ligne  = fSQL.lignes_avec(fSQL.nom_table_joueurs,
+                              fSQL.clef_idDiscord, auteur.id)[0]
     
-    if type(futur_AncienGrp) != GroupeParDefaut  and  strEmoji == Emo_departGroupe :
+    numero = int(numero_str)
+    
+# =============================================================================
+#### Recherche du groupe
+# =============================================================================
+    
+    groupe_destination = groupe_avec(numero, "numero")
+    
+#### --- Vérif --- Le groupe existe-t-il ?
+    
+    if groupe_destination == None :
+        await auteur.send(Erreurs_ChangGrp[0])
+        return
+    
+
+#### --- Vérif --- L'auteur de la commande est-il un Spectateur ?
+    
+    if fDis.roleSpectateurs not in auteur.roles :
+        await auteur.send(Erreurs_NouvGrp[1])
+        return 
+
+    
+# =============================================================================
+#### Cas 1 : Le groupe est Privé
+# =============================================================================
+    
+    if not groupe_destination.estPublic :
         
-        if   futur_AncienGrp.rang == 1 :
-            numeroGrp = GroupeParDefaut.numero
-        
-        elif futur_AncienGrp.rang in [2,3,4] :
-            numeroGrp = futur_AncienGrp.sur_Groupes[-1].numero
-        
-        fGoo.remplacerVal_ligne_avec( numeroGrp, fGoo.clef_Groupe   ,
-                                      membre.id, fGoo.clef_idDiscord,
-                                      fGoo.page1_InfoJoueurs         )
-        
-        await autorisation_SalonsGrp(membre, numeroGrp)
-    
-    
-    
-#### Entrée dans un nouveau groupe
-    
-    futur_NouveauGrp = await groupe_avec( message_id, "idMsg_Entree" )
-    
-    if type(futur_NouveauGrp) != GroupeParDefaut  and  strEmoji == futur_NouveauGrp.Emo_Entree :
-        
-        numeroGrp = futur_NouveauGrp.numero
-        
-        fGoo.remplacerVal_ligne_avec(numeroGrp, fGoo.clef_Groupe   ,
-                                     membre.id, fGoo.clef_idDiscord,
-                                     fGoo.page1_InfoJoueurs          )
-        
-        await autorisation_SalonsGrp(membre, numeroGrp)
-
-
-
-
-
-async def reaction_Groupe():
-    
-    def verifGroupe(payload):
-        salon        = fDis.serveurMegaLG.get_channel(payload.channel_id)
-
-#### Si la réaction n'a pas été faite dans un salon du serveur
-        if salon == None :
-            return False
-
-#### Sinon la réaction a été faite dans un salon du serveur
-        else :
-            verifUser    = payload.user_id not in (fDis.userMdJ.id, fDis.userAss.id, fDis.userCamp.id)
+        if code == None :
             
-            verifPhase   = v.phaseEnCours == v.phase1
-            verifCategCh = salon.category == fDis.CategoryChannel_GestionGrp
+#           --- Sous-cas 1 : Le code initial n'a pas été donné ---
+            
+            contenuMsg_code  = "Vous n'avez pas entrer le mot de passe pour rentrer dans ce groupe !\n"
+            contenuMsg_code += "> *Je comparerais votre prochain message, avec le mot de passe du groupe.*\n"
+            contenuMsg_code += "> *Si les deux correspondent, vous pourrez entrer dans le groupe !*"
+            
+            await auteur.send(contenuMsg_code)
+            
+            msgCode = await fDis.attente_Message( auteur )
+            code    = msgCode.content
+
+
+            
+        while code != groupe_destination.code :
+            
+#           --- Sous-cas 2 : Le code est faux ---
+
+            contenuMsg_code  = "Le mot de passe que vous avez entrer ne correspond pas à celui du groupe !\n"
+            contenuMsg_code += "> *Vous pouvez le retaper, je comparerais le prochain message que vous enverrez ici avec le mot de passe du groupe.*\n"
+            contenuMsg_code += "> *Si les deux correspondent, vous pourrez entrer dans le groupe !*"
+            
+            await auteur.send(contenuMsg_code)
+            
+            msgCode = await fDis.attente_Message( auteur )
+            code    = msgCode.content
+
+
+
+# =============================================================================
+#### Cas 2 : Le groupe est Public
+# =============================================================================
+
+#       --- Sous-cas 3 : Le code est bon, entré dans le groupe ---        
+
+    if groupe_destination.estPublic  or  code == groupe_destination.code :   
         
-            return verifUser  and  verifPhase and verifCategCh
+#       Gestion des autorisations personnelles
+            
+        anciGroupe = groupe_avec(ligne[fSQL.clef_numGroupe], "numero")
+        
+        if anciGroupe != None :
+            await anciGroupe.changementGroupe_sortie(auteur)
+        
+        await groupe_destination.changementGroupe_entree(auteur)
     
-#### Boucle infini
-    while True :
-        payload = await fDis.bot.wait_for('raw_reaction_add', check = verifGroupe)
-        await evt_ChangementGroupe(payload.member, payload.message_id, str(payload.emoji))
+
+
+
+
+# %%% Commande Admin
+
+@fDis.bot.command(aliases = ["supprTousLesGroupes"])
+@fDis.commands.has_permissions(ban_members = True)
+async def suppression_salons_msgs_idDiscord_TousLesGroupes (ctx):
+    """
+    Cette commande supprime :
+        - Les salons de Groupes (ainsi que les messages s'y trouvant)
+        - Les id des salons, des msgs d'entrées et de sortie des groupes contenu dans fGoo.page_Groupes
+    """
+    
+# Suppression des salons des groupes
+
+    for grp in TousLesGroupes :
+        try :
+            await grp.suppression_Groupe()
+        except :
+            pass

@@ -1,0 +1,6 @@
+{
+  "python.testing.unittestArgs": ["-v", "-s", ".", "-p", "*_test.py"],
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": true,
+  "cSpell.words": ["alain", "d'alain", "Hexa", "Nçoi", "Prenom"]
+}

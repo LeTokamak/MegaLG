@@ -19,6 +19,12 @@ version = "𝓯1.0"
 
 # import MegaLG_Test
 
+import os
+import sys
+
+os.chdir(f"{os.getcwd()}\\src")
+sys.path.append(os.getcwd())
+
 # Phase
 import phase_0    as fP0
 import phase_1    as fP1

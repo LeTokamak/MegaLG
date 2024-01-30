@@ -520,7 +520,7 @@ async def unban_MLG_LG_FN(*members) :
 async def ban_tousLesMembres_de(serveur_ban, serveur_devant_etre_ban) :
     """
     Cette fonction va ban tous les membres du serveur_devant_etre_ban.
-    Les membres seront banis de serveur_ban
+    Les membres seront bani de serveur_ban
     """
     
     for membre in serveur_devant_etre_ban.members :
@@ -534,7 +534,7 @@ async def ban_tousLesMembres_de(serveur_ban, serveur_devant_etre_ban) :
 async def unban_tousLesMembres_de(serveur_unban, serveur_devant_etre_unban) :
     """
     Cette fonction va unban tous les membres du serveur_devant_etre_unban.
-    Les membres seront unbanis de serveur_unban
+    Les membres seront débani de serveur_unban
     """
     
     for membre in serveur_devant_etre_unban.members :
@@ -578,7 +578,7 @@ async def invitation_MegaLG_FN (userDiscord, message_invitation = "") :
 
 async def invitation_serveur_perso (salon, userDiscord, message_invitation = "") :
     
-    invitation = await salon.create_invite(max_uses = 1, reason = f"Invitation personel de {userDiscord.name}#{userDiscord.discriminator}")
+    invitation = await salon.create_invite(max_uses = 1, reason = f"Invitation personnelle de {userDiscord.name}#{userDiscord.discriminator}")
     
     await userDiscord.send(message_invitation + str(invitation))
 
